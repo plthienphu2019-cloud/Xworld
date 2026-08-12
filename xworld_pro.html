@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>X World Pro</title>
+    <title>XWorld Pro</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
@@ -14,207 +14,231 @@
         .phone {
             width: 100%; height: 100vh; height: 100dvh;
             background: #0a1628; overflow: hidden;
-            position: relative; border-radius: 0;
-            box-shadow: none; border: none;
+            position: relative;
         }
-        #homeScreen, #taixiuScreen {
+        .screen {
             width: 100%; height: 100%; position: absolute;
-            top: 0; left: 0; overflow-y: auto; padding-bottom: 60px;
+            top: 0; left: 0; overflow-y: auto; display: none;
         }
-        #taixiuScreen { display: none; background: #0a1628; }
-        .status-bar {
-            display: flex; justify-content: space-between;
-            align-items: center; padding: 10px 15px; background: #0d1f35;
-        }
-        .menu-btn { color: white; font-size: 22px; }
-        .balances { display: flex; gap: 12px; align-items: center; }
-        .bal-item { color: white; font-size: 12px; display: flex; align-items: center; gap: 3px; }
-        .bal-icon { width: 14px; height: 14px; vertical-align: middle; }
-        .bal-usdt { color: #00d4aa; }
-        .bal-token { color: #ffaa00; }
-        .noti-area { display: flex; gap: 12px; align-items: center; }
-        .noti-icon { font-size: 20px; position: relative; }
-        .badge {
-            position: absolute; top: -6px; right: -8px;
-            background: red; color: white; font-size: 10px;
-            padding: 2px 6px; border-radius: 10px;
-        }
-        .pet-section { display: flex; justify-content: center; padding: 10px 0; position: relative; }
-        .pet-frame {
-            width: 260px; height: 260px; background: rgba(0,20,50,0.9);
-            border-radius: 25px; border: 2px solid rgba(0,200,255,0.4);
-            box-shadow: 0 0 40px rgba(0,150,255,0.3);
-            position: relative; display: flex; align-items: center; justify-content: center;
-        }
-        .pet-lv { position: absolute; top: 10px; left: 15px; color: #ffd700; font-size: 14px; font-weight: bold; }
-        .pet-chest { position: absolute; top: 10px; right: 15px; font-size: 20px; }
-        .pet-image { font-size: 100px; text-align: center; margin-top: 10px; }
-        .pet-platform {
-            width: 100%; height: 40px; background: rgba(0,100,200,0.3);
-            position: absolute; bottom: 0; border-radius: 0 0 25px 25px;
-            border-top: 1px solid rgba(0,200,255,0.4);
-        }
-        .side-btns-left, .side-btns-right { position: absolute; display: flex; flex-direction: column; gap: 10px; }
-        .side-btns-left { left: 15px; top: 30px; }
-        .side-btns-right { right: 15px; top: 30px; }
-        .side-btn {
-            width: 36px; height: 36px; background: rgba(0,150,255,0.3);
-            border-radius: 10px; display: flex; align-items: center;
-            justify-content: center; font-size: 16px;
-            border: 1px solid rgba(0,200,255,0.5);
-        }
-        .section-title { display: flex; justify-content: space-between; padding: 8px 15px; color: white; font-weight: bold; font-size: 14px; }
-        .game-scroll { display: flex; gap: 10px; padding: 0 15px; overflow-x: auto; }
-        .game-card {
-            min-width: 90px; background: rgba(255,255,255,0.1);
-            border-radius: 12px; padding: 10px; text-align: center;
-            color: white; font-size: 10px; cursor: pointer;
-        }
-        .game-card .icon { font-size: 28px; }
-        .game-card .reward { color: #ffd700; font-size: 9px; margin-top: 5px; }
-        .ai-banner {
-            margin: 8px 15px; background: rgba(255,255,255,0.15);
-            border-radius: 15px; padding: 12px; display: flex;
-            align-items: center; justify-content: space-between;
-        }
-        .ai-avatars { font-size: 28px; }
-        .ai-count { font-size: 36px; color: white; font-weight: bold; }
-        .ai-label { font-size: 11px; color: #aaa; }
-        .navbar {
-            position: absolute; bottom: 0; width: 100%;
-            height: 55px; background: #0d1f35;
-            display: flex; border-top: 1px solid #1a3a5c;
-        }
-        .nav-item {
-            flex: 1; display: flex; flex-direction: column;
+        .screen.active { display: block; }
+
+        /* ========== TRANG CHỦ ========== */
+        #home {
+            background: #0b1a30;
+            display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            color: #666; font-size: 10px; cursor: pointer;
+            text-align: center;
         }
-        .nav-item.active { color: #00d4ff; }
-        .nav-icon { font-size: 18px; }
-        .tx-header { display: flex; align-items: center; padding: 15px; gap: 15px; }
-        .back-btn { color: white; font-size: 24px; cursor: pointer; }
-        .tx-title { color: #ffd700; font-size: 22px; font-weight: bold; }
-        .tx-score { color: #00ffcc; font-size: 16px; text-align: center; margin: 5px 0; }
-        .tx-dice {
-            display: flex; justify-content: center; gap: 15px;
-            font-size: 50px; background: rgba(0,0,0,0.5);
-            margin: 10px 15px; padding: 15px; border-radius: 20px;
-            border: 2px solid rgba(0,200,255,0.4);
+        .home-logo {
+            font-size: 48px; font-weight: bold;
+            color: #00d4ff; letter-spacing: 5px;
+            text-shadow: 0 0 40px rgba(0,200,255,0.6);
         }
-        .tx-total { text-align: center; color: #ffd700; font-size: 16px; }
-        .tx-result { text-align: center; font-size: 26px; font-weight: bold; min-height: 35px; margin: 5px 0; }
-        .tx-bet { display: flex; gap: 10px; padding: 0 15px; margin: 8px 0; }
-        .tx-bet input {
-            flex: 1; padding: 12px; border-radius: 12px;
-            border: 2px solid rgba(0,200,255,0.5);
-            background: rgba(0,0,0,0.5); color: white;
-            text-align: center; font-size: 16px;
+        .home-sub {
+            color: #ffffff; font-size: 14px;
+            margin: 5px 0 40px 0; letter-spacing: 8px;
         }
-        .tx-btns { display: flex; gap: 15px; padding: 0 15px; }
-        .tx-btn {
-            flex: 1; padding: 16px; border: none;
-            border-radius: 15px; font-size: 22px;
-            font-weight: bold; color: white; cursor: pointer;
+        .home-btn {
+            padding: 16px 70px; font-size: 20px; font-weight: bold;
+            background: linear-gradient(180deg, #00ccff, #0088cc);
+            color: white; border: none; border-radius: 30px;
+            box-shadow: 0 0 35px rgba(0,180,255,0.7);
+            cursor: pointer; letter-spacing: 3px;
         }
-        .tx-tai { background: linear-gradient(180deg,#ff5555,#cc0000); box-shadow: 0 6px 0 #880000; }
-        .tx-xiu { background: linear-gradient(180deg,#4488ff,#0044cc); box-shadow: 0 6px 0 #002288; }
-        .tx-history {
-            margin: 10px 15px; background: rgba(0,0,0,0.4);
-            border-radius: 12px; padding: 10px; color: #ccc;
-            font-size: 11px; max-height: 80px; overflow-y: auto;
+        .home-ver {
+            color: #555; font-size: 12px; margin-top: 30px;
         }
+
+        /* ========== KHO APP ========== */
+        #khoapp { background: #0d1117; }
+        .header {
+            display: flex; align-items: center; padding: 15px; gap: 12px;
+            background: #111; border-bottom: 1px solid #222;
+        }
+        .back-btn {
+            color: #00d4ff; font-size: 26px; cursor: pointer;
+            background: none; border: none; font-weight: bold;
+        }
+        .title {
+            color: white; font-size: 18px; font-weight: bold;
+        }
+        .kho-list { padding: 15px; }
+        .kho-item {
+            display: flex; align-items: center; gap: 12px;
+            background: #161b22; padding: 14px; border-radius: 12px;
+            margin-bottom: 10px; cursor: pointer;
+            border: 1px solid #222;
+        }
+        .kho-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; background: #1a2332;
+        }
+        .kho-info { flex: 1; }
+        .kho-name { color: white; font-size: 15px; font-weight: bold; }
+        .kho-desc { color: #888; font-size: 11px; margin-top: 2px; }
+        .kho-open {
+            padding: 8px 16px; border-radius: 8px;
+            background: #00d4ff; color: black; font-weight: bold;
+            font-size: 12px; cursor: pointer; border: none;
+        }
+
+        /* ========== VUA TỐC ĐỘ ========== */
+        #speed { background: #0d1117; }
+        .speed-area {
+            text-align: center; padding: 25px 20px;
+            background: #111; margin: 15px; border-radius: 16px;
+        }
+        .speed-img { font-size: 90px; }
+        .speed-name {
+            color: #ff4444; font-size: 26px; font-weight: bold;
+            margin: 8px 0;
+        }
+        .speed-desc { color: #888; font-size: 13px; }
+        .speed-btns { padding: 10px 15px; display: flex; flex-direction: column; gap: 10px; }
+        .speed-btn {
+            width: 100%; padding: 15px; border-radius: 12px;
+            font-size: 17px; font-weight: bold; border: none; cursor: pointer;
+        }
+        .btn-red { background: #e74c3c; color: white; }
+        .btn-blue { background: #3498db; color: white; }
+        .btn-green { background: #2ecc71; color: white; }
+
+        /* ========== VÍ ========== */
+        #wallet {
+            background: #0b1a30;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        .wallet-icon {
+            font-size: 70px; margin-bottom: 15px;
+        }
+        .wallet-balance {
+            color: white; font-size: 20px;
+            margin-bottom: 4px;
+        }
+        .wallet-sub {
+            color: #666; font-size: 13px;
+        }
+
+        /* ========== TÀI XỈU (thêm) ========== */
+        #taixiu { background: #0d1117; }
     </style>
 </head>
 <body>
+
 <div class="phone">
-    <div id="homeScreen">
-        <div class="status-bar">
-            <span class="menu-btn">☰</span>
-            <div class="balances">
-                <span class="bal-item"><span class="bal-usdt">💎</span> 0.01</span>
-                <span class="bal-item"><span class="bal-token">🪙</span> 0.008519</span>
-                <span class="bal-item"><img src="https://i.ibb.co/8LnHM9GR/icon.png" class="bal-icon"> 0</span>
-            </div>
-            <div class="noti-area">
-                <span class="noti-icon">📬</span>
-                <span class="noti-icon">🔔<span class="badge">44</span></span>
-            </div>
+    <!-- TRANG CHỦ -->
+    <div id="home" class="screen active">
+        <div class="home-logo">XWORLD</div>
+        <div class="home-sub">PRO EDITION</div>
+        <button class="home-btn" onclick="goTo('khoapp')">VÀO GAME</button>
+        <div class="home-ver">Version 1.0</div>
+    </div>
+
+    <!-- KHO APP -->
+    <div id="khoapp" class="screen">
+        <div class="header">
+            <button class="back-btn" onclick="goTo('home')">←</button>
+            <span class="title">Kho Ứng Dụng</span>
         </div>
-        <div class="pet-section">
-            <div class="side-btns-left">
-                <div class="side-btn">💰</div>
-                <div class="side-btn">🎁<span style="color:red;font-size:8px">-50%</span></div>
-                <div class="side-btn">⚡</div>
+        <div class="kho-list">
+            <div class="kho-item" onclick="goTo('taixiu')">
+                <div class="kho-icon">🎲</div>
+                <div class="kho-info">
+                    <div class="kho-name">Tài Xỉu</div>
+                    <div class="kho-desc">Dự đoán Tài hoặc Xỉu</div>
+                </div>
+                <button class="kho-open">Mở</button>
             </div>
-            <div class="pet-frame">
-                <span class="pet-lv">🦊 Lv.11</span>
-                <span class="pet-chest">🎁</span>
-                <div class="pet-image">🦊</div>
-                <div class="pet-platform"></div>
+            <div class="kho-item" onclick="goTo('speed')">
+                <div class="kho-icon">🏎️</div>
+                <div class="kho-info">
+                    <div class="kho-name">Vua Tốc Độ</div>
+                    <div class="kho-desc">Đua xe tốc độ cao</div>
+                </div>
+                <button class="kho-open">Mở</button>
             </div>
-            <div class="side-btns-right">
-                <div class="side-btn">👥+</div>
-                <div class="side-btn">✅</div>
-                <div class="side-btn" style="border-radius:18px">✓</div>
+            <div class="kho-item">
+                <div class="kho-icon">🦹</div>
+                <div class="kho-info">
+                    <div class="kho-name">Vua Thoát Hiểm</div>
+                    <div class="kho-desc">Vượt chướng ngại vật</div>
+                </div>
+                <button class="kho-open">Mở</button>
             </div>
-        </div>
-        <div class="section-title">🎁 Thưởng $BUILD lớn <span style="color:#00d4ff;font-size:11px">Xem thêm →</span></div>
-        <div class="game-scroll">
-            <div class="game-card" onclick="openTaiXiu()"><div class="icon">🎲</div>CHẠY ĐUA T...<div class="reward">🔥 561K BUILD</div></div>
-            <div class="game-card" onclick="openTaiXiu()"><div class="icon">🦹</div>Vua Thoát Hi...<div class="reward">🔥 452K BUILD</div></div>
-            <div class="game-card"><div class="icon">😄</div>XLifeUp<div class="reward">🔥 10.2K BUILD</div></div>
-            <div class="game-card"><div class="icon">🐟</div>Hên Bắn Cá<div class="reward">🔥 801K BUILD</div></div>
-        </div>
-        <div class="section-title">🤖 AI Agent <span style="color:#00d4ff;font-size:11px">Xem thêm →</span></div>
-        <div class="ai-banner">
-            <div class="ai-avatars">🤖🤖🤖🤖🤖</div>
-            <div style="text-align:center"><div class="ai-count">52</div><div class="ai-label">AI Agents</div></div>
-            <div style="font-size:28px">→</div>
-        </div>
-        <div class="section-title">⭐ Tuyển chọn cho bạn <span style="color:#00d4ff;font-size:11px">Xem thêm →</span></div>
-        <div class="game-scroll">
-            <div class="game-card">⚡<br>Tài Xỉu</div>
-            <div class="game-card">🔥<br>Đua Xe</div>
-            <div class="game-card">🔴<br>Bắn Cá</div>
-        </div>
-        <br><br>
-        <div class="navbar">
-            <div class="nav-item active"><span class="nav-icon">🏠</span>Trang chủ</div>
-            <div class="nav-item"><span class="nav-icon">📦</span>Kho apps<span style="color:red;font-size:7px">●</span></div>
-            <div class="nav-item"><span class="nav-icon">🦊</span>Linh thú X</div>
-            <div class="nav-item"><span class="nav-icon">👥+</span>Mời</div>
-            <div class="nav-item"><span class="nav-icon">👛</span>Ví</div>
+            <div class="kho-item">
+                <div class="kho-icon">🐟</div>
+                <div class="kho-info">
+                    <div class="kho-name">Bắn Cá</div>
+                    <div class="kho-desc">Săn cá đổi thưởng</div>
+                </div>
+                <button class="kho-open">Mở</button>
+            </div>
         </div>
     </div>
-    <div id="taixiuScreen">
-        <div class="tx-header">
-            <span class="back-btn" onclick="closeTaiXiu()">←</span>
-            <span class="tx-title">🎲 TÀI XỈU</span>
+
+    <!-- VUA TỐC ĐỘ -->
+    <div id="speed" class="screen">
+        <div class="header">
+            <button class="back-btn" onclick="goTo('khoapp')">←</button>
+            <span class="title">Vua Tốc Độ</span>
         </div>
-        <div class="tx-score">💰 Số dư: <span id="txScore">1000</span></div>
-        <div class="tx-dice" id="txDice">⚀ ⚁ ⚂</div>
-        <div class="tx-total" id="txTotal">Tổng: ...</div>
-        <div class="tx-result" id="txResult"></div>
-        <div class="tx-bet">
-            <input type="number" id="txBet" placeholder="Nhập điểm cược" value="100" min="1">
+        <div class="speed-area">
+            <div class="speed-img">🏎️</div>
+            <div class="speed-name">VUA TỐC ĐỘ</div>
+            <div class="speed-desc">Đua xe tốc độ cao - Thử thách giới hạn</div>
         </div>
-        <div class="tx-btns">
-            <button class="tx-btn tx-tai" onclick="txPlay('TAI')">TÀI</button>
-            <button class="tx-btn tx-xiu" onclick="txPlay('XIU')">XỈU</button>
+        <div class="speed-btns">
+            <button class="speed-btn btn-red">🏁 Đua Ngay</button>
+            <button class="speed-btn btn-blue">⚡ Nâng Cấp Xe</button>
+            <button class="speed-btn btn-green">🛒 Cửa Hàng</button>
         </div>
-        <div class="tx-history" id="txHistory"><b>📜 Lịch sử:</b></div>
+    </div>
+
+    <!-- VÍ -->
+    <div id="wallet" class="screen">
+        <div class="header" style="position:absolute;top:0;width:100%;background:transparent;border:none">
+            <button class="back-btn" onclick="goTo('home')">←</button>
+            <span class="title">Ví</span>
+        </div>
+        <div class="wallet-icon">👛</div>
+        <div class="wallet-balance">0</div>
+        <div class="wallet-sub">Coming Soon</div>
+    </div>
+
+    <!-- TÀI XỈU -->
+    <div id="taixiu" class="screen">
+        <div class="header">
+            <button class="back-btn" onclick="goTo('khoapp')">←</button>
+            <span class="title">Tài Xỉu</span>
+        </div>
+        <div style="text-align:center;color:#00ffcc;font-size:16px;margin:10px 0">💰 Số dư: <span id="txScore">1000</span></div>
+        <div style="display:flex;justify-content:center;gap:12px;font-size:48px;background:#161b22;margin:10px 15px;padding:15px;border-radius:16px" id="txDice">⚀ ⚁ ⚂</div>
+        <div style="text-align:center;color:#ffd700;font-size:15px" id="txTotal">Tổng: ...</div>
+        <div style="text-align:center;font-size:24px;font-weight:bold;min-height:35px;margin:5px 0" id="txResult"></div>
+        <div style="display:flex;gap:10px;padding:0 15px;margin:8px 0">
+            <input type="number" id="txBet" value="100" min="1" style="flex:1;padding:12px;border-radius:10px;border:1px solid #333;background:#161b22;color:white;text-align:center;font-size:16px">
+        </div>
+        <div style="display:flex;gap:12px;padding:0 15px">
+            <button onclick="txPlay('TAI')" style="flex:1;padding:14px;border:none;border-radius:12px;font-size:20px;font-weight:bold;color:white;background:#e74c3c;cursor:pointer">TÀI</button>
+            <button onclick="txPlay('XIU')" style="flex:1;padding:14px;border:none;border-radius:12px;font-size:20px;font-weight:bold;color:white;background:#3498db;cursor:pointer">XỈU</button>
+        </div>
+        <div style="margin:10px 15px;background:#161b22;border-radius:12px;padding:10px;color:#888;font-size:11px;max-height:80px;overflow-y:auto" id="txHistory"><b>📜 Lịch sử:</b></div>
     </div>
 </div>
+
 <script>
-    function openTaiXiu() { document.getElementById('homeScreen').style.display = 'none'; document.getElementById('taixiuScreen').style.display = 'block'; }
-    function closeTaiXiu() { document.getElementById('taixiuScreen').style.display = 'none'; document.getElementById('homeScreen').style.display = 'block'; }
+    function goTo(s) {
+        document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+        document.getElementById(s).classList.add('active');
+    }
     const emojis = ['⚀','⚁','⚂','⚃','⚄','⚅'];
     let txScore = 1000, txHistory = [], txRolling = false;
     async function txPlay(c) {
         if (txRolling) return;
         const b = parseInt(document.getElementById('txBet').value);
-        if (isNaN(b) || b < 1 || b > txScore) { alert('Điểm cược không hợp lệ!'); return; }
+        if (isNaN(b) || b < 1 || b > txScore) { alert('Điểm không hợp lệ!'); return; }
         txRolling = true;
         document.getElementById('txResult').textContent = '';
         const d = document.getElementById('txDice');
@@ -222,17 +246,18 @@
         const dice = Array(3).fill(0).map(() => Math.floor(Math.random()*6)+1);
         const total = dice.reduce((a,b) => a+b, 0), result = total >= 11 ? 'TAI' : 'XIU';
         d.textContent = dice.map(v => emojis[v-1]).join(' ');
-        document.getElementById('txTotal').textContent = `Tổng: ${total} (${result})`;
+        document.getElementById('txTotal').textContent = 'Tổng: ' + total + ' (' + result + ')';
         const el = document.getElementById('txResult');
-        if (c === result) { txScore += b; el.textContent = `🎉 THẮNG +${b}`; el.style.color = '#00ff88'; }
-        else { txScore -= b; el.textContent = `😢 THUA -${b}`; el.style.color = '#ff4444'; }
+        if (c === result) { txScore += b; el.textContent = '🎉 THẮNG +' + b; el.style.color = '#2ecc71'; }
+        else { txScore -= b; el.textContent = '😢 THUA -' + b; el.style.color = '#e74c3c'; }
         document.getElementById('txScore').textContent = txScore;
-        txHistory.unshift(`${c} → ${result} (${total}) - ${c===result?'✅':'❌'} ${b}đ`);
+        txHistory.unshift(c + ' → ' + result + ' (' + total + ') ' + (c===result?'✅':'❌') + b);
         if (txHistory.length > 5) txHistory.pop();
         document.getElementById('txHistory').innerHTML = '<b>📜 Lịch sử:</b><br>' + txHistory.join('<br>');
         if (txScore <= 0) alert('Hết điểm! Tải lại trang.');
         txRolling = false;
     }
 </script>
+
 </body>
 </html>
