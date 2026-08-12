@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>X World Pro</title>
+    <title>XWorld Pro</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
@@ -17,16 +17,80 @@
             position: relative; border-radius: 0;
             box-shadow: none; border: none;
         }
-        #homeScreen, #taixiuScreen {
+        .screen {
             width: 100%; height: 100%; position: absolute;
-            top: 0; left: 0; overflow-y: auto; padding-bottom: 60px;
+            top: 0; left: 0; overflow-y: auto; display: none;
         }
-        #taixiuScreen { display: none; background: #0a1628; }
+        .screen.active { display: block; }
+
+        /* ========== LOGIN ========== */
+        #loginScreen {
+            background: linear-gradient(180deg, #0b1a30, #0a1628);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            text-align: center; padding: 30px;
+        }
+        .login-logo {
+            font-size: 44px; font-weight: bold;
+            color: #00d4ff; letter-spacing: 4px;
+            text-shadow: 0 0 30px rgba(0,200,255,0.6);
+            margin-bottom: 5px;
+        }
+        .login-sub {
+            color: #888; font-size: 13px;
+            margin-bottom: 40px; letter-spacing: 6px;
+        }
+        .login-btn {
+            width: 85%; padding: 15px; border-radius: 10px;
+            font-size: 15px; font-weight: bold; cursor: pointer;
+            margin-bottom: 12px; border: none; color: white;
+            display: flex; align-items: center; justify-content: center;
+            gap: 10px;
+        }
+        .btn-google {
+            background: white; color: #444;
+            border: 1px solid #ddd;
+        }
+        .btn-google img { width: 20px; height: 20px; }
+        .btn-facebook {
+            background: #1877F2;
+        }
+        .btn-register {
+            background: #00d4ff; color: black;
+        }
+        .btn-guest {
+            background: rgba(255,255,255,0.08); color: #aaa;
+        }
+        .login-or {
+            color: #555; margin: 18px 0; font-size: 13px;
+        }
+
+        /* ========== FORM ĐĂNG KÝ ========== */
+        #registerForm {
+            display: none; width: 85%; text-align: left;
+        }
+        .form-input {
+            width: 100%; padding: 14px; border-radius: 10px;
+            border: 1px solid #333; background: #111;
+            color: white; font-size: 14px; margin-bottom: 10px;
+        }
+        .form-submit {
+            width: 100%; padding: 14px; border-radius: 10px;
+            background: #00d4ff; color: black; font-size: 16px;
+            font-weight: bold; cursor: pointer; border: none;
+        }
+        .form-back {
+            color: #00d4ff; cursor: pointer; font-size: 13px;
+            margin-top: 12px; text-align: center;
+        }
+
+        /* ========== TRANG CHỦ ========== */
+        #homeScreen { background: #0a1628; }
         .status-bar {
             display: flex; justify-content: space-between;
             align-items: center; padding: 10px 15px; background: #0d1f35;
         }
-        .menu-btn { color: white; font-size: 22px; }
+        .menu-btn { color: white; font-size: 22px; cursor: pointer; }
         .balances { display: flex; gap: 10px; align-items: center; }
         .bal-item { color: white; font-size: 12px; display: flex; align-items: center; gap: 3px; }
         .bal-icon { width: 14px; height: 14px; vertical-align: middle; }
@@ -90,8 +154,11 @@
         }
         .nav-item.active { color: #00d4ff; }
         .nav-icon { font-size: 18px; }
+
+        /* ========== TÀI XỈU ========== */
+        #taixiuScreen { background: #0a1628; }
         .tx-header { display: flex; align-items: center; padding: 15px; gap: 15px; }
-        .back-btn { color: white; font-size: 24px; cursor: pointer; }
+        .back-btn { color: white; font-size: 24px; cursor: pointer; background: none; border: none; }
         .tx-title { color: #ffd700; font-size: 22px; font-weight: bold; }
         .tx-score { color: #00ffcc; font-size: 16px; text-align: center; margin: 5px 0; }
         .tx-dice {
@@ -126,7 +193,37 @@
 </head>
 <body>
 <div class="phone">
-    <div id="homeScreen">
+    <!-- MÀN HÌNH ĐĂNG NHẬP -->
+    <div id="loginScreen" class="screen active">
+        <div class="login-logo">XWORLD</div>
+        <div class="login-sub">PRO EDITION</div>
+
+        <button class="login-btn btn-google" onclick="login('Google')">
+            <img src="https://www.google.com/favicon.ico" alt="G"> Đăng nhập với Google
+        </button>
+        <button class="login-btn btn-facebook" onclick="login('Facebook')">
+            🔵 Đăng nhập với Facebook
+        </button>
+        <div class="login-or">━━ hoặc ━━</div>
+        <button class="login-btn btn-register" onclick="showRegister()">
+            ✍️ Tạo tài khoản mới
+        </button>
+        <button class="login-btn btn-guest" onclick="login('Guest')" style="margin-top:8px">
+            👤 Vào với tư cách khách
+        </button>
+
+        <!-- FORM ĐĂNG KÝ -->
+        <div id="registerForm">
+            <input class="form-input" type="text" id="regUser" placeholder="Tên đăng nhập">
+            <input class="form-input" type="email" id="regEmail" placeholder="Email">
+            <input class="form-input" type="password" id="regPass" placeholder="Mật khẩu">
+            <button class="form-submit" onclick="register()">ĐĂNG KÝ</button>
+            <div class="form-back" onclick="hideRegister()">← Quay lại đăng nhập</div>
+        </div>
+    </div>
+
+    <!-- TRANG CHỦ -->
+    <div id="homeScreen" class="screen">
         <div class="status-bar">
             <span class="menu-btn">☰</span>
             <div class="balances">
@@ -159,8 +256,8 @@
         </div>
         <div class="section-title">🎁 Thưởng $BUILD lớn <span style="color:#00d4ff;font-size:11px">Xem thêm →</span></div>
         <div class="game-scroll">
-            <div class="game-card" onclick="openTaiXiu()"><div class="icon">🎲</div>CHẠY ĐUA T...<div class="reward">🔥 561K BUILD</div></div>
-            <div class="game-card" onclick="openTaiXiu()"><div class="icon">🦹</div>Vua Thoát Hi...<div class="reward">🔥 452K BUILD</div></div>
+            <div class="game-card" onclick="goTo('taixiu')"><div class="icon">🎲</div>CHẠY ĐUA T...<div class="reward">🔥 561K BUILD</div></div>
+            <div class="game-card" onclick="goTo('taixiu')"><div class="icon">🦹</div>Vua Thoát Hi...<div class="reward">🔥 452K BUILD</div></div>
             <div class="game-card"><div class="icon">😄</div>XLifeUp<div class="reward">🔥 10.2K BUILD</div></div>
             <div class="game-card"><div class="icon">🐟</div>Hên Bắn Cá<div class="reward">🔥 801K BUILD</div></div>
         </div>
@@ -185,9 +282,11 @@
             <div class="nav-item"><span class="nav-icon">👛</span>Ví</div>
         </div>
     </div>
-    <div id="taixiuScreen">
+
+    <!-- TÀI XỈU -->
+    <div id="taixiuScreen" class="screen">
         <div class="tx-header">
-            <span class="back-btn" onclick="closeTaiXiu()">←</span>
+            <button class="back-btn" onclick="goTo('home')">←</button>
             <span class="tx-title">🎲 TÀI XỈU</span>
         </div>
         <div class="tx-score">💰 Số dư: <span id="txScore">1000</span></div>
@@ -195,7 +294,7 @@
         <div class="tx-total" id="txTotal">Tổng: ...</div>
         <div class="tx-result" id="txResult"></div>
         <div class="tx-bet">
-            <input type="number" id="txBet" placeholder="Nhập điểm cược" value="100" min="1">
+            <input type="number" id="txBet" value="100" min="1">
         </div>
         <div class="tx-btns">
             <button class="tx-btn tx-tai" onclick="txPlay('TAI')">TÀI</button>
@@ -204,15 +303,54 @@
         <div class="tx-history" id="txHistory"><b>📜 Lịch sử:</b></div>
     </div>
 </div>
+
 <script>
-    function openTaiXiu() { document.getElementById('homeScreen').style.display = 'none'; document.getElementById('taixiuScreen').style.display = 'block'; }
-    function closeTaiXiu() { document.getElementById('taixiuScreen').style.display = 'none'; document.getElementById('homeScreen').style.display = 'block'; }
+    // Điều hướng màn hình
+    function goTo(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id + 'Screen').classList.add('active');
+    }
+
+    // Đăng nhập
+    function login(type) {
+        alert('Đăng nhập bằng ' + type + ' thành công!');
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('homeScreen').classList.add('active');
+    }
+
+    // Đăng ký
+    function showRegister() {
+        document.getElementById('registerForm').style.display = 'block';
+        document.querySelectorAll('#loginScreen > button').forEach(b => b.style.display = 'none');
+        document.querySelectorAll('#loginScreen > .login-or').forEach(b => b.style.display = 'none');
+    }
+
+    function hideRegister() {
+        document.getElementById('registerForm').style.display = 'none';
+        document.querySelectorAll('#loginScreen > button').forEach(b => b.style.display = 'flex');
+        document.querySelectorAll('#loginScreen > .login-or').forEach(b => b.style.display = 'block');
+    }
+
+    function register() {
+        const u = document.getElementById('regUser').value;
+        const e = document.getElementById('regEmail').value;
+        const p = document.getElementById('regPass').value;
+        if (u && e && p) {
+            alert('Đăng ký thành công! Chào ' + u);
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('homeScreen').classList.add('active');
+        } else {
+            alert('Vui lòng điền đầy đủ thông tin!');
+        }
+    }
+
+    // Tài Xỉu
     const emojis = ['⚀','⚁','⚂','⚃','⚄','⚅'];
     let txScore = 1000, txHistory = [], txRolling = false;
     async function txPlay(c) {
         if (txRolling) return;
         const b = parseInt(document.getElementById('txBet').value);
-        if (isNaN(b) || b < 1 || b > txScore) { alert('Điểm cược không hợp lệ!'); return; }
+        if (isNaN(b) || b < 1 || b > txScore) { alert('Điểm không hợp lệ!'); return; }
         txRolling = true;
         document.getElementById('txResult').textContent = '';
         const d = document.getElementById('txDice');
@@ -220,15 +358,15 @@
         const dice = Array(3).fill(0).map(() => Math.floor(Math.random()*6)+1);
         const total = dice.reduce((a,b) => a+b, 0), result = total >= 11 ? 'TAI' : 'XIU';
         d.textContent = dice.map(v => emojis[v-1]).join(' ');
-        document.getElementById('txTotal').textContent = `Tổng: ${total} (${result})`;
+        document.getElementById('txTotal').textContent = 'Tổng: ' + total + ' (' + result + ')';
         const el = document.getElementById('txResult');
-        if (c === result) { txScore += b; el.textContent = `🎉 THẮNG +${b}`; el.style.color = '#00ff88'; }
-        else { txScore -= b; el.textContent = `😢 THUA -${b}`; el.style.color = '#ff4444'; }
+        if (c === result) { txScore += b; el.textContent = '🎉 THẮNG +' + b; el.style.color = '#00ff88'; }
+        else { txScore -= b; el.textContent = '😢 THUA -' + b; el.style.color = '#ff4444'; }
         document.getElementById('txScore').textContent = txScore;
-        txHistory.unshift(`${c} → ${result} (${total}) - ${c===result?'✅':'❌'} ${b}đ`);
+        txHistory.unshift(c + ' → ' + result + ' (' + total + ') ' + (c===result?'✅':'❌') + b);
         if (txHistory.length > 5) txHistory.pop();
         document.getElementById('txHistory').innerHTML = '<b>📜 Lịch sử:</b><br>' + txHistory.join('<br>');
-        if (txScore <= 0) alert('Hết điểm! Tải lại trang.');
+        if (txScore <= 0) alert('Hết điểm!');
         txRolling = false;
     }
 </script>
