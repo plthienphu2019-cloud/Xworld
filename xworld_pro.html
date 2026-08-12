@@ -2,310 +2,149 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>X World - Tài Xỉu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>X World Pro</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #0a1628;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            touch-action: manipulation;
+        html, body {
+            width: 100%; height: 100%; margin: 0; padding: 0;
+            overflow: hidden; background: #0a1628;
+            font-family: Arial, sans-serif; touch-action: manipulation;
         }
         .phone {
-            width: 380px;
-            height: 780px;
-            background: #0a1628;
-            border-radius: 30px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 0 30px rgba(0,150,255,0.5);
-            border: 2px solid #1a3a5c;
+            width: 100%; height: 100vh; height: 100dvh;
+            background: #0a1628; overflow: hidden;
+            position: relative; border-radius: 0;
+            box-shadow: none; border: none;
         }
-        
-        /* ========== TRANG CHỦ ========== */
         #homeScreen, #taixiuScreen {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0; left: 0;
-            overflow-y: auto;
-            padding-bottom: 60px;
+            width: 100%; height: 100%; position: absolute;
+            top: 0; left: 0; overflow-y: auto; padding-bottom: 60px;
         }
         #taixiuScreen { display: none; background: #0a1628; }
-        
         .status-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 15px;
-            background: #0d1f35;
+            display: flex; justify-content: space-between;
+            align-items: center; padding: 10px 15px; background: #0d1f35;
         }
         .menu-btn { color: white; font-size: 22px; }
         .balances { display: flex; gap: 12px; align-items: center; }
         .bal-item { color: white; font-size: 12px; display: flex; align-items: center; gap: 3px; }
+        .bal-icon { width: 14px; height: 14px; vertical-align: middle; }
         .bal-usdt { color: #00d4aa; }
         .bal-token { color: #ffaa00; }
         .noti-area { display: flex; gap: 12px; align-items: center; }
         .noti-icon { font-size: 20px; position: relative; }
         .badge {
-            position: absolute;
-            top: -6px; right: -8px;
-            background: red;
-            color: white;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 10px;
+            position: absolute; top: -6px; right: -8px;
+            background: red; color: white; font-size: 10px;
+            padding: 2px 6px; border-radius: 10px;
         }
-        
-        /* Linh thú */
-        .pet-section {
-            display: flex;
-            justify-content: center;
-            padding: 20px 0;
-            position: relative;
-        }
+        .pet-section { display: flex; justify-content: center; padding: 10px 0; position: relative; }
         .pet-frame {
-            width: 260px;
-            height: 300px;
-            background: rgba(0, 20, 50, 0.9);
-            border-radius: 25px;
-            border: 2px solid rgba(0, 200, 255, 0.4);
-            box-shadow: 0 0 40px rgba(0, 150, 255, 0.3);
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 260px; height: 260px; background: rgba(0,20,50,0.9);
+            border-radius: 25px; border: 2px solid rgba(0,200,255,0.4);
+            box-shadow: 0 0 40px rgba(0,150,255,0.3);
+            position: relative; display: flex; align-items: center; justify-content: center;
         }
-        .pet-lv {
-            position: absolute;
-            top: 10px; left: 15px;
-            color: #ffd700;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        .pet-chest {
-            position: absolute;
-            top: 10px; right: 15px;
-            font-size: 20px;
-        }
-        .pet-image {
-            font-size: 120px;
-            text-align: center;
-            margin-top: 20px;
-        }
+        .pet-lv { position: absolute; top: 10px; left: 15px; color: #ffd700; font-size: 14px; font-weight: bold; }
+        .pet-chest { position: absolute; top: 10px; right: 15px; font-size: 20px; }
+        .pet-image { font-size: 100px; text-align: center; margin-top: 10px; }
         .pet-platform {
-            width: 100%;
-            height: 40px;
-            background: rgba(0, 100, 200, 0.3);
-            position: absolute;
-            bottom: 0;
-            border-radius: 0 0 25px 25px;
-            border-top: 1px solid rgba(0, 200, 255, 0.4);
+            width: 100%; height: 40px; background: rgba(0,100,200,0.3);
+            position: absolute; bottom: 0; border-radius: 0 0 25px 25px;
+            border-top: 1px solid rgba(0,200,255,0.4);
         }
-        
-        /* Nút xung quanh */
-        .side-btns-left, .side-btns-right {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .side-btns-left { left: 20px; top: 40px; }
-        .side-btns-right { right: 20px; top: 40px; }
+        .side-btns-left, .side-btns-right { position: absolute; display: flex; flex-direction: column; gap: 10px; }
+        .side-btns-left { left: 15px; top: 30px; }
+        .side-btns-right { right: 15px; top: 30px; }
         .side-btn {
-            width: 40px; height: 40px;
-            background: rgba(0, 150, 255, 0.3);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            border: 1px solid rgba(0, 200, 255, 0.5);
+            width: 36px; height: 36px; background: rgba(0,150,255,0.3);
+            border-radius: 10px; display: flex; align-items: center;
+            justify-content: center; font-size: 16px;
+            border: 1px solid rgba(0,200,255,0.5);
         }
-        
-        /* Thưởng BUILD */
-        .section-title {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 15px;
-            color: white;
-            font-weight: bold;
-        }
-        .game-scroll {
-            display: flex;
-            gap: 10px;
-            padding: 0 15px;
-            overflow-x: auto;
-        }
+        .section-title { display: flex; justify-content: space-between; padding: 8px 15px; color: white; font-weight: bold; font-size: 14px; }
+        .game-scroll { display: flex; gap: 10px; padding: 0 15px; overflow-x: auto; }
         .game-card {
-            min-width: 100px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 10px;
-            text-align: center;
-            color: white;
-            font-size: 11px;
-            cursor: pointer;
+            min-width: 90px; background: rgba(255,255,255,0.1);
+            border-radius: 12px; padding: 10px; text-align: center;
+            color: white; font-size: 10px; cursor: pointer;
         }
-        .game-card .icon { font-size: 30px; }
-        .game-card .reward { color: #ffd700; font-size: 10px; margin-top: 5px; }
-        
-        /* AI Agent */
+        .game-card .icon { font-size: 28px; }
+        .game-card .reward { color: #ffd700; font-size: 9px; margin-top: 5px; }
         .ai-banner {
-            margin: 10px 15px;
-            background: rgba(255,255,255,0.15);
-            border-radius: 15px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            margin: 8px 15px; background: rgba(255,255,255,0.15);
+            border-radius: 15px; padding: 12px; display: flex;
+            align-items: center; justify-content: space-between;
         }
-        .ai-avatars { font-size: 30px; }
-        .ai-count { font-size: 40px; color: white; font-weight: bold; }
-        .ai-label { font-size: 12px; color: #aaa; }
-        
-        /* Thanh điều hướng */
+        .ai-avatars { font-size: 28px; }
+        .ai-count { font-size: 36px; color: white; font-weight: bold; }
+        .ai-label { font-size: 11px; color: #aaa; }
         .navbar {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 55px;
-            background: #0d1f35;
-            display: flex;
-            border-top: 1px solid #1a3a5c;
+            position: absolute; bottom: 0; width: 100%;
+            height: 55px; background: #0d1f35;
+            display: flex; border-top: 1px solid #1a3a5c;
         }
         .nav-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #666;
-            font-size: 11px;
-            cursor: pointer;
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            color: #666; font-size: 10px; cursor: pointer;
         }
         .nav-item.active { color: #00d4ff; }
-        .nav-icon { font-size: 20px; }
-        
-        /* ========== TRANG TÀI XỈU ========== */
-        .tx-header {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            gap: 15px;
-        }
-        .back-btn {
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-        }
-        .tx-title {
-            color: #ffd700;
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .tx-score {
-            color: #00ffcc;
-            font-size: 18px;
-            text-align: center;
-            margin: 10px 0;
-        }
+        .nav-icon { font-size: 18px; }
+        .tx-header { display: flex; align-items: center; padding: 15px; gap: 15px; }
+        .back-btn { color: white; font-size: 24px; cursor: pointer; }
+        .tx-title { color: #ffd700; font-size: 22px; font-weight: bold; }
+        .tx-score { color: #00ffcc; font-size: 16px; text-align: center; margin: 5px 0; }
         .tx-dice {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            font-size: 55px;
-            background: rgba(0,0,0,0.5);
-            margin: 15px;
-            padding: 15px;
-            border-radius: 20px;
+            display: flex; justify-content: center; gap: 15px;
+            font-size: 50px; background: rgba(0,0,0,0.5);
+            margin: 10px 15px; padding: 15px; border-radius: 20px;
             border: 2px solid rgba(0,200,255,0.4);
         }
-        .tx-total {
-            text-align: center;
-            color: #ffd700;
-            font-size: 18px;
-        }
-        .tx-result {
-            text-align: center;
-            font-size: 28px;
-            font-weight: bold;
-            min-height: 40px;
-            margin: 10px 0;
-        }
-        .tx-bet {
-            display: flex;
-            gap: 10px;
-            padding: 0 15px;
-            margin: 10px 0;
-        }
+        .tx-total { text-align: center; color: #ffd700; font-size: 16px; }
+        .tx-result { text-align: center; font-size: 26px; font-weight: bold; min-height: 35px; margin: 5px 0; }
+        .tx-bet { display: flex; gap: 10px; padding: 0 15px; margin: 8px 0; }
         .tx-bet input {
-            flex: 1;
-            padding: 12px;
-            border-radius: 12px;
+            flex: 1; padding: 12px; border-radius: 12px;
             border: 2px solid rgba(0,200,255,0.5);
-            background: rgba(0,0,0,0.5);
-            color: white;
-            text-align: center;
-            font-size: 16px;
+            background: rgba(0,0,0,0.5); color: white;
+            text-align: center; font-size: 16px;
         }
-        .tx-btns {
-            display: flex;
-            gap: 20px;
-            padding: 0 15px;
-        }
+        .tx-btns { display: flex; gap: 15px; padding: 0 15px; }
         .tx-btn {
-            flex: 1;
-            padding: 18px;
-            border: none;
-            border-radius: 15px;
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
+            flex: 1; padding: 16px; border: none;
+            border-radius: 15px; font-size: 22px;
+            font-weight: bold; color: white; cursor: pointer;
         }
-        .tx-tai { background: linear-gradient(180deg, #ff5555, #cc0000); box-shadow: 0 6px 0 #880000; }
-        .tx-xiu { background: linear-gradient(180deg, #4488ff, #0044cc); box-shadow: 0 6px 0 #002288; }
+        .tx-tai { background: linear-gradient(180deg,#ff5555,#cc0000); box-shadow: 0 6px 0 #880000; }
+        .tx-xiu { background: linear-gradient(180deg,#4488ff,#0044cc); box-shadow: 0 6px 0 #002288; }
         .tx-history {
-            margin: 15px;
-            background: rgba(0,0,0,0.4);
-            border-radius: 12px;
-            padding: 10px;
-            color: #ccc;
-            font-size: 12px;
-            max-height: 100px;
-            overflow-y: auto;
+            margin: 10px 15px; background: rgba(0,0,0,0.4);
+            border-radius: 12px; padding: 10px; color: #ccc;
+            font-size: 11px; max-height: 80px; overflow-y: auto;
         }
     </style>
 </head>
 <body>
-
 <div class="phone">
-    <!-- ========== TRANG CHỦ ========== -->
     <div id="homeScreen">
-        <!-- Thanh trạng thái -->
         <div class="status-bar">
             <span class="menu-btn">☰</span>
             <div class="balances">
                 <span class="bal-item"><span class="bal-usdt">💎</span> 0.01</span>
                 <span class="bal-item"><span class="bal-token">🪙</span> 0.008519</span>
-                <span class="bal-item">🟢 5.2K</span>
+                <span class="bal-item"><img src="https://i.ibb.co/8LnHM9GR/icon.png" class="bal-icon"> 0</span>
             </div>
             <div class="noti-area">
                 <span class="noti-icon">📬</span>
                 <span class="noti-icon">🔔<span class="badge">44</span></span>
             </div>
         </div>
-
-        <!-- Linh thú -->
         <div class="pet-section">
             <div class="side-btns-left">
                 <div class="side-btn">💰</div>
-                <div class="side-btn">🎁<span style="color:red;font-size:10px">-50%</span></div>
+                <div class="side-btn">🎁<span style="color:red;font-size:8px">-50%</span></div>
                 <div class="side-btn">⚡</div>
             </div>
             <div class="pet-frame">
@@ -317,55 +156,37 @@
             <div class="side-btns-right">
                 <div class="side-btn">👥+</div>
                 <div class="side-btn">✅</div>
-                <div class="side-btn" style="border-radius:20px">✓</div>
+                <div class="side-btn" style="border-radius:18px">✓</div>
             </div>
         </div>
-
-        <!-- Thưởng BUILD -->
-        <div class="section-title">🎁 Thưởng $BUILD lớn <span style="color:#00d4ff;font-size:12px">Xem thêm →</span></div>
+        <div class="section-title">🎁 Thưởng $BUILD lớn <span style="color:#00d4ff;font-size:11px">Xem thêm →</span></div>
         <div class="game-scroll">
-            <div class="game-card" onclick="openTaiXiu()">
-                <div class="icon">🎲</div>CHẠY ĐUA T...<div class="reward">🔥 561K BUILD</div>
-            </div>
-            <div class="game-card" onclick="openTaiXiu()">
-                <div class="icon">🦹</div>Vua Thoát Hi...<div class="reward">🔥 452K BUILD</div>
-            </div>
-            <div class="game-card">
-                <div class="icon">😄</div>XLifeUp: Idle...<div class="reward">🔥 10.2K BUILD</div>
-            </div>
-            <div class="game-card">
-                <div class="icon">🐟</div>Hên Bắn Cá<div class="reward">🔥 801K BUILD</div>
-            </div>
+            <div class="game-card" onclick="openTaiXiu()"><div class="icon">🎲</div>CHẠY ĐUA T...<div class="reward">🔥 561K BUILD</div></div>
+            <div class="game-card" onclick="openTaiXiu()"><div class="icon">🦹</div>Vua Thoát Hi...<div class="reward">🔥 452K BUILD</div></div>
+            <div class="game-card"><div class="icon">😄</div>XLifeUp<div class="reward">🔥 10.2K BUILD</div></div>
+            <div class="game-card"><div class="icon">🐟</div>Hên Bắn Cá<div class="reward">🔥 801K BUILD</div></div>
         </div>
-
-        <!-- AI Agent -->
-        <div class="section-title">🤖 AI Agent <span style="color:#00d4ff;font-size:12px">Xem thêm →</span></div>
+        <div class="section-title">🤖 AI Agent <span style="color:#00d4ff;font-size:11px">Xem thêm →</span></div>
         <div class="ai-banner">
             <div class="ai-avatars">🤖🤖🤖🤖🤖</div>
             <div style="text-align:center"><div class="ai-count">52</div><div class="ai-label">AI Agents</div></div>
-            <div style="font-size:30px">→</div>
+            <div style="font-size:28px">→</div>
         </div>
-
-        <!-- Tuyển chọn -->
-        <div class="section-title">⭐ Tuyển chọn cho bạn <span style="color:#00d4ff;font-size:12px">Xem thêm →</span></div>
+        <div class="section-title">⭐ Tuyển chọn cho bạn <span style="color:#00d4ff;font-size:11px">Xem thêm →</span></div>
         <div class="game-scroll">
             <div class="game-card">⚡<br>Tài Xỉu</div>
             <div class="game-card">🔥<br>Đua Xe</div>
             <div class="game-card">🔴<br>Bắn Cá</div>
         </div>
         <br><br>
-
-        <!-- Thanh điều hướng -->
         <div class="navbar">
             <div class="nav-item active"><span class="nav-icon">🏠</span>Trang chủ</div>
-            <div class="nav-item"><span class="nav-icon">📦</span>Kho apps<span style="color:red;font-size:8px">●</span></div>
+            <div class="nav-item"><span class="nav-icon">📦</span>Kho apps<span style="color:red;font-size:7px">●</span></div>
             <div class="nav-item"><span class="nav-icon">🦊</span>Linh thú X</div>
             <div class="nav-item"><span class="nav-icon">👥+</span>Mời</div>
             <div class="nav-item"><span class="nav-icon">👛</span>Ví</div>
         </div>
     </div>
-
-    <!-- ========== TRANG TÀI XỈU ========== -->
     <div id="taixiuScreen">
         <div class="tx-header">
             <span class="back-btn" onclick="closeTaiXiu()">←</span>
@@ -385,68 +206,33 @@
         <div class="tx-history" id="txHistory"><b>📜 Lịch sử:</b></div>
     </div>
 </div>
-
 <script>
-    // ========== CHUYỂN MÀN HÌNH ==========
-    function openTaiXiu() {
-        document.getElementById('homeScreen').style.display = 'none';
-        document.getElementById('taixiuScreen').style.display = 'block';
-    }
-    function closeTaiXiu() {
-        document.getElementById('taixiuScreen').style.display = 'none';
-        document.getElementById('homeScreen').style.display = 'block';
-    }
-
-    // ========== GAME TÀI XỈU ==========
-    const emojis = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
-    let txScore = 1000;
-    let txHistory = [];
-    let txRolling = false;
-
-    async function txPlay(choice) {
+    function openTaiXiu() { document.getElementById('homeScreen').style.display = 'none'; document.getElementById('taixiuScreen').style.display = 'block'; }
+    function closeTaiXiu() { document.getElementById('taixiuScreen').style.display = 'none'; document.getElementById('homeScreen').style.display = 'block'; }
+    const emojis = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+    let txScore = 1000, txHistory = [], txRolling = false;
+    async function txPlay(c) {
         if (txRolling) return;
-        const betInput = document.getElementById('txBet');
-        const bet = parseInt(betInput.value);
-        if (isNaN(bet) || bet < 1 || bet > txScore) { alert('Điểm cược không hợp lệ!'); return; }
-
+        const b = parseInt(document.getElementById('txBet').value);
+        if (isNaN(b) || b < 1 || b > txScore) { alert('Điểm cược không hợp lệ!'); return; }
         txRolling = true;
         document.getElementById('txResult').textContent = '';
-        document.getElementById('txResult').style.color = 'white';
-        const txDice = document.getElementById('txDice');
-
-        // Hiệu ứng lắc
-        for (let i = 0; i < 8; i++) {
-            txDice.textContent = Array(3).fill(0).map(() => emojis[Math.floor(Math.random() * 6)]).join(' ');
-            await new Promise(r => setTimeout(r, 100));
-        }
-
-        const dice = Array(3).fill(0).map(() => Math.floor(Math.random() * 6) + 1);
-        const total = dice.reduce((a, b) => a + b, 0);
-        const result = total >= 11 ? 'TAI' : 'XIU';
-
-        txDice.textContent = dice.map(d => emojis[d-1]).join(' ');
+        const d = document.getElementById('txDice');
+        for (let i = 0; i < 8; i++) { d.textContent = Array(3).fill(0).map(() => emojis[Math.floor(Math.random()*6)]).join(' '); await new Promise(r => setTimeout(r, 100)); }
+        const dice = Array(3).fill(0).map(() => Math.floor(Math.random()*6)+1);
+        const total = dice.reduce((a,b) => a+b, 0), result = total >= 11 ? 'TAI' : 'XIU';
+        d.textContent = dice.map(v => emojis[v-1]).join(' ');
         document.getElementById('txTotal').textContent = `Tổng: ${total} (${result})`;
-
-        const resultEl = document.getElementById('txResult');
-        if (choice === result) {
-            txScore += bet;
-            resultEl.textContent = `🎉 THẮNG +${bet}`;
-            resultEl.style.color = '#00ff88';
-        } else {
-            txScore -= bet;
-            resultEl.textContent = `😢 THUA -${bet}`;
-            resultEl.style.color = '#ff4444';
-        }
-
+        const el = document.getElementById('txResult');
+        if (c === result) { txScore += b; el.textContent = `🎉 THẮNG +${b}`; el.style.color = '#00ff88'; }
+        else { txScore -= b; el.textContent = `😢 THUA -${b}`; el.style.color = '#ff4444'; }
         document.getElementById('txScore').textContent = txScore;
-        txHistory.unshift(`${choice} → ${result} (${total}) - ${choice === result ? '✅' : '❌'} ${bet}đ`);
+        txHistory.unshift(`${c} → ${result} (${total}) - ${c===result?'✅':'❌'} ${b}đ`);
         if (txHistory.length > 5) txHistory.pop();
         document.getElementById('txHistory').innerHTML = '<b>📜 Lịch sử:</b><br>' + txHistory.join('<br>');
-
         if (txScore <= 0) alert('Hết điểm! Tải lại trang.');
         txRolling = false;
     }
 </script>
-
 </body>
 </html>
