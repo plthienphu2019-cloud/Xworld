@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>XWorld Pro v2.3.6</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #0a1628; font-family: Arial, sans-serif; touch-action: manipulation; }
+        .phone { width: 100%; height: 100vh; height: 100dvh; background: #0a1628; position: relative; }
+        .screen { width: 100%; height: 100%; position: absolute; top: 0; left: 0; overflow-y: auto; display: none; visibility: hidden; z-index: 1; }
+        .screen.active { display: block; visibility: visible; z-index: 10; }
+
+        #loginScreen { background: #0b1a30; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
+        .logo { font-size: 40px; font-weight: bold; color: #00d4ff; margin-bottom: 40px; }
+        .logo .ver { font-size: 12px; color: #888; display: block; }
+        .input { width: 85%; padding: 14px; border-radius: 10px; border: 1px solid #333; background: #111; color: white; font-size: 14px; margin-bottom: 10px; text-align: center; outline: none; }
+        .btn { width: 85%; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; border: none; margin-bottom: 8px; color: white; }
+        .btn-login { background: #00d4ff; color: black; }
+        .link { color: #00d4ff; font-size: 13px; cursor: pointer; margin-top: 5px; display: inline-block; }
+
+        #homeScreen { background: #0a1628; padding-bottom: 60px; }
+        .status-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: #0d1f35; }
+        .menu-btn { color: white; font-size: 22px; cursor: pointer; }
+        .balances { display: flex; gap: 12px; align-items: center; color: white; font-size: 12px; }
+        .bal-icon { width: 16px; height: 16px; vertical-align: middle; }
+        .badge { position: absolute; top: -6px; right: -8px; background: red; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; }
+        .pet-frame { width: 260px; height: 260px; background: rgba(0,20,50,0.9); border-radius: 25px; border: 2px solid rgba(0,200,255,0.4); margin: 15px auto; display: flex; align-items: center; justify-content: center; position: relative; }
+        .pet-lv { position: absolute; top: 10px; left: 15px; color: #ffd700; font-size: 14px; }
+        .pet-image { font-size: 100px; }
+        .section-title { padding: 8px 15px; color: white; font-weight: bold; font-size: 14px; }
+        .game-scroll { display: flex; gap: 10px; padding: 0 15px; overflow-x: auto; }
+        .game-card { min-width: 90px; background: rgba(255,255,255,0.1); border-radius: 12px; padding: 10px; text-align: center; color: white; font-size: 10px; cursor: pointer; }
+        .game-card .icon { font-size: 28px; }
+        .navbar { position: absolute; bottom: 0; width: 100%; height: 55px; background: #0d1f35; display: flex; z-index: 20; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-size: 10px; cursor: pointer; }
+        .nav-item.active { color: #00d4ff; }
+        .nav-icon { font-size: 18px; }
+
+        #menuScreen, #giftcodeScreen, #createGiftScreen, #inviteScreen, #leaderboardScreen, #adminGiftScreen, #adminUsersScreen { background: #0d1117; padding: 20px; }
+        .back-btn { color: white; font-size: 24px; cursor: pointer; background: none; border: none; }
+        .menu-item { padding: 14px; background: #161b22; border-radius: 10px; margin-bottom: 8px; color: white; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .gift-title { color: #ffd700; font-size: 24px; text-align: center; margin: 15px 0; font-weight: bold; }
+        .gift-box { background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 20px; padding: 25px; border: 2px solid rgba(255,215,0,0.3); margin: 15px 0; text-align: center; }
+        .gift-input { width: 100%; padding: 16px; border-radius: 12px; border: 2px solid #ffd700; background: #111; color: #ffd700; font-size: 18px; text-align: center; margin: 10px 0; outline: none; }
+        .gift-btn { width: 100%; padding: 16px; border-radius: 12px; background: linear-gradient(135deg, #ffd700, #ffaa00); color: black; font-size: 18px; font-weight: bold; border: none; cursor: pointer; }
+        .gift-info { color: #aaa; font-size: 12px; margin-top: 8px; }
+        .gift-remain { color: #00ff88; font-weight: bold; }
+        .gift-select { display: flex; gap: 10px; margin: 10px 0; }
+        .gift-option { flex: 1; padding: 12px; border-radius: 10px; border: 2px solid #333; background: #111; color: white; text-align: center; cursor: pointer; }
+        .gift-option.selected { border-color: #ffd700; background: #1a1a2e; }
+        .gift-link { background: #111; padding: 12px; border-radius: 8px; color: #00ff88; font-size: 12px; word-break: break-all; }
+
+        #taixiuScreen { background: #0a1628; }
+        .tx-header { display: flex; align-items: center; padding: 15px; gap: 15px; }
+        .tx-title { color: #ffd700; font-size: 22px; font-weight: bold; }
+        .tx-score { color: #00ffcc; font-size: 16px; text-align: center; margin: 5px 0; }
+        .tx-dice { display: flex; justify-content: center; gap: 15px; font-size: 50px; background: rgba(0,0,0,0.5); margin: 10px 15px; padding: 15px; border-radius: 20px; border: 2px solid rgba(0,200,255,0.4); }
+        .tx-total { text-align: center; color: #ffd700; font-size: 16px; }
+        .tx-result { text-align: center; font-size: 26px; font-weight: bold; min-height: 35px; }
+        .tx-bet { display: flex; gap: 10px; padding: 0 15px; }
+        .tx-bet input { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid rgba(0,200,255,0.5); background: rgba(0,0,0,0.5); color: white; text-align: center; font-size: 16px; outline: none; }
+        .tx-btns { display: flex; gap: 15px; padding: 0 15px; margin-top: 10px; }
+        .tx-btn { flex: 1; padding: 16px; border: none; border-radius: 15px; font-size: 22px; font-weight: bold; color: white; cursor: pointer; }
+        .tx-tai { background: #ff4444; } .tx-xiu { background: #4488ff; }
+        .tx-history { margin: 10px 15px; background: rgba(0,0,0,0.4); border-radius: 12px; padding: 10px; color: #ccc; font-size: 11px; max-height: 80px; overflow-y: auto; }
+
+        .lb-table { width: 100%; border-collapse: collapse; color: white; font-size: 13px; }
+        .lb-table th { background: #222; padding: 10px; text-align: center; }
+        .lb-table td { padding: 10px; border-bottom: 1px solid #222; text-align: center; }
+        .lb-top1 { color: #ffd700; font-weight: bold; }
+        .admin-table { width: 100%; border-collapse: collapse; color: white; font-size: 11px; }
+        .admin-table th { background: #222; padding: 6px; }
+        .admin-table td { padding: 6px; border-bottom: 1px solid #222; }
+        .locked { color: #ff4444; } .unlocked { color: #00ff88; }
+        .admin-btn { padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer; font-size: 9px; margin: 1px; color: white; }
+        .lock-select { padding: 2px 4px; border-radius: 4px; background: #333; color: white; border: 1px solid #555; font-size: 9px; }
+    </style>
+</head>
+<body>
+<div class="phone">
+    <div id="loginScreen" class="screen active">
+        <div class="logo">XWORLD PRO<span class="ver">v2.3.6</span></div>
+        <div id="mainLoginForm">
+            <input class="input" type="text" id="loginUser" placeholder="Tên đăng nhập" autocomplete="off">
+            <input class="input" type="password" id="loginPass" placeholder="Mật khẩu" autocomplete="off">
+            <button class="btn btn-login" id="btnLogin">ĐĂNG NHẬP</button>
+            <span class="link" id="linkRegister">Chưa có tài khoản? Đăng ký</span>
+        </div>
+        <div id="regForm" style="display:none;width:85%;">
+            <input class="input" type="text" id="regUser" placeholder="Tên đăng nhập" style="width:100%" autocomplete="off">
+            <input class="input" type="password" id="regPass" placeholder="Mật khẩu" style="width:100%" autocomplete="off">
+            <button class="btn btn-login" id="btnRegister">ĐĂNG KÝ</button>
+            <span class="link" id="linkBackToLogin">← Quay lại đăng nhập</span>
+        </div>
+    </div>
+
+    <div id="homeScreen" class="screen">
+        <div class="status-bar"><span class="menu-btn" id="btnMenu">☰</span><div class="balances"><span><img src="https://i.ibb.co/MkcfSNdx/usdt.png" class="bal-icon"> <span id="homeUSDT">0.01</span></span><span><img src="https://i.ibb.co/tTPRXCHm/xworld.png" class="bal-icon"> <span id="homeXWORLD">0</span></span><span><img src="https://i.ibb.co/C5DkwYBr/build.png" class="bal-icon"> <span id="homeBUILD">0</span></span></div><span style="position:relative">🔔<span class="badge">44</span></span></div>
+        <div class="pet-frame"><span class="pet-lv">🦊 Lv.11</span><div class="pet-image">🦊</div></div>
+        <div class="section-title">🎁 Thưởng $BUILD lớn</div>
+        <div class="game-scroll"><div class="game-card" id="btnTaiXiu"><div class="icon">🎲</div>Tài Xỉu<div>🔥 561K</div></div><div class="game-card"><div class="icon">🏎️</div>Đua Xe<div>🔥 452K</div></div><div class="game-card"><div class="icon">🐟</div>Bắn Cá<div>🔥 801K</div></div></div><br><br>
+        <div class="navbar"><div class="nav-item active"><span class="nav-icon">🏠</span>Home</div><div class="nav-item"><span class="nav-icon">📦</span>Apps</div><div class="nav-item"><span class="nav-icon">🦊</span>Pet</div><div class="nav-item" id="btnGoMenu"><span class="nav-icon">👤</span>Tôi</div><div class="nav-item" id="btnLogout"><span class="nav-icon">🚪</span>Out</div></div>
+    </div>
+
+    <div id="menuScreen" class="screen">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" id="btnBackHome">←</button><span style="color:white;font-size:20px;font-weight:bold">Tài khoản</span></div>
+        <div style="display:flex;align-items:center;gap:15px;margin-bottom:20px"><div style="width:60px;height:60px;border-radius:30px;background:#00d4ff;display:flex;align-items:center;justify-content:center;font-size:30px">🦊</div><div><div id="menuName" style="color:white;font-size:18px;font-weight:bold">Player</div></div></div>
+        <div class="menu-item" id="btnInvite"><span>📨 Mời bạn bè</span><span>›</span></div>
+        <div class="menu-item" id="btnGiftcode"><span>🎁 Giftcode</span><span>›</span></div>
+        <div class="menu-item" id="btnCreateGift"><span>✨ Tạo Giftcode</span><span>›</span></div>
+        <div class="menu-item" id="btnLeaderboard"><span>🏆 Bảng xếp hạng</span><span>›</span></div>
+        <div class="menu-item" id="btnAdvancedSettings"><span>⚙️ Cài đặt nâng cao</span><span id="lockIcon">🔒</span></div>
+        <div id="adminAuthForm" style="display:none;background:#1a1111;border-radius:10px;padding:15px;margin-top:-8px;margin-bottom:8px;border:1px solid #ff4444">
+            <p style="color:#ff4444;text-align:center;font-weight:bold;margin-bottom:8px">🔑 Nhập mã Admin (8 ký tự)</p>
+            <input class="input" type="password" id="adminCodeMenu" placeholder="VD: TP-A21M3J" style="width:100%;text-transform:uppercase" maxlength="8" autocomplete="off">
+            <p style="color:#aaa;font-size:11px;text-align:center;margin-top:5px">Còn <span id="codeAttempts">3</span> lần nhập</p>
+            <button class="btn" style="background:#ff4444;width:100%;margin-top:5px" id="btnAdminCodeAuth">XÁC THỰC</button>
+        </div>
+        <div id="adminMenuItems" style="display:none">
+            <div class="menu-item" id="btnAdminUsers" style="background:#221111;border:1px solid #ff4444"><span>👥 Quản lý tài khoản</span><span>›</span></div>
+            <div class="menu-item" id="btnAdminGift" style="background:#221111;border:1px solid #ff4444"><span>🎁 Tặng quà</span><span>›</span></div>
+            <div class="menu-item" id="btnAdminLeaderboard" style="background:#221111;border:1px solid #ff4444"><span>🏆 Trao thưởng top 1</span><span>›</span></div>
+        </div>
+    </div>
+
+    <div id="leaderboardScreen" class="screen"><div style="display:flex;align-items:center;gap:10px;padding:15px"><button class="back-btn" id="btnBackLB">←</button><span style="color:#ffd700;font-size:20px;font-weight:bold">🏆 BẢNG XẾP HẠNG</span></div><table class="lb-table" id="lbTable"><tr><th>Hạng</th><th>Người chơi</th><th>BUILD</th></tr></table></div>
+    <div id="adminUsersScreen" class="screen"><div style="display:flex;align-items:center;gap:10px;padding:15px"><button class="back-btn" id="btnBackAdminUsers">←</button><span style="color:#ff4444;font-size:20px;font-weight:bold">👥 Quản lý tài khoản</span></div><table class="admin-table" id="adminUsersTable"><tr><th>User</th><th>BUILD</th><th>USDT</th><th>XWORLD</th><th>TT</th><th>Thời hạn</th><th>Action</th></tr></table></div>
+    <div id="adminGiftScreen" class="screen"><div style="display:flex;align-items:center;gap:10px;padding:15px"><button class="back-btn" id="btnBackAdminGift">←</button><span style="color:#ff4444;font-size:20px;font-weight:bold">🎁 Tặng quà</span></div><div class="gift-box"><p style="color:white">Chọn loại:</p><div class="gift-select"><div class="gift-option selected" id="adminOptBUILD">🪙 BUILD</div><div class="gift-option" id="adminOptUSDT">💎 USDT</div><div class="gift-option" id="adminOptXWORLD">🌐 XWORLD</div></div><input class="input" type="text" id="adminGiftUser" placeholder="Tên người chơi" style="width:100%;margin:10px 0"><input class="input" type="number" id="adminGiftAmount" placeholder="Số tiền" style="width:100%;margin:10px 0"><button class="gift-btn" id="btnAdminSendGift">🎁 TẶNG QUÀ</button></div></div>
+
+    <div id="inviteScreen" class="screen"><div style="display:flex;align-items:center;gap:10px;padding:15px"><button class="back-btn" id="btnBackMenu1">←</button><span style="color:white;font-size:20px;font-weight:bold">📨 Mời bạn bè</span></div><div class="gift-box"><p style="color:#ffd700">Mã giới thiệu của bạn</p><div class="gift-input" id="myRefCode">---</div></div><div class="gift-box"><p style="color:white">Nhập mã giới thiệu</p><input class="gift-input" type="text" id="refInput" placeholder="Nhập mã"><button class="gift-btn" id="btnUseRef">NHẬN THƯỞNG</button><p class="gift-info">+100 BUILD</p></div></div>
+    <div id="giftcodeScreen" class="screen"><div style="display:flex;align-items:center;gap:10px;padding:15px"><button class="back-btn" id="btnBackMenu2">←</button><span style="color:white;font-size:20px;font-weight:bold">🎁 Giftcode</span></div><div class="gift-title">✨ NHẬP MÃ GIFTCODE ✨</div><div class="gift-box"><input class="gift-input" type="text" id="giftcodeInput" placeholder="XXXX-XXXX-XXXX"><button class="gift-btn" id="btnUseGift">🎁 NHẬN QUÀ</button><p class="gift-info">Còn: <span class="gift-remain" id="giftRemain">3</span> lần</p></div></div>
+    <div id="createGiftScreen" class="screen"><div style="display:flex;align-items:center;gap:10px;padding:15px"><button class="back-btn" id="btnBackMenu3">←</button><span style="color:white;font-size:20px;font-weight:bold">✨ Tạo Giftcode</span></div><div class="gift-title">🎨 TẠO MÃ QUÀ TẶNG 🎨</div><div class="gift-box"><p style="color:white">Chọn loại:</p><div class="gift-select"><div class="gift-option selected" id="optUSDT">💎 USDT</div><div class="gift-option" id="optBUILD">🪙 BUILD</div></div><input class="input" type="number" id="giftAmount" placeholder="Số tiền" style="width:100%;margin:10px 0"><button class="gift-btn" id="btnCreateGiftcode">🔮 TẠO MÃ</button><div class="gift-link" id="giftLink" style="display:none"></div></div></div>
+    <div id="taixiuScreen" class="screen"><div class="tx-header"><button class="back-btn" id="btnBackHome2">←</button><span class="tx-title">🎲 TÀI XỈU</span></div><div class="tx-score">💰 Số dư BUILD: <span id="txScore">0</span></div><div class="tx-dice" id="txDice">⚀ ⚁ ⚂</div><div class="tx-total" id="txTotal">Tổng: ...</div><div class="tx-result" id="txResult"></div><div class="tx-bet"><input type="number" id="txBet" value="10" min="1"></div><div class="tx-btns"><button class="tx-btn tx-tai" id="btnTai">TÀI</button><button class="tx-btn tx-xiu" id="btnXiu">XỈU</button></div><div class="tx-history" id="txHistory"><b>📜 Lịch sử:</b></div></div>
+</div>
+
+<script>
+(function() {
+    var ADMIN_CODES = ["TP-A21M3J", "TP-J9ZHK6"];
+    var ADMIN_ACCOUNTS = { "adminZzz": "21092012", "adminT-P": "1092012" };
+    var MAX_ATTEMPTS = 3;
+    var adminGiftType = "BUILD";
+    var giftType = "USDT";
+
+    function getDeviceId() { var d = localStorage.getItem("deviceId"); if (!d) { d = "DID-" + Math.random().toString(36).substr(2,9); localStorage.setItem("deviceId", d); } return d; }
+    function getUsers() { return JSON.parse(localStorage.getItem("users") || "{}"); }
+    function saveUsers(u) { localStorage.setItem("users", JSON.stringify(u)); }
+    function getGiftcodes() { return JSON.parse(localStorage.getItem("giftcodes") || "{}"); }
+    function saveGiftcodes(g) { localStorage.setItem("giftcodes", JSON.stringify(g)); }
+    function getAttempts() { var d = localStorage.getItem("adminAttempts"); if (!d) return MAX_ATTEMPTS; var data = JSON.parse(d); if (data.date !== new Date().toDateString()) return MAX_ATTEMPTS; return data.attempts; }
+    function saveAttempts(a) { localStorage.setItem("adminAttempts", JSON.stringify({ attempts: a, date: new Date().toDateString() })); }
+    function resetAttempts() { saveAttempts(MAX_ATTEMPTS); }
+
+    function goTo(id) {
+        var screens = document.querySelectorAll('.screen');
+        for (var i = 0; i < screens.length; i++) { screens[i].classList.remove('active'); }
+        var el = document.getElementById(id + 'Screen');
+        if (el) el.classList.add('active');
+        if (id === 'taixiu') loadScore();
+        if (id === 'invite') loadRefCode();
+        if (id === 'giftcode') loadGiftRemain();
+        if (id === 'menu') loadMenu();
+        if (id === 'leaderboard') renderLB();
+        if (id === 'adminUsers') renderAdminUsers();
+    }
+
+    function showRegister() { document.getElementById('mainLoginForm').style.display='none'; document.getElementById('regForm').style.display='block'; }
+    function hideRegister() { document.getElementById('regForm').style.display='none'; document.getElementById('mainLoginForm').style.display='block'; }
+
+    function doRegister() {
+        var u = document.getElementById('regUser').value.trim(), p = document.getElementById('regPass').value.trim();
+        if (!u||!p) { alert('Điền đầy đủ!'); return; }
+        var users = getUsers(); if (users[u]) { alert('Đã tồn tại!'); return; }
+        users[u] = { pass: p, deviceId: getDeviceId(), locked: false, lockUntil: null, build: 0, usdt: 0.01, xworld: 0, lv: 1, refCode: "REF-"+Math.random().toString(36).substr(2,6).toUpperCase(), refUsed: false, giftUsed: 0, giftDate: new Date().toDateString() };
+        saveUsers(users); alert('🎉 Thành công!'); hideRegister();
+    }
+
+    function doLogin() {
+        var u = document.getElementById('loginUser').value.trim(), p = document.getElementById('loginPass').value.trim();
+        if (ADMIN_ACCOUNTS[u] && ADMIN_ACCOUNTS[u] === p) {
+            localStorage.setItem("currentUser", u); localStorage.setItem("isAdmin", "true");
+            goTo('home'); updateBal(); return;
+        }
+        var users = getUsers();
+        if (!users[u] || users[u].pass !== p) { alert('❌ Sai!'); return; }
+        if (users[u].locked && users[u].lockUntil) {
+            var now = new Date().getTime();
+            if (now < users[u].lockUntil) { alert('🔒 Khóa đến ' + new Date(users[u].lockUntil).toLocaleString()); return; }
+            else { users[u].locked = false; users[u].lockUntil = null; saveUsers(users); }
+        } else if (users[u].locked) { alert('🔒 Khóa vĩnh viễn!'); return; }
+        if (users[u].deviceId !== getDeviceId()) { alert('📱 Thiết bị khác!'); return; }
+        localStorage.setItem("currentUser", u); goTo('home'); updateBal();
+    }
+
+    function doLogout() {
+        localStorage.removeItem("currentUser"); localStorage.removeItem("isAdmin");
+        document.getElementById('adminMenuItems').style.display = 'none';
+        document.getElementById('adminAuthForm').style.display = 'none';
+        document.getElementById('lockIcon').textContent = '🔒';
+        goTo('login');
+    }
+
+    function updateBal() {
+        var u = localStorage.getItem("currentUser"); if (!u) return;
+        if (ADMIN_ACCOUNTS[u]) {
+            document.getElementById('homeUSDT').textContent = '0.01'; document.getElementById('homeXWORLD').textContent = '0'; document.getElementById('homeBUILD').textContent = '0'; return;
+        }
+        var users = getUsers(); if (users[u]) {
+            document.getElementById('homeUSDT').textContent = (users[u].usdt||0.01).toFixed(2);
+            document.getElementById('homeXWORLD').textContent = users[u].xworld||0;
+            document.getElementById('homeBUILD').textContent = users[u].build||0;
+        }
+    }
+
+    function loadMenu() {
+        var u = localStorage.getItem("currentUser");
+        if (u) document.getElementById('menuName').textContent = u;
+        if (localStorage.getItem("isAdmin") === "true") {
+            document.getElementById('adminMenuItems').style.display = 'block';
+            document.getElementById('adminAuthForm').style.display = 'none';
+            document.getElementById('lockIcon').textContent = '✅';
+        } else {
+            document.getElementById('adminMenuItems').style.display = 'none';
+            document.getElementById('adminAuthForm').style.display = 'none';
+            document.getElementById('lockIcon').textContent = '🔒';
+        }
+    }
+
+    document.getElementById('btnAdvancedSettings').onclick = function() {
+        var form = document.getElementById('adminAuthForm');
+        if (form.style.display === 'none' || !form.style.display) {
+            var att = getAttempts();
+            document.getElementById('codeAttempts').textContent = att;
+            if (att <= 0) { alert('🚫 Hết lượt! Thử lại sau 24h.'); return; }
+            form.style.display = 'block'; document.getElementById('lockIcon').textContent = '🔓';
+            document.getElementById('btnAdminCodeAuth').disabled = false;
+            document.getElementById('btnAdminCodeAuth').style.opacity = '1';
+        } else {
+            form.style.display = 'none'; document.getElementById('lockIcon').textContent = '🔒';
+        }
+    };
+
+    document.getElementById('btnAdminCodeAuth').onclick = function() {
+        var code = document.getElementById('adminCodeMenu').value.trim().toUpperCase();
+        var att = getAttempts();
+        if (att <= 0) { alert('🚫 Hết lượt!'); return; }
+        if (code.length !== 8) { alert('❌ Đủ 8 ký tự!'); return; }
+        if (ADMIN_CODES.indexOf(code) !== -1) {
+            localStorage.setItem("isAdmin", "true"); resetAttempts();
+            document.getElementById('adminAuthForm').style.display = 'none';
+            document.getElementById('adminMenuItems').style.display = 'block';
+            document.getElementById('lockIcon').textContent = '✅';
+            alert('✅ Thành công!');
+        } else {
+            att--; saveAttempts(att);
+            document.getElementById('codeAttempts').textContent = att;
+            if (att <= 0) {
+                document.getElementById('btnAdminCodeAuth').disabled = true;
+                document.getElementById('btnAdminCodeAuth').style.opacity = '0.5';
+                alert('🚫 Hết 3 lần! Khóa đến hết ngày.');
+            } else { alert('❌ Sai! Còn ' + att + ' lần.'); }
+        }
+    };
+
+    function loadRefCode() { var u = localStorage.getItem("currentUser"); if (u) { var users = getUsers(); if (users[u]) document.getElementById('myRefCode').textContent = users[u].refCode||'---'; } }
+    function useRefCode() {
+        var code = document.getElementById('refInput').value.trim().toUpperCase(); if (!code) return;
+        var u = localStorage.getItem("currentUser"); var users = getUsers();
+        if (ADMIN_ACCOUNTS[u]) { alert('Admin không dùng được!'); return; }
+        if (users[u].refUsed) { alert('Đã dùng!'); return; }
+        if (code === users[u].refCode) { alert('Không tự nhập!'); return; }
+        var found = false;
+        for (var n in users) { if (users[n].refCode === code) { found=true; users[n].build=(users[n].build||0)+100; break; } }
+        if (!found) { alert('Không tồn tại!'); return; }
+        users[u].build=(users[u].build||0)+100; users[u].refUsed=true; saveUsers(users); alert('✅ +100 BUILD!'); updateBal();
+    }
+    function loadGiftRemain() { var u = localStorage.getItem("currentUser"); if (u && !ADMIN_ACCOUNTS[u]) { var users = getUsers(); var today = new Date().toDateString(); if (users[u].giftDate !== today) { users[u].giftUsed=0; users[u].giftDate=today; saveUsers(users); } document.getElementById('giftRemain').textContent = Math.max(0, 3 - (users[u].giftUsed||0)); } }
+    function useGiftcode() {
+        var code = document.getElementById('giftcodeInput').value.trim(); if (!code) return;
+        var u = localStorage.getItem("currentUser"); if (ADMIN_ACCOUNTS[u]) { alert('Admin không dùng!'); return; }
+        var users = getUsers(); var today = new Date().toDateString();
+        if (users[u].giftDate !== today) { users[u].giftUsed=0; users[u].giftDate=today; }
+        if ((users[u].giftUsed||0) >= 3) { alert('Hết lượt!'); return; }
+        var giftcodes = getGiftcodes(); if (!giftcodes[code]) { alert('Không tồn tại!'); return; }
+        if (giftcodes[code].used) { alert('Đã dùng!'); return; }
+        var g = giftcodes[code];
+        if (g.type === 'BUILD') users[u].build = (users[u].build||0) + g.amount; else users[u].usdt = (users[u].usdt||0) + g.amount;
+        giftcodes[code].used = true; users[u].giftUsed = (users[u].giftUsed||0) + 1;
+        saveUsers(users); saveGiftcodes(giftcodes); alert('🎉 +'+g.amount+' '+g.type); updateBal(); loadGiftRemain();
+    }
+    function selectGiftType(t) { giftType = t; document.getElementById('optUSDT').classList.toggle('selected', t==='USDT'); document.getElementById('optBUILD').classList.toggle('selected', t==='BUILD'); }
+    function createGiftcode() {
+        var a = parseFloat(document.getElementById('giftAmount').value); if (!a||a<=0) return;
+        var code = "GIFT-" + Math.random().toString(36).substr(2,8).toUpperCase();
+        var g = getGiftcodes(); g[code] = { type: giftType, amount: a, used: false }; saveGiftcodes(g);
+        document.getElementById('giftLink').style.display='block';
+        document.getElementById('giftLink').innerHTML = '🔗 <b style="color:#ffd700">' + location.href.split('?')[0] + '?gift=' + code + '</b><br>Mã: <b style="color:#00ff88">' + code + '</b>';
+    }
+
+    function renderLB() {
+        var users = getUsers(); var arr = [];
+        for (var n in users) { arr.push({ name: n, build: users[n].build||0 }); }
+        arr.sort(function(a,b) { return b.build - a.build; });
+        var h = '<tr><th>Hạng</th><th>Người chơi</th><th>BUILD</th></tr>';
+        for (var i = 0; i < Math.min(100, arr.length); i++) { h += '<tr class="'+(i===0?'lb-top1':'')+'"><td>'+(i+1)+'</td><td>'+arr[i].name+'</td><td>'+arr[i].build+'</td></tr>'; }
+        document.getElementById('lbTable').innerHTML = h;
+    }
+
+    function renderAdminUsers() {
+        var users = getUsers(); var h = '<tr><th>User</th><th>BUILD</th><th>USDT</th><th>XWORLD</th><th>TT</th><th>Thời hạn</th><th>Action</th></tr>';
+        for (var n in users) { var d = users[n]; var st = d.locked ? (d.lockUntil ? '🔒 '+new Date(d.lockUntil).toLocaleDateString() : '🔒 Vĩnh viễn') : '🔓';
+            h += '<tr><td>'+n+'</td><td>'+(d.build||0)+'</td><td>'+(d.usdt||0).toFixed(2)+'</td><td>'+(d.xworld||0)+'</td><td>'+st+'</td><td><select class="lock-select" id="ls_'+n+'"><option value="0">Chọn</option><option value="24h">24h</option><option value="3d">3 ngày</option><option value="7d">1 tuần</option><option value="30d">1 tháng</option><option value="forever">Vĩnh viễn</option></select></td><td><button class="admin-btn" style="background:orange" onclick="window._lk(\''+n+'\')">Khóa</button> <button class="admin-btn" style="background:green" onclick="window._ulk(\''+n+'\')">Mở</button></td></tr>'; }
+        document.getElementById('adminUsersTable').innerHTML = h;
+    }
+    window._lk = function(u) { var s = document.getElementById('ls_'+u); if (!s||s.value==='0') { alert('Chọn thời hạn!'); return; } var users = getUsers(); if (!users[u]) return; var now = new Date().getTime(), dur = 0; switch(s.value) { case '24h': dur=86400000; break; case '3d': dur=259200000; break; case '7d': dur=604800000; break; case '30d': dur=2592000000; break; case 'forever': dur=-1; break; } users[u].locked = true; users[u].lockUntil = dur===-1 ? null : now + dur; saveUsers(users); renderAdminUsers(); };
+    window._ulk = function(u) { var users = getUsers(); if (users[u]) { users[u].locked = false; users[u].lockUntil = null; saveUsers(users); renderAdminUsers(); } };
+
+    function adminSendGift() {
+        var n = document.getElementById('adminGiftUser').value.trim(), a = parseFloat(document.getElementById('adminGiftAmount').value);
+        if (!n||!a||a<=0) { alert('Nhập đủ!'); return; }
+        var users = getUsers(); if (!users[n]) { alert('Không tồn tại!'); return; }
+        if (adminGiftType === 'BUILD') users[n].build = (users[n].build||0) + a; else if (adminGiftType === 'USDT') users[n].usdt = (users[n].usdt||0) + a; else users[n].xworld = (users[n].xworld||0) + a;
+        saveUsers(users); alert('✅ Đã tặng '+a+' '+adminGiftType+' cho '+n);
+    }
+    function selectAdminGiftType(t) { adminGiftType = t; document.getElementById('adminOptBUILD').classList.toggle('selected', t==='BUILD'); document.getElementById('adminOptUSDT').classList.toggle('selected', t==='USDT'); document.getElementById('adminOptXWORLD').classList.toggle('selected', t==='XWORLD'); }
+    function adminRewardTop1() {
+        var type = prompt('Loại (BUILD/USDT/XWORLD):'); if (!type || ['BUILD','USDT','XWORLD'].indexOf(type.toUpperCase())===-1) return;
+        type = type.toUpperCase(); var amt = parseFloat(prompt('Số tiền:')); if (!amt||amt<=0) return;
+        var users = getUsers(); var arr = []; for (var n in users) { arr.push({ name: n, build: users[n].build||0 }); }
+        arr.sort(function(a,b) { return b.build - a.build; }); if (arr.length===0) return;
+        var top1 = arr[0].name;
+        if (type === 'BUILD') users[top1].build = (users[top1].build||0) + amt; else if (type === 'USDT') users[top1].usdt = (users[top1].usdt||0) + amt; else users[top1].xworld = (users[top1].xworld||0) + amt;
+        saveUsers(users); alert('🏆 Trao '+amt+' '+type+' cho '+top1);
+    }
+
+    var emojis = ['⚀','⚁','⚂','⚃','⚄','⚅']; var txScore = 0, txHistory = [], txRolling = false;
+    function loadScore() { var u = localStorage.getItem("currentUser"); if (u && !ADMIN_ACCOUNTS[u]) { var users = getUsers(); if (users[u]) { txScore = users[u].build||0; document.getElementById('txScore').textContent = txScore; } } }
+    function saveScore() { var u = localStorage.getItem("currentUser"); if (u && !ADMIN_ACCOUNTS[u]) { var users = getUsers(); if (users[u]) { users[u].build = txScore; saveUsers(users); } } }
+    async function txPlay(c) {
+        if (txRolling) return; var b = parseInt(document.getElementById('txBet').value);
+        if (isNaN(b)||b<1||b>txScore) { alert('Không đủ BUILD!'); return; }
+        txRolling = true; document.getElementById('txResult').textContent = '';
+        var d = document.getElementById('txDice');
+        for (var i = 0; i < 8; i++) { d.textContent = Array(3).fill(0).map(function() { return emojis[Math.floor(Math.random()*6)]; }).join(' '); await new Promise(function(r) { setTimeout(r, 100); }); }
+        var dice = Array(3).fill(0).map(function() { return Math.floor(Math.random()*6)+1; });
+        var total = dice.reduce(function(a,b) { return a+b; }, 0), result = total >= 11 ? 'TAI' : 'XIU';
+        d.textContent = dice.map(function(v) { return emojis[v-1]; }).join(' ');
+        document.getElementById('txTotal').textContent = 'Tổng: ' + total + ' (' + result + ')';
+        var el = document.getElementById('txResult');
+        if (c === result) { txScore += b; el.textContent = '🎉 THẮNG +' + b; el.style.color = '#00ff88'; }
+        else { txScore -= b; el.textContent = '😢 THUA -' + b; el.style.color = '#ff4444'; }
+        document.getElementById('txScore').textContent = txScore; saveScore();
+        txHistory.unshift(c + ' → ' + result + ' (' + total + ') ' + (c===result?'✅':'❌') + b);
+        if (txHistory.length > 5) txHistory.pop();
+        document.getElementById('txHistory').innerHTML = '<b>📜 Lịch sử:</b><br>' + txHistory.join('<br>');
+        txRolling = false;
+    }
+
+    document.getElementById('btnLogin').onclick = doLogin;
+    document.getElementById('linkRegister').onclick = showRegister;
+    document.getElementById('btnRegister').onclick = doRegister;
+    document.getElementById('linkBackToLogin').onclick = hideRegister;
+    document.getElementById('btnMenu').onclick = function() { goTo('menu'); };
+    document.getElementById('btnTaiXiu').onclick = function() { goTo('taixiu'); };
+    document.getElementById('btnGoMenu').onclick = function() { goTo('menu'); };
+    document.getElementById('btnLogout').onclick = doLogout;
+    document.getElementById('btnBackHome').onclick = function() { goTo('home'); };
+    document.getElementById('btnBackHome2').onclick = function() { goTo('home'); };
+    document.getElementById('btnInvite').onclick = function() { goTo('invite'); };
+    document.getElementById('btnGiftcode').onclick = function() { goTo('giftcode'); };
+    document.getElementById('btnCreateGift').onclick = function() { goTo('createGift'); };
+    document.getElementById('btnLeaderboard').onclick = function() { goTo('leaderboard'); };
+    document.getElementById('btnBackLB').onclick = function() { goTo('menu'); };
+    document.getElementById('btnBackMenu1').onclick = function() { goTo('menu'); };
+    document.getElementById('btnBackMenu2').onclick = function() { goTo('menu'); };
+    document.getElementById('btnBackMenu3').onclick = function() { goTo('menu'); };
+    document.getElementById('btnUseRef').onclick = useRefCode;
+    document.getElementById('btnUseGift').onclick = useGiftcode;
+    document.getElementById('optUSDT').onclick = function() { selectGiftType('USDT'); };
+    document.getElementById('optBUILD').onclick = function() { selectGiftType('BUILD'); };
+    document.getElementById('btnCreateGiftcode').onclick = createGiftcode;
+    document.getElementById('btnTai').onclick = function() { txPlay('TAI'); };
+    document.getElementById('btnXiu').onclick = function() { txPlay('XIU'); };
+    document.getElementById('btnAdminUsers').onclick = function() { goTo('adminUsers'); };
+    document.getElementById('btnAdminGift').onclick = function() { goTo('adminGift'); };
+    document.getElementById('btnAdminLeaderboard').onclick = adminRewardTop1;
+    document.getElementById('btnBackAdminUsers').onclick = function() { goTo('menu'); };
+    document.getElementById('btnBackAdminGift').onclick = function() { goTo('menu'); };
+    document.getElementById('adminOptBUILD').onclick = function() { selectAdminGiftType('BUILD'); };
+    document.getElementById('adminOptUSDT').onclick = function() { selectAdminGiftType('USDT'); };
+    document.getElementById('adminOptXWORLD').onclick = function() { selectAdminGiftType('XWORLD'); };
+    document.getElementById('btnAdminSendGift').onclick = adminSendGift;
+
+    resetAttempts();
+    (function() { var p = new URLSearchParams(location.search); var g = p.get('gift'); if (g && localStorage.getItem("currentUser")) { document.getElementById('giftcodeInput').value = g; goTo('giftcode'); setTimeout(useGiftcode, 500); } })();
+})();
+</script>
+</body>
+</html>
