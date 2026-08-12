@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>XWorld Pro v2.3.6</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #0a1628; font-family: Arial, sans-serif; touch-action: manipulation; }
+        .phone { width: 100%; height: 100vh; height: 100dvh; background: #0a1628; position: relative; }
+        .screen { width: 100%; height: 100%; position: absolute; top: 0; left: 0; overflow-y: auto; display: none; visibility: hidden; z-index: 1; }
+        .screen.active { display: block; visibility: visible; z-index: 10; }
+
+        #loginScreen { background: linear-gradient(135deg, #0a0a1a, #0d1b2a, #0a1628); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; position: relative; overflow: hidden; }
+        #loginScreen::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0,212,255,0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,0,128,0.08) 0%, transparent 40%), radial-gradient(circle at 20% 80%, rgba(0,255,200,0.08) 0%, transparent 40%); animation: rotateBg 20s linear infinite; }
+        @keyframes rotateBg { 100% { transform: rotate(360deg); } }
+        .logo { font-size: 40px; font-weight: bold; color: #fff; text-shadow: 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 80px #00d4ff; animation: neonPulse 2s ease-in-out infinite; position: relative; z-index: 1; }
+        .logo .ver { font-size: 12px; color: rgba(255,255,255,0.6); display: block; }
+        @keyframes neonPulse { 0%,100% { text-shadow: 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 80px #00d4ff; } 50% { text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 100px #ff00ff; } }
+        .input { width: 85%; padding: 14px; border-radius: 15px; border: 2px solid rgba(0,212,255,0.3); background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: white; font-size: 14px; margin-bottom: 12px; text-align: center; outline: none; position: relative; z-index: 1; }
+        .input:focus { border-color: #00d4ff; }
+        .btn { padding: 14px 20px; border-radius: 15px; font-size: 16px; font-weight: bold; cursor: pointer; border: none; color: white; }
+        .btn-login { width: 85%; background: linear-gradient(135deg, rgba(0,212,255,0.8), rgba(0,140,255,0.8)); }
+        .link { color: rgba(255,255,255,0.7); font-size: 13px; cursor: pointer; display: inline-block; z-index: 1; }
+        .remember-row { display: flex; align-items: center; gap: 8px; width: 85%; color: #aaa; font-size: 12px; z-index: 1; margin-bottom: 10px; }
+        .user-list { width: 85%; max-height: 120px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 10px; margin-bottom: 10px; z-index: 1; display: none; }
+        .user-item { padding: 10px; color: white; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; }
+
+        #homeScreen { background: #0a1628; padding-bottom: 60px; }
+        .status-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: #0d1f35; }
+        .menu-btn { color: white; font-size: 22px; cursor: pointer; }
+        .balances { display: flex; gap: 10px; align-items: center; color: white; font-size: 11px; }
+        .bal-item { display: flex; align-items: center; gap: 4px; }
+        .bal-icon { width: 16px; height: 16px; }
+        .badge { position: absolute; top: -6px; right: -8px; background: red; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; }
+        .pet-frame { width: 260px; margin: 15px auto; text-align: center; background: rgba(0,20,50,0.9); border-radius: 25px; border: 2px solid rgba(0,200,255,0.4); padding: 20px; cursor: pointer; }
+        .pet-lv { color: #ffd700; font-size: 14px; font-weight: bold; }
+        .pet-image { font-size: 80px; margin: 10px 0; }
+        .pet-exp-bar { width: 100%; height: 8px; background: #222; border-radius: 4px; margin: 8px 0; overflow: hidden; }
+        .pet-exp-fill { height: 100%; background: linear-gradient(90deg, #00d4ff, #00ff88); transition: width 0.5s; }
+        .pet-exp-text { color: #aaa; font-size: 11px; }
+        .section-title { padding: 8px 15px; color: white; font-weight: bold; font-size: 14px; }
+        .game-scroll { display: flex; gap: 10px; padding: 0 15px; overflow-x: auto; }
+        .game-card { min-width: 90px; background: rgba(255,255,255,0.1); border-radius: 12px; padding: 10px; text-align: center; color: white; font-size: 10px; cursor: pointer; }
+        .navbar { position: absolute; bottom: 0; width: 100%; height: 55px; background: #0d1f35; display: flex; z-index: 20; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-size: 10px; cursor: pointer; }
+        .nav-item.active { color: #00d4ff; }
+
+        #petDetailScreen { background: #0a1628; padding: 20px; text-align: center; }
+        .pet-detail-card { background: rgba(0,20,50,0.9); border-radius: 25px; border: 2px solid rgba(0,200,255,0.4); padding: 30px; margin: 20px 0; }
+        .pet-detail-img { font-size: 100px; }
+        .pet-detail-name { color: #ffd700; font-size: 24px; font-weight: bold; }
+        .pet-detail-bonus { color: #00ff88; font-size: 14px; }
+        .btn-upgrade { background: linear-gradient(135deg, #ffd700, #ffaa00); color: black; width: 80%; margin: 10px auto; display: block; }
+        .btn-shop { background: linear-gradient(135deg, #00d4ff, #0088cc); color: white; width: 80%; margin: 5px auto; display: block; }
+        .btn-inventory { background: linear-gradient(135deg, #ff00ff, #cc00cc); color: white; width: 80%; margin: 5px auto; display: block; }
+        .btn-rent { background: linear-gradient(135deg, #ff8800, #cc6600); color: white; width: 80%; margin: 5px auto; display: none; }
+
+        #shopScreen, #inventoryScreen { background: #0d1117; padding: 20px; }
+        .shop-item, .inv-item { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 20px; margin: 10px 0; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .shop-item h3 { color: #ffd700; }
+        .qty-control { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 10px 0; }
+        .qty-btn { width: 40px; height: 40px; border-radius: 10px; background: rgba(0,212,255,0.3); color: white; font-size: 20px; border: none; cursor: pointer; }
+        .qty-num { color: white; font-size: 20px; font-weight: bold; min-width: 40px; text-align: center; }
+        .btn-buy { background: linear-gradient(135deg, #ffd700, #ffaa00); color: black; width: 80%; margin-top: 10px; }
+        .inv-item { display: flex; justify-content: space-between; align-items: center; }
+        .inv-item .box-icon { font-size: 40px; }
+        .inv-item .box-info { flex: 1; text-align: left; margin-left: 15px; }
+        .btn-open { background: linear-gradient(135deg, #00ff88, #00cc66); color: black; padding: 10px 20px; }
+
+        #rentScreen { background: #0d1117; padding: 20px; }
+        .rent-card { background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 20px; padding: 25px; border: 2px solid rgba(255,136,0,0.5); margin: 15px 0; text-align: center; }
+        .rent-title { color: #ff8800; font-size: 24px; font-weight: bold; }
+
+        #menuScreen { background: #0d1117; padding: 20px; }
+        .back-btn { color: white; font-size: 24px; cursor: pointer; background: none; border: none; }
+        .menu-item { padding: 14px; background: #161b22; border-radius: 10px; margin-bottom: 8px; color: white; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    </style>
+</head>
+<body>
+<div class="phone">
+    <!-- LOGIN -->
+    <div id="loginScreen" class="screen active">
+        <div class="logo">XWORLD PRO<span class="ver">v2.3.6</span></div>
+        <div class="user-list" id="savedUsersList"></div>
+        <div id="mainLoginForm">
+            <input class="input" type="text" id="loginUser" placeholder="Tên đăng nhập hoặc Email">
+            <input class="input" type="password" id="loginPass" placeholder="Mật khẩu">
+            <div class="remember-row"><input type="checkbox" id="rememberMe" checked> Ghi nhớ tài khoản</div>
+            <button class="btn btn-login" id="btnLogin">ĐĂNG NHẬP</button>
+            <span class="link" id="linkRegister">Chưa có tài khoản? Đăng ký</span>
+        </div>
+        <div id="regForm" style="display:none;width:85%;">
+            <input class="input" type="email" id="regEmail" placeholder="Email" style="width:100%">
+            <input class="input" type="text" id="regUser" placeholder="Tên đăng nhập" style="width:100%">
+            <input class="input" type="password" id="regPass" placeholder="Mật khẩu (chữ hoa, số, ký tự đặc biệt)" style="width:100%">
+            <input class="input" type="password" id="regPassConfirm" placeholder="Nhập lại mật khẩu" style="width:100%">
+            <p id="passError" style="color:#ff4444;font-size:11px;display:none">Mật khẩu phải 8+ ký tự, gồm chữ hoa, số, ký tự đặc biệt!</p>
+            <p id="passMatchError" style="color:#ff4444;font-size:11px;display:none">Mật khẩu không khớp!</p>
+            <button class="btn btn-login" id="btnRegister" style="width:100%">ĐĂNG KÝ</button>
+            <span class="link" id="linkBackToLogin">← Quay lại đăng nhập</span>
+        </div>
+    </div>
+
+    <!-- HOME -->
+    <div id="homeScreen" class="screen">
+        <div class="status-bar">
+            <span class="menu-btn" id="btnMenu">☰</span>
+            <div class="balances">
+                <span class="bal-item"><img src="https://i.ibb.co/MkcfSNdx/usdt.png" class="bal-icon"><span id="homeUSDT">0</span></span>
+                <span class="bal-item"><img src="https://i.ibb.co/tTPRXCHm/xworld.png" class="bal-icon"><span id="homeXWORLD">0</span></span>
+                <span class="bal-item"><img src="https://i.ibb.co/C5DkwYBr/build.png" class="bal-icon"><span id="homeBUILD">0</span></span>
+            </div>
+            <span style="position:relative">🔔<span class="badge">44</span></span>
+        </div>
+        <div class="pet-frame" onclick="goTo('petDetail')">
+            <span class="pet-lv" id="petLv">🐁 Lv.1</span>
+            <div class="pet-image" id="petImage">🐁</div>
+            <div class="pet-exp-bar"><div class="pet-exp-fill" id="petExpFill"></div></div>
+            <span class="pet-exp-text" id="petExpText">0/500 EXP</span>
+        </div>
+        <div class="section-title">🎁 Thưởng $BUILD lớn</div>
+        <div class="game-scroll">
+            <div class="game-card"><div class="icon">🎲</div>Tài Xỉu<div>🔥 561K</div></div>
+            <div class="game-card"><div class="icon">🏎️</div>Đua Xe<div>🔥 452K</div></div>
+            <div class="game-card"><div class="icon">🐟</div>Bắn Cá<div>🔥 801K</div></div>
+        </div>
+        <br><br>
+        <div class="navbar">
+            <div class="nav-item active"><span>🏠</span>Home</div>
+            <div class="nav-item"><span>📦</span>Apps</div>
+            <div class="nav-item" onclick="goTo('petDetail')"><span>🦊</span>Pet</div>
+            <div class="nav-item" id="btnGoMenu"><span>👤</span>Tôi</div>
+            <div class="nav-item" id="btnLogoutMain"><span>🚪</span>Out</div>
+        </div>
+    </div>
+
+    <!-- PET DETAIL -->
+    <div id="petDetailScreen" class="screen">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('home')">←</button><span style="color:white;font-size:20px;font-weight:bold">Linh Thú</span></div>
+        <div class="pet-detail-card">
+            <div class="pet-detail-img" id="petDetailImg">🐁</div>
+            <div class="pet-detail-name" id="petDetailName">Lv.1</div>
+            <div class="pet-exp-bar" style="width:80%;margin:10px auto"><div class="pet-exp-fill" id="petDetailExpFill"></div></div>
+            <span class="pet-exp-text" id="petDetailExpText">0/500 EXP</span>
+            <div class="pet-detail-bonus" id="petDetailBonus">BUILD +0.195%</div>
+            <button class="btn btn-upgrade" onclick="upgradePet()">⬆ TĂNG CẤP</button>
+            <button class="btn btn-rent" id="btnRent" onclick="goTo('rent')">💸 CHO THUÊ</button>
+            <button class="btn btn-shop" onclick="goTo('shop')">🛒 CỬA HÀNG</button>
+            <button class="btn btn-inventory" onclick="goTo('inventory')">📦 KHO ĐỒ</button>
+        </div>
+    </div>
+
+    <!-- RENT -->
+    <div id="rentScreen" class="screen">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:20px;font-weight:bold">💸 Cho thuê Linh Thú</span></div>
+        <div class="rent-card">
+            <div class="rent-title">✨ CHO THUÊ LINH THÚ ✨</div>
+            <p style="color:#aaa">Giá thuê (5-35 BUILD):</p>
+            <input class="input" type="number" id="rentPrice" placeholder="5 - 35" min="5" max="35" style="width:100%">
+            <p style="color:#aaa">Thời gian:</p>
+            <select class="input" id="rentDays" style="width:100%"><option value="2">2 ngày</option><option value="7">7 ngày</option><option value="30">30 ngày</option><option value="365">365 ngày</option></select>
+            <button class="btn btn-rent" onclick="rentPet()" style="margin-top:15px;width:100%">💸 CHO THUÊ</button>
+        </div>
+    </div>
+
+    <!-- SHOP -->
+    <div id="shopScreen" class="screen">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:20px;font-weight:bold">🛒 Cửa hàng</span></div>
+        <div class="shop-item">
+            <h3>📦 Exp Thú</h3><p>200-5000 EXP | 10.5 BUILD</p>
+            <div class="qty-control"><button class="qty-btn" onclick="changeQty('normal',-1)">−</button><span class="qty-num" id="normalQty">1</span><button class="qty-btn" onclick="changeQty('normal',1)">+</button></div>
+            <p>Tổng: <b style="color:#ffd700" id="normalTotal">10.5 BUILD</b></p>
+            <button class="btn btn-buy" onclick="buyBox('normal')">🛒 MUA</button>
+        </div>
+        <div class="shop-item">
+            <h3>🌟 Exp Thú Siêu Cấp</h3><p>1430-9000 EXP | 50.2 BUILD</p>
+            <div class="qty-control"><button class="qty-btn" onclick="changeQty('super',-1)">−</button><span class="qty-num" id="superQty">1</span><button class="qty-btn" onclick="changeQty('super',1)">+</button></div>
+            <p>Tổng: <b style="color:#ffd700" id="superTotal">50.2 BUILD</b></p>
+            <button class="btn btn-buy" onclick="buyBox('super')">🛒 MUA</button>
+        </div>
+    </div>
+
+    <!-- INVENTORY -->
+    <div id="inventoryScreen" class="screen">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:20px;font-weight:bold">📦 Kho đồ</span></div>
+        <div id="inventoryList"></div>
+    </div>
+
+    <!-- MENU -->
+    <div id="menuScreen" class="screen">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" id="btnBackHome">←</button><span style="color:white;font-size:20px;font-weight:bold">Tài khoản</span></div>
+        <div style="display:flex;align-items:center;gap:15px;margin-bottom:20px"><div id="menuAvatar" style="width:60px;height:60px;border-radius:30px;background:#00d4ff;display:flex;align-items:center;justify-content:center;font-size:30px">🦊</div><div><div id="menuName" style="color:white;font-size:18px;font-weight:bold">Player</div><div id="menuUID" style="color:#888;font-size:11px">UID: ---</div></div></div>
+        <div class="menu-item"><span>📨 Mời bạn bè</span><span>›</span></div>
+        <div class="menu-item"><span>🎁 Giftcode</span><span>›</span></div>
+        <div class="menu-item"><span>✨ Tạo Giftcode</span><span>›</span></div>
+        <div class="menu-item"><span>🏆 Bảng xếp hạng</span><span>›</span></div>
+    </div>
+</div>
+
+<script>
+var ADMIN_ACCOUNTS = { "adminZzz": "21092012", "adminT-P": "1092012" };
+var PET_DATA = [
+    { emoji:"🐁",minExp:0,maxExp:500,buildBonus:0.195 },{ emoji:"🐇",minExp:500,maxExp:1000,buildBonus:1.390 },
+    { emoji:"🐈",minExp:1000,maxExp:2000,buildBonus:2.503 },{ emoji:"🐎",minExp:2000,maxExp:5000,buildBonus:3.900 },
+    { emoji:"🐘",minExp:5000,maxExp:6500,buildBonus:4.692 },{ emoji:"🦣",minExp:6500,maxExp:7900,buildBonus:6.290 },
+    { emoji:"🦇",minExp:7900,maxExp:8000,buildBonus:6.694 },{ emoji:"🦏",minExp:8000,maxExp:9500,buildBonus:7.890 },
+    { emoji:"🐃",minExp:9500,maxExp:10000,buildBonus:8.80 },{ emoji:"🦚",minExp:10000,maxExp:15000,buildBonus:10.200 },
+    { emoji:"🦈",minExp:15000,maxExp:29000,buildBonus:12.409 },{ emoji:"🫍",minExp:29000,maxExp:35000,buildBonus:18.340 },
+    { emoji:"🐋",minExp:35000,maxExp:40000,buildBonus:20.934 },{ emoji:"🪼",minExp:40000,maxExp:49000,buildBonus:25.394 },
+    { emoji:"🦩",minExp:49000,maxExp:55000,buildBonus:29.190 },{ emoji:"🦅",minExp:55000,maxExp:59000,buildBonus:32.402 },
+    { emoji:"🦦",minExp:59000,maxExp:65000,buildBonus:36.130 },{ emoji:"🐞",minExp:65000,maxExp:75000,buildBonus:39.013 },
+    { emoji:"🦍",minExp:75000,maxExp:79000,buildBonus:43.120 },{ emoji:"🦒",minExp:79000,maxExp:95000,buildBonus:49.204 },
+    { emoji:"🐊",minExp:95000,maxExp:150000,buildBonus:53.203 },{ emoji:"🦄",minExp:150000,maxExp:299999,buildBonus:190.34 },
+    { emoji:"🐉",minExp:299999,maxExp:450000,buildBonus:290.94 }
+];
+var shopQty = { normal: 1, super: 1 };
+
+function getUsers() { return JSON.parse(localStorage.getItem("users")||"{}"); }
+function saveUsers(u) { localStorage.setItem("users",JSON.stringify(u)); }
+function getSavedAccounts() { return JSON.parse(localStorage.getItem("savedAccounts")||"[]"); }
+function saveAccount(u,p) { var s=getSavedAccounts().filter(function(a){return a.user!==u;}); s.unshift({user:u,pass:p}); if(s.length>5)s.pop(); localStorage.setItem("savedAccounts",JSON.stringify(s)); }
+function removeSavedAccount(u) { var s=getSavedAccounts().filter(function(a){return a.user!==u;}); localStorage.setItem("savedAccounts",JSON.stringify(s)); }
+function getInventory() { var u=localStorage.getItem("currentUser"); if(!u)return[]; return JSON.parse(localStorage.getItem("inv_"+u)||"[]"); }
+function saveInventory(inv) { var u=localStorage.getItem("currentUser"); if(u)localStorage.setItem("inv_"+u,JSON.stringify(inv)); }
+
+function goTo(id) {
+    var screens=document.querySelectorAll('.screen');
+    for(var i=0;i<screens.length;i++){screens[i].classList.remove('active');}
+    var el=document.getElementById(id+'Screen');
+    if(el)el.classList.add('active');
+    if(id==='menu')loadMenu();
+    if(id==='home')updatePetDisplay();
+    if(id==='petDetail')updatePetDetail();
+    if(id==='inventory')renderInventory();
+}
+
+function renderSavedUsers(){
+    var saved=getSavedAccounts(),list=document.getElementById('savedUsersList');
+    if(saved.length===0){list.style.display='none';return;}
+    list.style.display='block';var html='';
+    for(var i=0;i<saved.length;i++){html+='<div class="user-item" onclick="quickLogin(\''+saved[i].user+'\',\''+saved[i].pass+'\')"><span>👤 '+saved[i].user+'</span><span style="color:#ff4444;font-size:10px" onclick="event.stopPropagation();removeSaved(\''+saved[i].user+'\')">✕</span></div>';}
+    list.innerHTML=html;
+}
+function quickLogin(u,p){document.getElementById('loginUser').value=u;document.getElementById('loginPass').value=p;doLogin();}
+function removeSaved(u){removeSavedAccount(u);renderSavedUsers();}
+
+// SỬA: show/hide form đăng ký
+document.getElementById('linkRegister').addEventListener('click', function(){
+    document.getElementById('mainLoginForm').style.display='none';
+    document.getElementById('regForm').style.display='block';
+    document.getElementById('savedUsersList').style.display='none';
+});
+document.getElementById('linkBackToLogin').addEventListener('click', function(){
+    document.getElementById('regForm').style.display='none';
+    document.getElementById('mainLoginForm').style.display='block';
+    renderSavedUsers();
+});
+
+function isStrongPassword(p){return p.length>=8&&/[A-Z]/.test(p)&&/[0-9]/.test(p)&&/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(p);}
+
+function doRegister(){
+    var email=document.getElementById('regEmail').value.trim(),u=document.getElementById('regUser').value.trim();
+    var p=document.getElementById('regPass').value.trim(),p2=document.getElementById('regPassConfirm').value.trim();
+    document.getElementById('passError').style.display='none';document.getElementById('passMatchError').style.display='none';
+    if(!email||!u||!p||!p2){alert('Điền đầy đủ!');return;}
+    if(!isStrongPassword(p)){document.getElementById('passError').style.display='block';return;}
+    if(p!==p2){document.getElementById('passMatchError').style.display='block';return;}
+    var users=getUsers();if(users[u]){alert('Đã tồn tại!');return;}
+    users[u]={email:email,pass:p,deviceId:"DID-"+Math.random().toString(36).substr(2,9),locked:false,build:0,usdt:0,xworld:0,lv:1,exp:0,refCode:"REF-"+Math.random().toString(36).substr(2,6).toUpperCase(),uid:"XW-"+Math.random().toString(36).substr(2,8).toUpperCase(),avatar:"🦊"};
+    saveUsers(users);alert('🎉 Đăng ký thành công!');
+    document.getElementById('regForm').style.display='none';
+    document.getElementById('mainLoginForm').style.display='block';
+    renderSavedUsers();
+}
+
+function doLogin(){
+    var u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value.trim();
+    var remember=document.getElementById('rememberMe').checked;
+    if(ADMIN_ACCOUNTS[u]&&ADMIN_ACCOUNTS[u]===p){localStorage.setItem("currentUser",u);localStorage.setItem("isAdmin","true");if(remember)saveAccount(u,p);goTo('home');updatePetDisplay();updateBalances();return;}
+    var users=getUsers();var found=null;
+    if(users[u]){found=u;}else{for(var n in users){if(users[n].email===u){found=n;break;}}}
+    if(!found||users[found].pass!==p){alert('❌ Sai!');return;}
+    if(users[found].locked){alert('🔒 Khóa!');return;}
+    localStorage.setItem("currentUser",found);if(remember)saveAccount(found,p);
+    goTo('home');updatePetDisplay();updateBalances();
+}
+
+function doLogout(){localStorage.removeItem("currentUser");localStorage.removeItem("isAdmin");goTo('login');renderSavedUsers();}
+
+function updateBalances(){
+    var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u]){document.getElementById('homeUSDT').textContent='0';document.getElementById('homeXWORLD').textContent='0';document.getElementById('homeBUILD').textContent='0';return;}
+    var users=getUsers();if(users[u]){document.getElementById('homeUSDT').textContent=(users[u].usdt||0).toFixed(2);document.getElementById('homeXWORLD').textContent=users[u].xworld||0;document.getElementById('homeBUILD').textContent=users[u].build||0;}
+}
+
+function getPetData(lv){return PET_DATA[Math.min(lv-1,PET_DATA.length-1)];}
+
+function updatePetDisplay(){
+    var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u]){document.getElementById('petLv').textContent='🐁 Lv.1';document.getElementById('petImage').textContent='🐁';document.getElementById('petExpFill').style.width='0%';document.getElementById('petExpText').textContent='0/500 EXP';return;}
+    var users=getUsers();if(!users[u])return;
+    var lv=users[u].lv||1,exp=users[u].exp||0,pet=getPetData(lv);
+    document.getElementById('petLv').textContent=pet.emoji+' Lv.'+lv;
+    document.getElementById('petImage').textContent=pet.emoji;
+    var pct=((exp-pet.minExp)/(pet.maxExp-pet.minExp))*100;
+    document.getElementById('petExpFill').style.width=Math.min(100,Math.max(0,pct))+'%';
+    document.getElementById('petExpText').textContent=exp+'/'+pet.maxExp+' EXP';
+}
+
+function updatePetDetail(){
+    var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u])return;
+    var users=getUsers();if(!users[u])return;
+    var lv=users[u].lv||1,exp=users[u].exp||0,pet=getPetData(lv);
+    document.getElementById('petDetailImg').textContent=pet.emoji;
+    document.getElementById('petDetailName').textContent=pet.emoji+' Lv.'+lv;
+    document.getElementById('petDetailBonus').textContent='BUILD +'+pet.buildBonus+'%';
+    var pct=((exp-pet.minExp)/(pet.maxExp-pet.minExp))*100;
+    document.getElementById('petDetailExpFill').style.width=Math.min(100,Math.max(0,pct))+'%';
+    document.getElementById('petDetailExpText').textContent=exp+'/'+pet.maxExp+' EXP';
+    document.getElementById('btnRent').style.display = lv >= 10 ? 'block' : 'none';
+}
+
+function upgradePet(){
+    var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u]){alert('Admin không có pet!');return;}
+    var users=getUsers();if(!users[u])return;
+    var lv=users[u].lv||1,exp=users[u].exp||0,pet=getPetData(lv);
+    if(exp>=pet.maxExp&&lv<PET_DATA.length){users[u].lv=lv+1;users[u].exp=getPetData(lv+1).minExp;saveUsers(users);alert('🎉 Lên Lv.'+(lv+1)+'!');updatePetDetail();updatePetDisplay();}
+    else if(lv>=PET_DATA.length){alert('Max level!');}
+    else{alert('Chưa đủ EXP!');}
+}
+
+function rentPet(){
+    var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u]){alert('Admin không có pet!');return;}
+    var users=getUsers();if(!users[u])return;
+    if((users[u].lv||1)<10){alert('Cần Lv10 trở lên!');return;}
+    var price=parseInt(document.getElementById('rentPrice').value);
+    if(isNaN(price)||price<5||price>35){alert('Giá từ 5-35 BUILD!');return;}
+    var days=parseInt(document.getElementById('rentDays').value);
+    alert('✅ Đã cho thuê với giá '+price+' BUILD trong '+days+' ngày!');
+}
+
+function changeQty(type,delta){
+    shopQty[type]=Math.max(1,Math.min(type==='normal'?30:20,shopQty[type]+delta));
+    document.getElementById(type+'Qty').textContent=shopQty[type];
+    document.getElementById(type+'Total').textContent=(type==='normal'?10.5*shopQty[type]:50.2*shopQty[type]).toFixed(1)+' BUILD';
+}
+
+function buyBox(type){
+    var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u]){alert('Admin không mua được!');return;}
+    var users=getUsers();if(!users[u])return;
+    var qty=shopQty[type],price=type==='normal'?10.5:50.2,total=qty*price;
+    if(users[u].build<total){alert('Không đủ BUILD!');return;}
+    users[u].build-=total;
+    var inv=getInventory();
+    for(var i=0;i<qty;i++){inv.push({type:type,name:type==='normal'?'Exp Thú':'Exp Thú Siêu Cấp',minExp:type==='normal'?200:1430,maxExp:type==='normal'?5000:9000});}
+    saveUsers(users);saveInventory(inv);updateBalances();alert('✅ Đã mua '+qty+' hòm!');
+}
+
+function renderInventory(){
+    var inv=getInventory(),html='';
+    if(inv.length===0){html='<p style="color:#aaa;text-align:center;margin-top:50px">Kho đồ trống</p>';}
+    else{for(var i=0;i<inv.length;i++){html+='<div class="inv-item"><div class="box-icon">📦</div><div class="box-info"><h3>'+inv[i].name+'</h3><p>EXP: '+inv[i].minExp+' - '+inv[i].maxExp+'</p></div><button class="btn btn-open" onclick="openBox('+i+')">MỞ</button></div>';}}
+    document.getElementById('inventoryList').innerHTML=html;
+}
+
+function openBox(idx){
+    var u=localStorage.getItem("currentUser");if(!u)return;
+    var users=getUsers();if(!users[u])return;
+    var inv=getInventory();if(idx>=inv.length)return;
+    var box=inv[idx],exp=Math.floor(Math.random()*(box.maxExp-box.minExp+1))+box.minExp;
+    users[u].exp=(users[u].exp||0)+exp;inv.splice(idx,1);
+    saveUsers(users);saveInventory(inv);renderInventory();updatePetDisplay();updatePetDetail();
+    alert('🎉 +'+exp+' EXP!');
+}
+
+function loadMenu(){
+    var u=localStorage.getItem("currentUser");if(!u)return;
+    var users=getUsers();
+    document.getElementById('menuName').textContent=u;
+    document.getElementById('menuUID').textContent='UID: '+(users[u]?users[u].uid:'---');
+    document.getElementById('menuAvatar').textContent=users[u]?users[u].avatar||'🦊':'🦊';
+}
+
+document.getElementById('btnLogin').addEventListener('click',doLogin);
+document.getElementById('btnRegister').addEventListener('click',doRegister);
+document.getElementById('btnMenu').addEventListener('click',function(){goTo('menu');});
+document.getElementById('btnGoMenu').addEventListener('click',function(){goTo('menu');});
+document.getElementById('btnLogoutMain').addEventListener('click',doLogout);
+document.getElementById('btnBackHome').addEventListener('click',function(){goTo('home');});
+
+renderSavedUsers();
+</script>
+</body>
+</html>
