@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -12,13 +12,12 @@
         .screen.active { display: block; }
 
         #loginScreen { background: #0b1a30; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
-        .logo { font-size: 40px; font-weight: bold; color: #00d4ff; margin-bottom: 5px; cursor: pointer; user-select: none; }
-        .logo-hint { color: #333; font-size: 10px; margin-bottom: 30px; }
+        .logo { font-size: 40px; font-weight: bold; color: #00d4ff; margin-bottom: 40px; cursor: pointer; user-select: none; }
         .input { width: 85%; padding: 14px; border-radius: 10px; border: 1px solid #333; background: #111; color: white; font-size: 14px; margin-bottom: 10px; text-align: center; }
         .btn { width: 85%; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; border: none; margin-bottom: 8px; color: white; }
         .btn-login { background: #00d4ff; color: black; }
         .btn-admin { background: #ff4444; }
-        .link { color: #00d4ff; font-size: 13px; cursor: pointer; margin-top: 5px; }
+        .link { color: #00d4ff; font-size: 13px; cursor: pointer; margin-top: 5px; text-decoration: underline; }
 
         #homeScreen { background: #0a1628; padding-bottom: 60px; }
         .status-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: #0d1f35; }
@@ -87,19 +86,23 @@
     <!-- LOGIN -->
     <div id="loginScreen" class="screen active">
         <div class="logo" id="adminLogo">XWORLD PRO</div>
-        <div class="logo-hint">Nhấn giữ logo 3 giây để vào Admin</div>
-        <input class="input" type="text" id="loginUser" placeholder="Tên đăng nhập">
-        <input class="input" type="password" id="loginPass" placeholder="Mật khẩu">
-        <button class="btn btn-login" onclick="doLogin()">ĐĂNG NHẬP</button>
-        <span class="link" onclick="showRegister()">Chưa có tài khoản? Đăng ký</span>
-        <div id="regForm" style="display:none;width:85%;margin-top:10px">
-            <input class="input" type="text" id="regUser" placeholder="Tên đăng nhập" style="width:100%">
-            <input class="input" type="password" id="regPass" placeholder="Mật khẩu" style="width:100%">
-            <button class="btn btn-login" onclick="doRegister()" style="width:100%">ĐĂNG KÝ</button>
-            <span class="link" onclick="hideRegister()">← Quay lại</span>
+        <!-- Form đăng nhập chính -->
+        <div id="mainLoginForm">
+            <input class="input" type="text" id="loginUser" placeholder="Tên đăng nhập" autocomplete="username">
+            <input class="input" type="password" id="loginPass" placeholder="Mật khẩu" autocomplete="current-password">
+            <button class="btn btn-login" onclick="doLogin()">ĐĂNG NHẬP</button>
+            <span class="link" onclick="showRegister()">Chưa có tài khoản? Đăng ký</span>
         </div>
+        <!-- Form đăng ký -->
+        <div id="regForm" style="display:none;width:85%;">
+            <input class="input" type="text" id="regUser" placeholder="Tên đăng nhập" style="width:100%" autocomplete="username">
+            <input class="input" type="password" id="regPass" placeholder="Mật khẩu" style="width:100%" autocomplete="new-password">
+            <button class="btn btn-login" onclick="doRegister()" style="width:100%">ĐĂNG KÝ</button>
+            <span class="link" onclick="hideRegister()">← Quay lại đăng nhập</span>
+        </div>
+        <!-- Form Admin (ẩn) -->
         <div id="adminLoginForm" style="display:none;width:85%;margin-top:10px">
-            <p style="color:#ff4444;text-align:center;margin-bottom:5px">🔑 ADMIN</p>
+            <p style="color:#ff4444;text-align:center;margin-bottom:5px;font-weight:bold">🔑 ADMIN</p>
             <input class="input" type="password" id="adminPass" placeholder="Mật khẩu Admin" style="width:100%">
             <button class="btn btn-admin" onclick="doAdminLogin()" style="width:100%">VÀO ADMIN</button>
             <span class="link" onclick="hideAdminLogin()">← Quay lại</span>
@@ -144,10 +147,7 @@
         </div>
         <div class="menu-header">
             <div class="menu-avatar">🦊</div>
-            <div>
-                <div class="menu-name" id="menuName">Player</div>
-                <div class="menu-edit" onclick="changeName()">✏️ Đổi tên hiển thị</div>
-            </div>
+            <div><div class="menu-name" id="menuName">Player</div><div class="menu-edit" onclick="changeName()">✏️ Đổi tên</div></div>
         </div>
         <div class="menu-item" onclick="goTo('invite')"><span>📨 Mời bạn bè</span><span class="arrow">›</span></div>
         <div class="menu-item" onclick="goTo('giftcode')"><span>🎁 Giftcode</span><span class="arrow">›</span></div>
@@ -156,81 +156,40 @@
 
     <!-- MỜI BẠN BÈ -->
     <div id="inviteScreen" class="screen">
-        <div style="display:flex;align-items:center;gap:10px;padding:15px">
-            <button class="back-btn" onclick="goTo('menu')">←</button>
-            <span style="color:white;font-size:20px;font-weight:bold">📨 Mời bạn bè</span>
-        </div>
-        <div class="gift-box">
-            <p style="color:#ffd700;font-size:16px">Mã giới thiệu của bạn</p>
-            <div class="gift-input" id="myRefCode" style="font-size:22px">---</div>
-            <p style="color:#aaa;font-size:12px">Chia sẻ mã này cho bạn bè</p>
-        </div>
-        <div class="gift-box">
-            <p style="color:white;font-size:14px">Nhập mã giới thiệu</p>
-            <input class="gift-input" type="text" id="refInput" placeholder="Nhập mã giới thiệu" style="font-size:14px">
-            <button class="gift-btn" onclick="useRefCode()">NHẬN THƯỞNG</button>
-            <p class="gift-info">Nhập mã của bạn bè để nhận <b>+100 BUILD</b></p>
-        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:20px;font-weight:bold">📨 Mời bạn bè</span></div>
+        <div class="gift-box"><p style="color:#ffd700;font-size:16px">Mã giới thiệu của bạn</p><div class="gift-input" id="myRefCode" style="font-size:22px">---</div><p style="color:#aaa;font-size:12px">Chia sẻ mã này cho bạn bè</p></div>
+        <div class="gift-box"><p style="color:white;font-size:14px">Nhập mã giới thiệu</p><input class="gift-input" type="text" id="refInput" placeholder="Nhập mã giới thiệu" style="font-size:14px"><button class="gift-btn" onclick="useRefCode()">NHẬN THƯỞNG</button><p class="gift-info">+100 BUILD</p></div>
     </div>
 
     <!-- GIFTCODE -->
     <div id="giftcodeScreen" class="screen">
-        <div style="display:flex;align-items:center;gap:10px;padding:15px">
-            <button class="back-btn" onclick="goTo('menu')">←</button>
-            <span style="color:white;font-size:20px;font-weight:bold">🎁 Giftcode</span>
-        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:20px;font-weight:bold">🎁 Giftcode</span></div>
         <div class="gift-title">✨ NHẬP MÃ GIFTCODE ✨</div>
-        <div class="gift-box">
-            <p style="color:#aaa;font-size:14px">Nhập mã quà tặng của bạn</p>
-            <input class="gift-input" type="text" id="giftcodeInput" placeholder="XXXX-XXXX-XXXX">
-            <button class="gift-btn" onclick="useGiftcode()">🎁 NHẬN QUÀ</button>
-            <p class="gift-info">Hôm nay còn: <span class="gift-remain" id="giftRemain">3</span> lần</p>
-        </div>
+        <div class="gift-box"><p style="color:#aaa;font-size:14px">Nhập mã quà tặng</p><input class="gift-input" type="text" id="giftcodeInput" placeholder="XXXX-XXXX-XXXX"><button class="gift-btn" onclick="useGiftcode()">🎁 NHẬN QUÀ</button><p class="gift-info">Còn: <span class="gift-remain" id="giftRemain">3</span> lần</p></div>
     </div>
 
     <!-- TẠO GIFTCODE -->
     <div id="createGiftScreen" class="screen">
-        <div style="display:flex;align-items:center;gap:10px;padding:15px">
-            <button class="back-btn" onclick="goTo('menu')">←</button>
-            <span style="color:white;font-size:20px;font-weight:bold">✨ Tạo Giftcode</span>
-        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:20px;font-weight:bold">✨ Tạo Giftcode</span></div>
         <div class="gift-title">🎨 TẠO MÃ QUÀ TẶNG 🎨</div>
-        <div class="gift-box">
-            <p style="color:white;font-size:14px">Chọn loại quà:</p>
-            <div class="gift-select">
-                <div class="gift-option selected" id="optUSDT" onclick="selectGiftType('USDT')">💎 USDT</div>
-                <div class="gift-option" id="optBUILD" onclick="selectGiftType('BUILD')">🪙 BUILD</div>
-            </div>
-            <input class="input" type="number" id="giftAmount" placeholder="Số tiền muốn tặng" style="width:100%;margin:10px 0">
-            <button class="gift-btn" onclick="createGiftcode()">🔮 TẠO MÃ</button>
-            <div class="gift-link" id="giftLink" style="display:none"></div>
-        </div>
+        <div class="gift-box"><p style="color:white">Chọn loại quà:</p><div class="gift-select"><div class="gift-option selected" id="optUSDT" onclick="selectGiftType('USDT')">💎 USDT</div><div class="gift-option" id="optBUILD" onclick="selectGiftType('BUILD')">🪙 BUILD</div></div><input class="input" type="number" id="giftAmount" placeholder="Số tiền" style="width:100%;margin:10px 0"><button class="gift-btn" onclick="createGiftcode()">🔮 TẠO MÃ</button><div class="gift-link" id="giftLink" style="display:none"></div></div>
     </div>
 
     <!-- TÀI XỈU -->
     <div id="taixiuScreen" class="screen">
-        <div class="tx-header">
-            <button class="back-btn" onclick="goTo('home')">←</button>
-            <span class="tx-title">🎲 TÀI XỈU</span>
-        </div>
+        <div class="tx-header"><button class="back-btn" onclick="goTo('home')">←</button><span class="tx-title">🎲 TÀI XỈU</span></div>
         <div class="tx-score">💰 Số dư: <span id="txScore">0</span></div>
         <div class="tx-dice" id="txDice">⚀ ⚁ ⚂</div>
         <div class="tx-total" id="txTotal">Tổng: ...</div>
         <div class="tx-result" id="txResult"></div>
         <div class="tx-bet"><input type="number" id="txBet" value="10" min="1"></div>
-        <div class="tx-btns">
-            <button class="tx-btn tx-tai" onclick="txPlay('TAI')">TÀI</button>
-            <button class="tx-btn tx-xiu" onclick="txPlay('XIU')">XỈU</button>
-        </div>
+        <div class="tx-btns"><button class="tx-btn tx-tai" onclick="txPlay('TAI')">TÀI</button><button class="tx-btn tx-xiu" onclick="txPlay('XIU')">XỈU</button></div>
         <div class="tx-history" id="txHistory"><b>📜 Lịch sử:</b></div>
     </div>
 
     <!-- ADMIN -->
     <div id="adminScreen" class="screen">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px">
-            <span style="color:#ff4444;font-size:20px;font-weight:bold">🔑 ADMIN</span>
-            <button class="back-btn" onclick="goTo('login')">← Thoát</button>
-        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px"><span style="color:#ff4444;font-size:20px;font-weight:bold">🔑 ADMIN</span><button class="back-btn" onclick="goTo('login')">← Thoát</button></div>
         <table class="admin-table" id="playerTable"><tr><th>User</th><th>Device</th><th>BUILD</th><th>USDT</th><th>TT</th><th>Action</th></tr></table>
     </div>
 </div>
@@ -260,18 +219,38 @@
         if (id === 'menu') loadMenu();
     }
 
-    // ẨN ADMIN - nhấn giữ logo 3 giây
+    // === ADMIN ẨN: nhấn giữ logo 3 giây ===
     let pressTimer;
     const logo = document.getElementById('adminLogo');
-    logo.addEventListener('mousedown', () => { pressTimer = setTimeout(() => { document.getElementById('adminLoginForm').style.display='block'; document.getElementById('regForm').style.display='none'; }, 3000); });
-    logo.addEventListener('mouseup', () => clearTimeout(pressTimer));
-    logo.addEventListener('mouseleave', () => clearTimeout(pressTimer));
-    logo.addEventListener('touchstart', (e) => { pressTimer = setTimeout(() => { document.getElementById('adminLoginForm').style.display='block'; document.getElementById('regForm').style.display='none'; }, 3000); e.preventDefault(); });
-    logo.addEventListener('touchend', () => clearTimeout(pressTimer));
+    function showAdmin() {
+        document.getElementById('mainLoginForm').style.display = 'none';
+        document.getElementById('regForm').style.display = 'none';
+        document.getElementById('adminLoginForm').style.display = 'block';
+    }
+    logo.addEventListener('touchstart', function(e) {
+        pressTimer = setTimeout(showAdmin, 3000);
+        e.preventDefault();
+    });
+    logo.addEventListener('touchend', function() { clearTimeout(pressTimer); });
+    logo.addEventListener('touchmove', function() { clearTimeout(pressTimer); });
+    logo.addEventListener('mousedown', function() { pressTimer = setTimeout(showAdmin, 3000); });
+    logo.addEventListener('mouseup', function() { clearTimeout(pressTimer); });
+    logo.addEventListener('mouseleave', function() { clearTimeout(pressTimer); });
 
-    function showRegister() { document.getElementById('regForm').style.display='block'; document.getElementById('adminLoginForm').style.display='none'; }
-    function hideRegister() { document.getElementById('regForm').style.display='none'; }
-    function hideAdminLogin() { document.getElementById('adminLoginForm').style.display='none'; }
+    function showRegister() {
+        document.getElementById('mainLoginForm').style.display = 'none';
+        document.getElementById('regForm').style.display = 'block';
+        document.getElementById('adminLoginForm').style.display = 'none';
+    }
+    function hideRegister() {
+        document.getElementById('regForm').style.display = 'none';
+        document.getElementById('mainLoginForm').style.display = 'block';
+        document.getElementById('adminLoginForm').style.display = 'none';
+    }
+    function hideAdminLogin() {
+        document.getElementById('adminLoginForm').style.display = 'none';
+        document.getElementById('mainLoginForm').style.display = 'block';
+    }
 
     function doRegister() {
         const u = document.getElementById('regUser').value.trim();
@@ -283,6 +262,7 @@
         users[u] = { pass: p, deviceId: getDeviceId(), locked: false, score: 0, usdt: 0.01, lv: 1, refCode: refCode, refUsed: false, giftUsed: 0, giftDate: new Date().toDateString() };
         saveUsers(users);
         alert('Đăng ký thành công!');
+        // Tự quay về form đăng nhập
         hideRegister();
     }
 
@@ -294,8 +274,7 @@
         if (users[u].locked) { alert('Bị khóa!'); return; }
         if (users[u].deviceId !== getDeviceId()) { alert('Thiết bị khác!'); return; }
         localStorage.setItem("currentUser", u);
-        goTo('home');
-        updateHomeBalances();
+        goTo('home'); updateHomeBalances();
     }
 
     function doAdminLogin() {
@@ -307,116 +286,62 @@
     function doLogout() { localStorage.removeItem("currentUser"); localStorage.removeItem("isAdmin"); goTo('login'); }
 
     function updateHomeBalances() {
-        const u = localStorage.getItem("currentUser");
-        if (u) {
-            const users = getUsers();
-            if (users[u]) {
-                document.getElementById('homeUSDT').textContent = (users[u].usdt || 0.01).toFixed(2);
-                document.getElementById('homeBUILD').textContent = users[u].score || 0;
-            }
-        }
+        const u = localStorage.getItem("currentUser"); if (u) { const users = getUsers(); if (users[u]) { document.getElementById('homeUSDT').textContent = (users[u].usdt||0.01).toFixed(2); document.getElementById('homeBUILD').textContent = users[u].score||0; } }
     }
-
     function loadMenu() { const u = localStorage.getItem("currentUser"); if (u) document.getElementById('menuName').textContent = u; }
-    function changeName() {
-        const n = prompt('Nhập tên mới:');
-        if (n) { let users = getUsers(); const u = localStorage.getItem("currentUser"); if (users[u]) { users[u].displayName = n; saveUsers(users); document.getElementById('menuName').textContent = n; } }
-    }
-
-    function loadRefCode() {
-        const u = localStorage.getItem("currentUser");
-        if (u) { const users = getUsers(); if (users[u]) document.getElementById('myRefCode').textContent = users[u].refCode || '---'; }
-    }
-
+    function changeName() { const n = prompt('Tên mới:'); if (n) { let users = getUsers(); const u = localStorage.getItem("currentUser"); if (users[u]) { users[u].displayName = n; saveUsers(users); document.getElementById('menuName').textContent = n; } } }
+    function loadRefCode() { const u = localStorage.getItem("currentUser"); if (u) { const users = getUsers(); if (users[u]) document.getElementById('myRefCode').textContent = users[u].refCode||'---'; } }
     function useRefCode() {
-        const code = document.getElementById('refInput').value.trim().toUpperCase();
-        if (!code) return;
+        const code = document.getElementById('refInput').value.trim().toUpperCase(); if (!code) return;
         const u = localStorage.getItem("currentUser"); let users = getUsers();
-        if (users[u].refUsed) { alert('Đã dùng rồi!'); return; }
-        if (code === users[u].refCode) { alert('Không thể dùng mã của mình!'); return; }
+        if (users[u].refUsed) { alert('Đã dùng!'); return; }
+        if (code === users[u].refCode) { alert('Không thể tự nhập!'); return; }
         let found = false;
-        for (const [n, d] of Object.entries(users)) {
-            if (d.refCode === code) { found = true; users[n].score = (users[n].score||0) + 100; break; }
-        }
+        for (const [n,d] of Object.entries(users)) { if (d.refCode === code) { found = true; users[n].score = (users[n].score||0) + 100; break; } }
         if (!found) { alert('Mã không tồn tại!'); return; }
-        users[u].score = (users[u].score||0) + 100; users[u].refUsed = true;
-        saveUsers(users); alert('✅ +100 BUILD!'); updateHomeBalances();
+        users[u].score = (users[u].score||0) + 100; users[u].refUsed = true; saveUsers(users); alert('✅ +100 BUILD!'); updateHomeBalances();
     }
-
     function loadGiftRemain() {
-        const u = localStorage.getItem("currentUser"); if (u) {
-            const users = getUsers(); const today = new Date().toDateString();
-            if (users[u].giftDate !== today) { users[u].giftUsed = 0; users[u].giftDate = today; saveUsers(users); }
-            document.getElementById('giftRemain').textContent = Math.max(0, 3 - (users[u].giftUsed||0));
-        }
+        const u = localStorage.getItem("currentUser"); if (u) { const users = getUsers(); const today = new Date().toDateString(); if (users[u].giftDate !== today) { users[u].giftUsed = 0; users[u].giftDate = today; saveUsers(users); } document.getElementById('giftRemain').textContent = Math.max(0, 3 - (users[u].giftUsed||0)); }
     }
-
     function useGiftcode() {
         const code = document.getElementById('giftcodeInput').value.trim(); if (!code) return;
         const u = localStorage.getItem("currentUser"); let users = getUsers(); const today = new Date().toDateString();
         if (users[u].giftDate !== today) { users[u].giftUsed = 0; users[u].giftDate = today; }
         if ((users[u].giftUsed||0) >= 3) { alert('Hết lượt!'); return; }
-        const giftcodes = getGiftcodes();
-        if (!giftcodes[code]) { alert('Mã không tồn tại!'); return; }
-        if (giftcodes[code].used) { alert('Mã đã dùng!'); return; }
-        const g = giftcodes[code];
-        if (g.type === 'BUILD') users[u].score = (users[u].score||0) + g.amount;
-        else users[u].usdt = (users[u].usdt||0) + g.amount;
-        giftcodes[code].used = true; users[u].giftUsed = (users[u].giftUsed||0) + 1;
-        saveUsers(users); saveGiftcodes(giftcodes);
+        const giftcodes = getGiftcodes(); if (!giftcodes[code]) { alert('Mã không tồn tại!'); return; }
+        if (giftcodes[code].used) { alert('Đã dùng!'); return; }
+        const g = giftcodes[code]; if (g.type === 'BUILD') users[u].score = (users[u].score||0) + g.amount; else users[u].usdt = (users[u].usdt||0) + g.amount;
+        giftcodes[code].used = true; users[u].giftUsed = (users[u].giftUsed||0) + 1; saveUsers(users); saveGiftcodes(giftcodes);
         alert('🎉 +' + g.amount + ' ' + g.type); updateHomeBalances(); loadGiftRemain();
     }
-
     function selectGiftType(t) { giftType = t; document.getElementById('optUSDT').classList.toggle('selected', t==='USDT'); document.getElementById('optBUILD').classList.toggle('selected', t==='BUILD'); }
-
     function createGiftcode() {
-        const a = parseFloat(document.getElementById('giftAmount').value); if (!a || a<=0) return;
-        const code = "GIFT-" + Math.random().toString(36).substr(2,8).toUpperCase();
-        let g = getGiftcodes(); g[code] = { type: giftType, amount: a, used: false };
-        saveGiftcodes(g);
+        const a = parseFloat(document.getElementById('giftAmount').value); if (!a||a<=0) return;
+        const code = "GIFT-" + Math.random().toString(36).substr(2,8).toUpperCase(); let g = getGiftcodes(); g[code] = { type: giftType, amount: a, used: false }; saveGiftcodes(g);
         const link = location.href.split('?')[0] + '?gift=' + code;
-        document.getElementById('giftLink').style.display='block';
-        document.getElementById('giftLink').innerHTML = '🔗 <b style="color:#ffd700">' + link + '</b><br>Mã: <b style="color:#00ff88">' + code + '</b>';
+        document.getElementById('giftLink').style.display='block'; document.getElementById('giftLink').innerHTML = '🔗 <b style="color:#ffd700">' + link + '</b><br>Mã: <b style="color:#00ff88">' + code + '</b>';
     }
-
-    (function() {
-        const p = new URLSearchParams(location.search); const g = p.get('gift');
-        if (g && localStorage.getItem("currentUser")) { document.getElementById('giftcodeInput').value = g; goTo('giftcode'); setTimeout(useGiftcode, 500); }
-    })();
-
+    (function() { const p = new URLSearchParams(location.search); const g = p.get('gift'); if (g && localStorage.getItem("currentUser")) { document.getElementById('giftcodeInput').value = g; goTo('giftcode'); setTimeout(useGiftcode, 500); } })();
     function renderAdmin() {
-        if (localStorage.getItem("isAdmin") !== "true") return;
-        const users = getUsers(); let h = '<tr><th>User</th><th>Device</th><th>BUILD</th><th>USDT</th><th>TT</th><th>Action</th></tr>';
-        for (const [n,d] of Object.entries(users)) {
-            h += `<tr><td>${n}</td><td style="font-size:8px">${d.deviceId}</td><td>${d.score||0}</td><td>${(d.usdt||0).toFixed(2)}</td><td class="${d.locked?'locked':'unlocked'}">${d.locked?'🔒':'🔓'}</td><td><button class="admin-btn" style="background:${d.locked?'green':'orange'}" onclick="toggleLock('${n}')">${d.locked?'Mở':'Khóa'}</button></td></tr>`;
-        }
+        if (localStorage.getItem("isAdmin") !== "true") return; const users = getUsers();
+        let h = '<tr><th>User</th><th>Device</th><th>BUILD</th><th>USDT</th><th>TT</th><th>Action</th></tr>';
+        for (const [n,d] of Object.entries(users)) { h += `<tr><td>${n}</td><td style="font-size:8px">${d.deviceId}</td><td>${d.score||0}</td><td>${(d.usdt||0).toFixed(2)}</td><td class="${d.locked?'locked':'unlocked'}">${d.locked?'🔒':'🔓'}</td><td><button class="admin-btn" style="background:${d.locked?'green':'orange'}" onclick="toggleLock('${n}')">${d.locked?'Mở':'Khóa'}</button></td></tr>`; }
         document.getElementById('playerTable').innerHTML = h;
     }
-
     function toggleLock(u) { let users = getUsers(); if (users[u]) { users[u].locked = !users[u].locked; saveUsers(users); renderAdmin(); } }
 
     // TÀI XỈU
-    const emojis = ['⚀','⚁','⚂','⚃','⚄','⚅'];
-    let txScore = 0, txHistory = [], txRolling = false;
-    function loadScore() {
-        const u = localStorage.getItem("currentUser"); if (u) { const users = getUsers(); if (users[u]) { txScore = users[u].score||0; document.getElementById('txScore').textContent = txScore; } }
-    }
-    function saveScore() {
-        const u = localStorage.getItem("currentUser"); if (u) { let users = getUsers(); if (users[u]) { users[u].score = txScore; saveUsers(users); } }
-    }
+    const emojis = ['⚀','⚁','⚂','⚃','⚄','⚅']; let txScore = 0, txHistory = [], txRolling = false;
+    function loadScore() { const u = localStorage.getItem("currentUser"); if (u) { const users = getUsers(); if (users[u]) { txScore = users[u].score||0; document.getElementById('txScore').textContent = txScore; } } }
+    function saveScore() { const u = localStorage.getItem("currentUser"); if (u) { let users = getUsers(); if (users[u]) { users[u].score = txScore; saveUsers(users); } } }
     async function txPlay(c) {
-        if (txRolling) return;
-        const b = parseInt(document.getElementById('txBet').value);
-        if (isNaN(b) || b < 1 || b > txScore) { alert('Không đủ điểm!'); return; }
-        txRolling = true; document.getElementById('txResult').textContent = '';
-        const d = document.getElementById('txDice');
-        for (let i=0;i<8;i++) { d.textContent = Array(3).fill(0).map(()=>emojis[Math.floor(Math.random()*6)]).join(' '); await new Promise(r=>setTimeout(r,100)); }
-        const dice = Array(3).fill(0).map(()=>Math.floor(Math.random()*6)+1);
-        const total = dice.reduce((a,b)=>a+b,0), result = total>=11?'TAI':'XIU';
-        d.textContent = dice.map(v=>emojis[v-1]).join(' ');
-        document.getElementById('txTotal').textContent = 'Tổng: '+total+' ('+result+')';
-        const el = document.getElementById('txResult');
+        if (txRolling) return; const b = parseInt(document.getElementById('txBet').value);
+        if (isNaN(b)||b<1||b>txScore) { alert('Không đủ điểm!'); return; }
+        txRolling=true; document.getElementById('txResult').textContent=''; const d=document.getElementById('txDice');
+        for (let i=0;i<8;i++) { d.textContent=Array(3).fill(0).map(()=>emojis[Math.floor(Math.random()*6)]).join(' '); await new Promise(r=>setTimeout(r,100)); }
+        const dice=Array(3).fill(0).map(()=>Math.floor(Math.random()*6)+1), total=dice.reduce((a,b)=>a+b,0), result=total>=11?'TAI':'XIU';
+        d.textContent=dice.map(v=>emojis[v-1]).join(' '); document.getElementById('txTotal').textContent='Tổng: '+total+' ('+result+')';
+        const el=document.getElementById('txResult');
         if (c===result) { txScore+=b; el.textContent='🎉 THẮNG +'+b; el.style.color='#00ff88'; }
-        else { txScore-=b; el.textContent='😢 THUA -'+b; el.style.color='#ff4444'; }
-        document.getElementById('txScore').textContent = txScore; saveScore();
-        txHistory.unshift(c+' → '+result+' ('+total
+        else {
