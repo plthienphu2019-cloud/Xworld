@@ -11,8 +11,8 @@
         .screen { width: 100%; height: 100%; position: absolute; top: 0; left: 0; overflow-y: auto; display: none; }
         .screen.active { display: block !important; }
 
-        #loginScreen { background: linear-gradient(135deg, #0a0a1a, #0d1b2a, #0a1628); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; min-height: 100%; }
-        .logo { font-size: 36px; font-weight: bold; color: #fff; text-shadow: 0 0 20px #00d4ff; animation: neon 2s infinite; }
+        #loginScreen { background: linear-gradient(135deg, #0a0a1a, #0d1b2a, #0a1628); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; min-height: 100%; position: relative; }
+        .logo { font-size: 36px; font-weight: bold; color: #fff; text-shadow: 0 0 20px #00d4ff, 0 0 40px #00d4ff; animation: neon 2s infinite; }
         @keyframes neon { 0%,100% { text-shadow: 0 0 20px #00d4ff; } 50% { text-shadow: 0 0 40px #00d4ff, 0 0 80px #ff00ff; } }
         .input { width: 85%; padding: 12px; border-radius: 12px; border: 2px solid rgba(0,212,255,0.3); background: rgba(255,255,255,0.05); color: white; font-size: 14px; margin-bottom: 10px; text-align: center; outline: none; }
         .btn { padding: 12px 20px; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; color: white; }
@@ -22,48 +22,67 @@
         .user-item { padding: 10px; color: white; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; font-size: 13px; }
 
         #homeScreen { background: #0a1628; padding-bottom: 60px; position: relative; }
-        .status-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; background: #0d1f35; }
+        #homeScreen::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 30%, rgba(0,212,255,0.06), transparent 60%), radial-gradient(circle at 80% 70%, rgba(255,0,128,0.04), transparent 50%), radial-gradient(circle at 20% 80%, rgba(0,255,200,0.04), transparent 50%); pointer-events: none; animation: bgPulse 8s infinite; }
+        @keyframes bgPulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+        .status-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; background: #0d1f35; position: relative; z-index: 2; }
         .balances { display: flex; gap: 8px; align-items: center; color: white; font-size: 11px; }
         .bal-icon { width: 16px; height: 16px; }
-        .pet-frame { width: 260px; margin: 10px auto; text-align: center; background: linear-gradient(135deg, rgba(0,20,50,0.9), rgba(0,50,100,0.8)); border-radius: 20px; border: 2px solid rgba(0,200,255,0.4); padding: 15px; cursor: pointer; box-shadow: 0 0 30px rgba(0,200,255,0.2); animation: glow 3s infinite; }
+        .pet-frame { width: 260px; margin: 10px auto; text-align: center; background: linear-gradient(135deg, rgba(0,20,50,0.9), rgba(0,50,100,0.8)); border-radius: 20px; border: 2px solid rgba(0,200,255,0.4); padding: 15px; cursor: pointer; position: relative; z-index: 2; box-shadow: 0 0 30px rgba(0,200,255,0.2); animation: glow 3s infinite; }
         @keyframes glow { 0%,100% { box-shadow: 0 0 30px rgba(0,200,255,0.2); } 50% { box-shadow: 0 0 50px rgba(0,200,255,0.5); } }
         .pet-image { font-size: 70px; animation: float 3s infinite; }
         @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .pet-exp-bar { width: 100%; height: 6px; background: #222; border-radius: 3px; margin: 5px 0; overflow: hidden; }
         .pet-exp-fill { height: 100%; background: linear-gradient(90deg, #00d4ff, #00ff88); transition: width 0.5s; }
-        .section-title { padding: 5px 15px; color: #fff; font-weight: bold; font-size: 13px; }
-        .game-scroll { display: flex; gap: 8px; padding: 0 15px; overflow-x: auto; }
-        .game-card { min-width: 80px; background: rgba(255,255,255,0.1); border-radius: 10px; padding: 8px; text-align: center; color: white; font-size: 10px; cursor: pointer; }
+        .section-title { padding: 5px 15px; color: #fff; font-weight: bold; font-size: 13px; position: relative; z-index: 2; }
+        .game-scroll { display: flex; gap: 8px; padding: 0 15px; overflow-x: auto; position: relative; z-index: 2; }
+        .game-card { min-width: 80px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 10px; padding: 8px; text-align: center; color: white; font-size: 10px; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); }
         .navbar { position: absolute; bottom: 0; width: 100%; height: 50px; background: #0d1f35; display: flex; z-index: 20; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-size: 10px; cursor: pointer; }
 
-        .card { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 20px; margin: 10px 0; text-align: center; }
+        .card { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px; margin: 10px 0; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
         .menu-item { padding: 12px; background: #161b22; border-radius: 10px; margin-bottom: 6px; color: white; cursor: pointer; display: flex; justify-content: space-between; font-size: 14px; }
         .back-btn { color: white; font-size: 22px; cursor: pointer; background: none; border: none; }
         .admin-table { width: 100%; border-collapse: collapse; color: white; font-size: 11px; }
-        .admin-table th, .admin-table td { padding: 6px; border-bottom: 1px solid #222; }
+        .admin-table th, .admin-table td { padding: 6px; border-bottom: 1px solid #333; border-right: 1px solid #333; }
         .admin-table th { background: #222; }
         .qty-btn { width: 35px; height: 35px; border-radius: 8px; background: rgba(0,212,255,0.3); color: white; font-size: 18px; border: none; cursor: pointer; }
-        .lock-select { padding: 4px 6px; border-radius: 4px; background: #333; color: white; border: 1px solid #555; font-size: 10px; }
 
-        /* Thông báo khóa đẹp */
-        .ban-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999; display: none; align-items: center; justify-content: center; }
-        .ban-box { background: linear-gradient(135deg, #1a0000, #330000); border: 2px solid #ff4444; border-radius: 20px; padding: 30px; text-align: center; color: white; width: 85%; max-width: 350px; box-shadow: 0 0 50px rgba(255,0,0,0.5); animation: shake 0.5s; }
+        .lb-table { width: 100%; border-collapse: collapse; color: white; font-size: 12px; }
+        .lb-table th { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 10px; border: 1px solid rgba(255,255,255,0.2); }
+        .lb-table td { padding: 10px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px); }
+        .lb-1 { background: rgba(255,215,0,0.25); }
+        .lb-2 { background: rgba(192,192,192,0.15); }
+        .lb-3 { background: rgba(205,127,50,0.15); }
+        .medal { font-size: 22px; }
+
+        .alert-box { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #1a1a2e, #16213e); border: 2px solid #ffd700; border-radius: 20px; padding: 25px; text-align: center; color: white; z-index: 999; display: none; min-width: 280px; box-shadow: 0 0 60px rgba(255,215,0,0.5); animation: popIn 0.3s; }
+        @keyframes popIn { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+        .alert-icon { font-size: 50px; }
+        .alert-title { color: #ffd700; font-size: 20px; font-weight: bold; margin: 10px 0; }
+        .alert-text { color: #ddd; font-size: 14px; }
+
+        .ban-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: none; align-items: center; justify-content: center; }
+        .ban-box { background: linear-gradient(135deg, #1a0000, #330000); border: 2px solid #ff4444; border-radius: 20px; padding: 30px; text-align: center; color: white; width: 85%; max-width: 350px; box-shadow: 0 0 50px rgba(255,0,0,0.6); animation: shake 0.5s; }
         @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
         .ban-icon { font-size: 60px; }
-        .ban-title { color: #ff4444; font-size: 22px; font-weight: bold; margin: 10px 0; }
-        .ban-text { color: #ddd; font-size: 14px; line-height: 1.6; }
-        .ban-contact { color: #ffd700; font-weight: bold; font-size: 16px; }
+        .ban-title { color: #ff4444; font-size: 20px; font-weight: bold; margin: 10px 0; line-height: 1.4; }
+        .ban-text { color: #ddd; font-size: 14px; margin: 5px 0; }
+        .ban-btn { background: #00d4ff; color: black; padding: 12px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; border: none; cursor: pointer; margin-top: 15px; display: inline-block; text-decoration: none; }
     </style>
 </head>
 <body>
 <div class="phone">
-    <!-- THÔNG BÁO KHÓA -->
+    <div class="alert-box" id="alertBox">
+        <div class="alert-icon" id="alertIcon">✅</div>
+        <div class="alert-title" id="alertTitle">Thành công</div>
+        <div class="alert-text" id="alertText">Nội dung</div>
+    </div>
     <div class="ban-overlay" id="banOverlay">
         <div class="ban-box">
             <div class="ban-icon">🚫</div>
-            <div class="ban-title">TÀI KHOẢN ĐÃ BỊ KHÓA</div>
-            <div class="ban-text">Do gian lận. Vui lòng liên hệ Admin:<br><span class="ban-contact">📞 0349.155.073</span></div>
+            <div class="ban-title">TÀI KHOẢN BẠN ĐÃ BỊ KHÓA<br>DO GIAN LẬN</div>
+            <div class="ban-text">Vui lòng liên hệ Admin</div>
+            <a class="ban-btn" href="https://zalo.me/0349155073">📞 Liên Hệ Admin</a>
         </div>
     </div>
 
@@ -83,8 +102,6 @@
             <input class="input" type="text" id="regUser" placeholder="Tên đăng nhập" style="width:100%">
             <input class="input" type="password" id="regPass" placeholder="Mật khẩu" style="width:100%">
             <input class="input" type="password" id="regPassConfirm" placeholder="Nhập lại mật khẩu" style="width:100%">
-            <p id="passError" style="color:#ff4444;font-size:10px;display:none">Mật khẩu phải 8+ ký tự!</p>
-            <p id="passMatchError" style="color:#ff4444;font-size:10px;display:none">Mật khẩu không khớp!</p>
             <button class="btn btn-login" id="btnRegister" style="width:100%">ĐĂNG KÝ</button>
             <span class="link" id="linkBackToLogin">← Quay lại</span>
         </div>
@@ -112,17 +129,17 @@
     <!-- RENT, SHOP, INVENTORY, MENU, GIFTCODE, CREATE GIFT, LEADERBOARD, ADMIN -->
     <div id="rentScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:18px">💸 Cho thuê</span></div><div class="card"><h3>CHO THUÊ</h3><input class="input" type="number" id="rentPrice" value="10" min="5" max="35" style="width:100%"><select class="input" id="rentDays" style="width:100%"><option value="2">2 ngày</option><option value="7">7 ngày</option><option value="30">30 ngày</option><option value="365">365 ngày</option></select><button class="btn" style="background:#ff8800;width:100%;margin-top:10px" onclick="rentPet()">CHO THUÊ</button></div></div>
 
-    <div id="shopScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:18px">🛒 Cửa hàng</span></div><div class="card"><h3>📦 Exp Thú</h3><p style="color:#aaa;font-size:11px">Tỉ lệ cao: 15% | 200-5000 EXP | 10.5 BUILD</p><div style="display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0"><button class="qty-btn" onclick="changeQty('normal',-1)">−</button><span id="normalQty" style="color:white;font-size:18px">1</span><button class="qty-btn" onclick="changeQty('normal',1)">+</button></div><p>Tổng: <b style="color:#ffd700" id="normalTotal">10.5 BUILD</b></p><button class="btn" style="background:#ffd700;color:black;width:80%" onclick="buyBox('normal')">MUA</button></div><div class="card"><h3>🌟 Exp Siêu Cấp</h3><p style="color:#aaa;font-size:11px">Tỉ lệ cao: 50% | 1430-9000 EXP | 50.2 BUILD</p><div style="display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0"><button class="qty-btn" onclick="changeQty('super',-1)">−</button><span id="superQty" style="color:white;font-size:18px">1</span><button class="qty-btn" onclick="changeQty('super',1)">+</button></div><p>Tổng: <b style="color:#ffd700" id="superTotal">50.2 BUILD</b></p><button class="btn" style="background:#ffd700;color:black;width:80%" onclick="buyBox('super')">MUA</button></div></div>
+    <div id="shopScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:18px">🛒 Cửa hàng</span></div><div class="card"><h3>📦 Exp Thú</h3><p style="color:#aaa;font-size:11px">Tỉ lệ cao 15% | 200-5000 EXP | 10.5 BUILD</p><div style="display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0"><button class="qty-btn" onclick="changeQty('normal',-1)">−</button><span id="normalQty" style="color:white;font-size:18px">1</span><button class="qty-btn" onclick="changeQty('normal',1)">+</button></div><p>Tổng: <b style="color:#ffd700" id="normalTotal">10.5 BUILD</b></p><button class="btn" style="background:#ffd700;color:black;width:80%" onclick="buyBox('normal')">MUA</button></div><div class="card"><h3>🌟 Exp Siêu Cấp</h3><p style="color:#aaa;font-size:11px">Tỉ lệ cao 50% | 1430-9000 EXP | 50.2 BUILD</p><div style="display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0"><button class="qty-btn" onclick="changeQty('super',-1)">−</button><span id="superQty" style="color:white;font-size:18px">1</span><button class="qty-btn" onclick="changeQty('super',1)">+</button></div><p>Tổng: <b style="color:#ffd700" id="superTotal">50.2 BUILD</b></p><button class="btn" style="background:#ffd700;color:black;width:80%" onclick="buyBox('super')">MUA</button></div></div>
 
     <div id="inventoryScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:18px">📦 Kho đồ</span></div><div id="inventoryList"></div></div>
 
-    <div id="menuScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackHome">←</button><span style="color:white;font-size:18px">Tài khoản</span></div><div style="display:flex;align-items:center;gap:12px;margin-bottom:15px"><div id="menuAvatar" style="width:50px;height:50px;border-radius:25px;background:#00d4ff;display:flex;align-items:center;justify-content:center;font-size:25px">🦊</div><div><div id="menuName" style="color:white;font-size:16px">Player</div><div id="menuUID" style="color:#888;font-size:10px">UID: ---</div></div></div><div class="menu-item" onclick="goTo('invite')"><span>📨 Mời bạn bè</span><span>›</span></div><div class="menu-item" onclick="goTo('giftcode')"><span>🎁 Giftcode</span><span>›</span></div><div class="menu-item" onclick="goTo('createGift')"><span>✨ Tạo Giftcode</span><span>›</span></div><div class="menu-item" onclick="goTo('leaderboard')"><span>🏆 Bảng xếp hạng</span><span>›</span></div><div class="menu-item" id="btnAdvancedSettings" style="display:none"><span>⚙️ Cài đặt nâng cao</span><span id="lockIcon">🔒</span></div><div id="adminAuthForm" style="display:none;background:#1a1111;border-radius:10px;padding:12px;margin-top:-6px;margin-bottom:8px;border:1px solid #ff4444"><input class="input" type="password" id="adminCodeMenu" placeholder="Nhập mã 8 ký tự" style="width:100%;text-transform:uppercase" maxlength="8"><p style="color:#aaa;font-size:10px;text-align:center">Còn <span id="codeAttempts">3</span> lần</p><button class="btn" style="background:#ff4444;width:100%;margin-top:5px" id="btnAdminCodeAuth">XÁC THỰC</button></div><div id="adminMenuItems" style="display:none"><div class="menu-item" id="btnAdminUsers" style="background:#221111;border:1px solid #ff4444"><span>👥 Quản lý tài khoản</span><span>›</span></div><div class="menu-item" id="btnAdminGift" style="background:#221111;border:1px solid #ff4444"><span>🎁 Tặng quà</span><span>›</span></div><div class="menu-item" id="btnAdminSubFunds" style="background:#221111;border:1px solid #ff4444"><span>➖ Trừ tiền User</span><span>›</span></div><div class="menu-item" id="btnAdminAddFunds" style="background:#221111;border:1px solid #ff4444"><span>💰 Cộng tiền Admin</span><span>›</span></div></div></div>
+    <div id="menuScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackHome">←</button><span style="color:white;font-size:18px">Tài khoản</span></div><div style="display:flex;align-items:center;gap:12px;margin-bottom:15px"><div id="menuAvatar" style="width:50px;height:50px;border-radius:25px;background:#00d4ff;display:flex;align-items:center;justify-content:center;font-size:25px">🦊</div><div><div id="menuName" style="color:white;font-size:16px">Player</div><div id="menuUID" style="color:#888;font-size:10px">UID: ---</div></div></div><div class="menu-item" onclick="goTo('invite')"><span>📨 Mời bạn bè</span><span>›</span></div><div class="menu-item" onclick="goTo('giftcode')"><span>🎁 Giftcode</span><span>›</span></div><div class="menu-item" onclick="goTo('createGift')"><span>✨ Tạo Giftcode</span><span>›</span></div><div class="menu-item" onclick="goTo('leaderboard')"><span>🏆 Bảng xếp hạng</span><span>›</span></div><div class="menu-item" id="btnAdvancedSettings" style="display:none"><span>⚙️ Cài đặt nâng cao</span><span>🔒</span></div><div id="adminAuthForm" style="display:none;background:#1a1111;border-radius:10px;padding:12px;margin-top:-6px;margin-bottom:8px;border:1px solid #ff4444"><input class="input" type="password" id="adminCodeMenu" placeholder="Nhập mã 8 ký tự" style="width:100%;text-transform:uppercase" maxlength="8"><p style="color:#aaa;font-size:10px;text-align:center">Còn <span id="codeAttempts">3</span> lần</p><button class="btn" style="background:#ff4444;width:100%;margin-top:5px" id="btnAdminCodeAuth">XÁC THỰC</button></div><div id="adminMenuItems" style="display:none"><div class="menu-item" id="btnAdminUsers" style="background:#221111;border:1px solid #ff4444"><span>👥 Quản lý tài khoản</span><span>›</span></div><div class="menu-item" id="btnAdminGift" style="background:#221111;border:1px solid #ff4444"><span>🎁 Tặng quà</span><span>›</span></div><div class="menu-item" id="btnAdminSubFunds" style="background:#221111;border:1px solid #ff4444"><span>➖ Trừ tiền User</span><span>›</span></div><div class="menu-item" id="btnAdminAddFunds" style="background:#221111;border:1px solid #ff4444"><span>💰 Cộng tiền Admin</span><span>›</span></div></div></div>
 
     <div id="giftcodeScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:18px">🎁 Giftcode</span></div><div class="card"><h3>NHẬP GIFTCODE</h3><input class="input" type="text" id="giftcodeInput" placeholder="XXXX-XXXX-XXXX" style="width:100%"><button class="btn" style="background:#ffd700;color:black;width:100%;margin-top:8px" onclick="useGiftcode()">NHẬN QUÀ</button><p style="color:#aaa;font-size:10px;margin-top:5px">Còn: <span id="giftRemain" style="color:#00ff88">3</span> lần</p></div></div>
 
     <div id="createGiftScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:18px">✨ Tạo Giftcode</span></div><div class="card"><h3>TẠO MÃ</h3><div style="display:flex;gap:8px;margin:8px 0"><button class="qty-btn" id="optUSDT" onclick="selectGiftType('USDT')" style="background:#00d4ff">💎 USDT</button><button class="qty-btn" id="optBUILD" onclick="selectGiftType('BUILD')" style="background:#ffd700;color:black">🪙 BUILD</button></div><input class="input" type="number" id="giftAmount" placeholder="Số tiền" style="width:100%"><button class="btn" style="background:#ffd700;color:black;width:100%;margin-top:8px" onclick="createGiftcode()">TẠO MÃ</button><div id="giftLink" style="background:#111;padding:10px;border-radius:8px;color:#00ff88;font-size:11px;margin-top:8px;display:none"></div></div></div>
 
-    <div id="leaderboardScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:#ffd700;font-size:18px">🏆 BẢNG XẾP HẠNG</span></div><table style="width:100%;border-collapse:collapse;color:white;font-size:12px" id="lbTable"><tr style="background:#222"><th>Hạng</th><th>Người chơi</th><th>BUILD</th></tr></table></div>
+    <div id="leaderboardScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:#ffd700;font-size:18px">🏆 BẢNG XẾP HẠNG</span></div><table class="lb-table" id="lbTable"><tr><th>Hạng</th><th>Người chơi</th><th>BUILD</th></tr></table></div>
 
     <div id="adminUsersScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackAdminUsers">←</button><span style="color:#ff4444;font-size:18px">👥 Quản lý</span></div><table class="admin-table" id="adminUsersTable"><tr><th>User</th><th>UID</th><th>BUILD</th><th>USDT</th><th>Thời hạn</th><th>Action</th></tr></table></div>
 
@@ -151,6 +168,14 @@ function gAt(){var d=localStorage.getItem("adminAttempts");if(!d)return MAX_ATTE
 function sAt(a){localStorage.setItem("adminAttempts",JSON.stringify({attempts:a,date:new Date().toDateString()}))}
 function genUID(){var c="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",uid="XW_";for(var i=0;i<8;i++)uid+=c.charAt(Math.floor(Math.random()*c.length));return uid}
 
+function showAlert(icon,title,text){
+    document.getElementById('alertIcon').textContent=icon;
+    document.getElementById('alertTitle').textContent=title;
+    document.getElementById('alertText').textContent=text;
+    document.getElementById('alertBox').style.display='block';
+    setTimeout(function(){document.getElementById('alertBox').style.display='none';},2000);
+}
+
 function goTo(id){
     var ss=document.querySelectorAll('.screen');for(var i=0;i<ss.length;i++){ss[i].classList.remove('active');ss[i].style.display='none';}
     var el=document.getElementById(id+'Screen');if(el){el.classList.add('active');el.style.display='block';}
@@ -169,12 +194,13 @@ function isSP(p){return p.length>=8&&/[A-Z]/.test(p)&&/[0-9]/.test(p)&&/[!@#$%^&
 function doRegister(){
     var e=document.getElementById('regEmail').value.trim(),u=document.getElementById('regUser').value.trim();
     var p=document.getElementById('regPass').value.trim(),p2=document.getElementById('regPassConfirm').value.trim();
-    if(!e||!u||!p||!p2){alert('Điền đủ!');return;}
-    if(!isSP(p)){alert('Mật khẩu phải 8+ ký tự (hoa, số, đặc biệt)!');return;}
-    if(p!==p2){alert('Mật khẩu không khớp!');return;}
-    var users=gU();if(users[u]){alert('Đã tồn tại!');return;}
+    if(!e||!u||!p||!p2){showAlert('❌','Lỗi','Vui lòng điền đầy đủ!');return;}
+    if(!isSP(p)){showAlert('❌','Lỗi','Mật khẩu phải 8+ ký tự (hoa, số, đặc biệt)!');return;}
+    if(p!==p2){showAlert('❌','Lỗi','Mật khẩu không khớp!');return;}
+    var users=gU();if(users[u]){showAlert('❌','Lỗi','Tài khoản đã tồn tại!');return;}
     users[u]={email:e,pass:p,locked:false,lockUntil:null,build:0,usdt:0,xworld:0,lv:1,exp:0,refCode:"REF-"+Math.random().toString(36).substr(2,6).toUpperCase(),uid:genUID(),avatar:"🦊"};
-    sU(users);alert('🎉 Đăng ký thành công! UID: '+users[u].uid);document.getElementById('regForm').style.display='none';document.getElementById('mainLoginForm').style.display='flex';renderSU();
+    sU(users);showAlert('🎉','Thành công','Đăng ký thành công! UID: '+users[u].uid);
+    document.getElementById('regForm').style.display='none';document.getElementById('mainLoginForm').style.display='flex';renderSU();
 }
 
 function doLogin(){
@@ -182,7 +208,7 @@ function doLogin(){
     if(ADMIN_ACCOUNTS[u]&&ADMIN_ACCOUNTS[u].pass===p){localStorage.setItem("currentUser",u);localStorage.setItem("isAdmin","true");goTo('home');updatePet();updateBal();return;}
     var users=gU();var found=null;
     if(users[u]){found=u;}else{for(var n in users){if(users[n].email===u){found=n;break;}}}
-    if(!found||users[found].pass!==p){alert('❌ Sai!');return;}
+    if(!found||users[found].pass!==p){showAlert('❌','Lỗi','Sai tài khoản hoặc mật khẩu!');return;}
     if(users[found].locked){
         if(users[found].lockUntil){
             var now=new Date().getTime();
@@ -198,7 +224,7 @@ function doLogin(){
     localStorage.setItem("currentUser",found);goTo('home');updatePet();updateBal();
 }
 
-function doLogout(){localStorage.removeItem("currentUser");localStorage.removeItem("isAdmin");goTo('login');}
+function doLogout(){localStorage.removeItem("currentUser");localStorage.removeItem("isAdmin");goTo('login');renderSU();}
 
 function updateBal(){
     var u=localStorage.getItem("currentUser");if(!u)return;
@@ -226,30 +252,26 @@ function updatePetD(){
     document.getElementById('btnRent').style.display=lv>=10?'block':'none';
 }
 function upgradePet(){
-    var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u]){alert('Admin ko!');return;}
-    var users=gU();if(!users[u])return;var lv=users[u].lv||1;if(lv>=PET_DATA.length){alert('Max level!');return;}
+    var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u])return;
+    var users=gU();if(!users[u])return;var lv=users[u].lv||1;if(lv>=PET_DATA.length){showAlert('❌','Lỗi','Đã đạt level tối đa!');return;}
     var exp=users[u].exp||0,pet=gPD(lv);
-    if(exp>=pet.max){
-        var du=exp-pet.max;
-        users[u].lv=lv+1;
-        users[u].exp=gPD(lv+1).min+du;
-        sU(users);alert('🎉 Lên Lv.'+(lv+1)+'! EXP dư: '+du);updatePetD();updatePet();
-    }else{alert('Chưa đủ EXP!');}
+    if(exp>=pet.max){var du=exp-pet.max;users[u].lv=lv+1;users[u].exp=gPD(lv+1).min+du;sU(users);showAlert('🎉','Thành công','Lên Lv.'+(lv+1)+'! EXP dư: '+du);updatePetD();updatePet();}
+    else{showAlert('❌','Lỗi','Chưa đủ EXP! Cần '+pet.max+' EXP');}
 }
 function rentPet(){
     var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u])return;
-    var users=gU();if(!users[u])return;if((users[u].lv||1)<10){alert('Cần Lv10!');return;}
-    var price=parseInt(document.getElementById('rentPrice').value);if(price<5||price>35){alert('5-35!');return;}
-    alert('✅ Cho thuê '+document.getElementById('rentDays').value+' ngày, '+price+' BUILD!');
+    var users=gU();if(!users[u])return;if((users[u].lv||1)<10){showAlert('❌','Lỗi','Cần Lv10 trở lên!');return;}
+    var price=parseInt(document.getElementById('rentPrice').value);if(price<5||price>35){showAlert('❌','Lỗi','Giá 5-35 BUILD!');return;}
+    showAlert('✅','Thành công','Đã cho thuê '+document.getElementById('rentDays').value+' ngày, '+price+' BUILD!');
 }
 function changeQty(t,d){shopQty[t]=Math.max(1,Math.min(t==='normal'?30:20,shopQty[t]+d));document.getElementById(t+'Qty').textContent=shopQty[t];document.getElementById(t+'Total').textContent=(t==='normal'?10.5*shopQty[t]:50.2*shopQty[t]).toFixed(1)+' BUILD';}
 function buyBox(type){
     var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u])return;
     var users=gU();if(!users[u])return;var qty=shopQty[type],price=type==='normal'?10.5:50.2,total=qty*price;
-    if((users[u].build||0)<total){alert('Không đủ BUILD!');return;}
+    if((users[u].build||0)<total){showAlert('❌','Lỗi','Không đủ BUILD!');return;}
     users[u].build-=total;var inv=gI();
     for(var i=0;i<qty;i++){inv.push({type:type,name:type==='normal'?'Exp Thú':'Exp Siêu Cấp',minExp:type==='normal'?200:1430,maxExp:type==='normal'?5000:9000,highRate:type==='normal'?0.15:0.5});}
-    sU(users);sI(inv);updateBal();alert('✅ Mua '+qty+' hòm! BUILD còn: '+users[u].build.toFixed(1));
+    sU(users);sI(inv);updateBal();showAlert('✅','Thành công','Đã mua '+qty+' hòm! BUILD còn: '+users[u].build.toFixed(1));
 }
 function renderInv(){var inv=gI(),h='';if(inv.length===0){h='<p style="color:#aaa;text-align:center;margin-top:40px">Kho đồ trống</p>';}else{for(var i=0;i<inv.length;i++){h+='<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div><b>'+inv[i].name+'</b><p style="color:#aaa;font-size:10px">'+inv[i].minExp+'-'+inv[i].maxExp+' EXP | Tỉ lệ cao: '+(inv[i].highRate*100)+'%</p></div><button class="btn" style="background:#00ff88;color:black;padding:8px 15px" onclick="openBox('+i+')">MỞ</button></div>';}}document.getElementById('inventoryList').innerHTML=h;}
 function openBox(idx){
@@ -257,14 +279,11 @@ function openBox(idx){
     var inv=gI();if(idx>=inv.length)return;var box=inv[idx];
     var highRoll=Math.random()<box.highRate;
     var exp;
-    if(highRoll){
-        exp=Math.floor(Math.random()*(box.maxExp-box.minExp+1))+box.minExp;
-    }else{
-        exp=Math.floor((Math.random()*(box.maxExp-box.minExp+1))*0.3)+box.minExp;
-    }
+    if(highRoll){exp=Math.floor(Math.random()*(box.maxExp-box.minExp+1))+box.minExp;}
+    else{exp=Math.floor((Math.random()*(box.maxExp-box.minExp+1))*0.3)+box.minExp;}
     users[u].exp=(users[u].exp||0)+exp;inv.splice(idx,1);
     sU(users);sI(inv);renderInv();updatePet();updatePetD();
-    alert(highRoll?'🌟 MAY MẮN! +'+exp+' EXP':'🎁 +'+exp+' EXP');
+    showAlert(highRoll?'🌟':'🎁',highRoll?'May mắn!':'Nhận thưởng','+' + exp + ' EXP');
 }
 
 function loadMenu(){
@@ -279,56 +298,70 @@ function loadMenu(){
 
 document.getElementById('btnAdvancedSettings').onclick=function(){
     var f=document.getElementById('adminAuthForm');
-    if(f.style.display==='none'){var att=gAt();document.getElementById('codeAttempts').textContent=att;if(att<=0){alert('Hết lượt!');return;}f.style.display='block';}else{f.style.display='none';}
+    if(f.style.display==='none'){var att=gAt();document.getElementById('codeAttempts').textContent=att;if(att<=0){showAlert('🚫','Hết lượt','Thử lại sau 24h!');return;}f.style.display='block';}else{f.style.display='none';}
 };
 document.getElementById('btnAdminCodeAuth').onclick=function(){
     var code=document.getElementById('adminCodeMenu').value.trim().toUpperCase();var att=gAt();
-    if(att<=0)return;if(code.length!==8){alert('Đủ 8 ký tự!');return;}
-    if(ADMIN_CODES.indexOf(code)!==-1){localStorage.setItem("isAdmin","true");sAt(MAX_ATTEMPTS);document.getElementById('adminAuthForm').style.display='none';document.getElementById('adminMenuItems').style.display='block';alert('✅ OK!');}
-    else{att--;sAt(att);document.getElementById('codeAttempts').textContent=att;if(att<=0){alert('Hết!');}else{alert('Sai! Còn '+att);}}
+    if(att<=0)return;if(code.length!==8){showAlert('❌','Lỗi','Đủ 8 ký tự!');return;}
+    if(ADMIN_CODES.indexOf(code)!==-1){localStorage.setItem("isAdmin","true");sAt(MAX_ATTEMPTS);document.getElementById('adminAuthForm').style.display='none';document.getElementById('adminMenuItems').style.display='block';showAlert('✅','Thành công','Xác thực Admin OK!');}
+    else{att--;sAt(att);document.getElementById('codeAttempts').textContent=att;if(att<=0){showAlert('🚫','Hết lượt','Bạn đã nhập sai 3 lần!');}else{showAlert('❌','Lỗi','Sai mã! Còn '+att+' lần');}}
 };
 
-function renderLB(){var users=gU(),arr=[];for(var n in users){arr.push({name:n,build:users[n].build||0});}arr.sort(function(a,b){return b.build-a.build;});var h='<tr><th>Hạng</th><th>User</th><th>BUILD</th></tr>';for(var i=0;i<Math.min(100,arr.length);i++){h+='<tr'+(i===0?' style="color:#ffd700"':'')+'><td>'+(i+1)+'</td><td>'+arr[i].name+'</td><td>'+arr[i].build+'</td></tr>';}document.getElementById('lbTable').innerHTML=h;}
+function renderLB(){
+    var users=gU(),arr=[];
+    for(var n in users){arr.push({name:n,build:users[n].build||0});}
+    arr.sort(function(a,b){return b.build-a.build;});
+    var medals=['🥇','🥈','🥉'];
+    var h='<tr><th>Hạng</th><th>Người chơi</th><th>BUILD</th></tr>';
+    for(var i=0;i<Math.min(100,arr.length);i++){
+        var cls=i===0?'lb-1':(i===1?'lb-2':(i===2?'lb-3':''));
+        var medal=i<3?'<span class="medal">'+medals[i]+'</span> ':(i+1);
+        h+='<tr class="'+cls+'"><td>'+medal+'</td><td>'+arr[i].name+'</td><td>'+arr[i].build+'</td></tr>';
+    }
+    document.getElementById('lbTable').innerHTML=h;
+}
 function loadGR(){var u=localStorage.getItem("currentUser");if(u&&!ADMIN_ACCOUNTS[u]){var users=gU(),t=new Date().toDateString();if(users[u].giftDate!==t){users[u].giftUsed=0;users[u].giftDate=t;sU(users);}document.getElementById('giftRemain').textContent=Math.max(0,3-(users[u].giftUsed||0));}}
 function useGiftcode(){
-    var code=document.getElementById('giftcodeInput').value.trim();if(!code){alert('Nhập mã!');return;}
+    var code=document.getElementById('giftcodeInput').value.trim();if(!code){showAlert('❌','Lỗi','Nhập mã Giftcode!');return;}
     var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u])return;
     var users=gU(),t=new Date().toDateString();
     if(users[u].giftDate!==t){users[u].giftUsed=0;users[u].giftDate=t;}
-    if((users[u].giftUsed||0)>=3){alert('Hết lượt!');return;}
+    if((users[u].giftUsed||0)>=3){showAlert('🚫','Hết lượt','Tối đa 3 lần/ngày!');return;}
     var gc=JSON.parse(localStorage.getItem("giftcodes")||"{}");
-    if(!gc[code]){alert('Không tồn tại!');return;}if(gc[code].used){alert('Đã dùng!');return;}
+    if(!gc[code]){showAlert('❌','Lỗi','Mã không tồn tại!');return;}
+    if(gc[code].used){showAlert('❌','Lỗi','Mã đã dùng!');return;}
     var g=gc[code];if(g.type==='BUILD')users[u].build+=g.amount;else users[u].usdt+=g.amount;
     gc[code].used=true;users[u].giftUsed++;sU(users);localStorage.setItem("giftcodes",JSON.stringify(gc));
-    alert('🎉 +'+g.amount+' '+g.type);updateBal();loadGR();
+    showAlert('🎉','Thành công','+' + g.amount + ' ' + g.type);updateBal();loadGR();
 }
 function selectGiftType(t){giftType=t;}
-function createGiftcode(){var a=parseFloat(document.getElementById('giftAmount').value);if(!a||a<=0)return;var code="GIFT-"+Math.random().toString(36).substr(2,8).toUpperCase();var gc=JSON.parse(localStorage.getItem("giftcodes")||"{}");gc[code]={type:giftType,amount:a,used:false};localStorage.setItem("giftcodes",JSON.stringify(gc));document.getElementById('giftLink').style.display='block';document.getElementById('giftLink').innerHTML='Mã: <b style="color:#00ff88">'+code+'</b>';}
+function createGiftcode(){var a=parseFloat(document.getElementById('giftAmount').value);if(!a||a<=0){showAlert('❌','Lỗi','Nhập số tiền!');return;}var code="GIFT-"+Math.random().toString(36).substr(2,8).toUpperCase();var gc=JSON.parse(localStorage.getItem("giftcodes")||"{}");gc[code]={type:giftType,amount:a,used:false};localStorage.setItem("giftcodes",JSON.stringify(gc));document.getElementById('giftLink').style.display='block';document.getElementById('giftLink').innerHTML='Mã: <b style="color:#00ff88">'+code+'</b>';showAlert('✅','Thành công','Đã tạo mã: '+code);}
 
 function renderAU(){
-    var users=gU(),h='<tr><th>User</th><th>UID</th><th>BUILD</th><th>USDT</th><th>Khóa</th><th>Action</th></tr>';
+    var users=gU(),h='<tr><th>User</th><th>UID</th><th>BUILD</th><th>USDT</th><th>Thời hạn</th><th>Action</th></tr>';
     for(var n in users){var d=users[n];
-        var lockSel='<select class="lock-select" id="ls_'+n+'"><option value="0">Chọn</option><option value="24h">24h</option><option value="3d">3 ngày</option><option value="7d">7 ngày</option><option value="30d">30 ngày</option><option value="forever">Vĩnh viễn</option></select>';
+        var lockSel='<select class="qty-btn" id="ls_'+n+'" style="font-size:9px;width:60px"><option value="0">Chọn</option><option value="24h">24h</option><option value="3d">3 ngày</option><option value="7d">7 ngày</option><option value="30d">30 ngày</option><option value="forever">Vĩnh viễn</option></select>';
         var st=d.locked?(d.lockUntil?'🔒 '+new Date(d.lockUntil).toLocaleDateString():'🔒 Vĩnh viễn'):'🔓';
-        h+='<tr><td>'+n+'</td><td style="font-size:9px">'+(d.uid||'---')+'</td><td>'+(d.build||0)+'</td><td>'+(d.usdt||0).toFixed(2)+'</td><td>'+st+'</td><td>'+lockSel+' <button class="qty-btn" style="font-size:10px" onclick="lockUser(\''+n+'\')">Khóa</button> <button class="qty-btn" style="font-size:10px;background:green" onclick="unlockUser(\''+n+'\')">Mở</button></td></tr>';
+        h+='<tr><td>'+n+'</td><td style="font-size:9px">'+(d.uid||'---')+'</td><td>'+(d.build||0)+'</td><td>'+(d.usdt||0).toFixed(2)+'</td><td>'+st+'</td><td>'+lockSel+' <button class="qty-btn" style="font-size:9px" onclick="lockUser(\''+n+'\')">Khóa</button> <button class="qty-btn" style="font-size:9px;background:green" onclick="unlockUser(\''+n+'\')">Mở</button></td></tr>';
     }
     document.getElementById('adminUsersTable').innerHTML=h;
 }
 function lockUser(u){
-    var sel=document.getElementById('ls_'+u);if(!sel||sel.value==='0'){alert('Chọn thời hạn!');return;}
+    var sel=document.getElementById('ls_'+u);if(!sel||sel.value==='0'){showAlert('❌','Lỗi','Chọn thời hạn!');return;}
     var users=gU();if(!users[u])return;
     var now=new Date().getTime(),dur=0;
     switch(sel.value){case '24h':dur=86400000;break;case '3d':dur=259200000;break;case '7d':dur=604800000;break;case '30d':dur=2592000000;break;case 'forever':dur=-1;break;}
     users[u].locked=true;users[u].lockUntil=dur===-1?null:now+dur;sU(users);renderAU();
+    showAlert('🔒','Đã khóa','Tài khoản '+u+' đã bị khóa!');
 }
-function unlockUser(u){var users=gU();if(users[u]){users[u].locked=false;users[u].lockUntil=null;sU(users);renderAU();}}
+function unlockUser(u){var users=gU();if(users[u]){users[u].locked=false;users[u].lockUntil=null;sU(users);renderAU();showAlert('🔓','Đã mở','Tài khoản '+u+' đã được mở!');}}
 
-function adminSendGift(){var n=document.getElementById('adminGiftUser').value.trim(),a=parseFloat(document.getElementById('adminGiftAmount').value);if(!n||!a||a<=0)return;var users=gU();if(!users[n]){alert('Không tồn tại!');return;}if(adminGiftType==='BUILD')users[n].build+=a;else users[n].usdt+=a;sU(users);alert('✅ Tặng '+a+' '+adminGiftType+' cho '+n);}
+function adminSendGift(){var n=document.getElementById('adminGiftUser').value.trim(),a=parseFloat(document.getElementById('adminGiftAmount').value);if(!n||!a||a<=0){showAlert('❌','Lỗi','Nhập đầy đủ!');return;}var users=gU();if(!users[n]){showAlert('❌','Lỗi','Không tồn tại!');return;}if(adminGiftType==='BUILD')users[n].build+=a;else users[n].usdt+=a;sU(users);showAlert('✅','Thành công','Tặng '+a+' '+adminGiftType+' cho '+n);}
 function selectAdminGiftType(t){adminGiftType=t;}
 function selectSubType(t){subType=t;}
-function adminSubFunds(){var n=document.getElementById('subUser').value.trim(),a=parseFloat(document.getElementById('subAmount').value);if(!n||!a||a<=0)return;var users=gU();if(!users[n]){alert('Không tồn tại!');return;}if(subType==='BUILD')users[n].build=Math.max(0,(users[n].build||0)-a);else users[n].usdt=Math.max(0,(users[n].usdt||0)-a);sU(users);alert('✅ Trừ '+a+' '+subType+' của '+n);}
+function adminSubFunds(){var n=document.getElementById('subUser').value.trim(),a=parseFloat(document.getElementById('subAmount').value);if(!n||!a||a<=0){showAlert('❌','Lỗi','Nhập đầy đủ!');return;}var users=gU();if(!users[n]){showAlert('❌','Lỗi','Không tồn tại!');return;}if(subType==='BUILD')users[n].build=Math.max(0,(users[n].build||0)-a);else users[n].usdt=Math.max(0,(users[n].usdt||0)-a);sU(users);showAlert('✅','Thành công','Trừ '+a+' '+subType+' của '+n);}
 function selectAddFundType(t){addFundType=t;}
-function addFundsToAdmin(){var admin=document.getElementById('adminSelect').value;var a=parseFloat(document.getElementById('addFundAmount').value);if(!a||a<=0)return;var users=gU();users[admin]=users[admin]||{};if(addFundType==='BUILD')users[admin].build=(users[admin].build||0)+a;else users[admin].usdt=(users[admin].usdt||0)+a;sU(users);alert('✅ Cộng '+a+' '+addFundType+' cho '+admin);}
+function addFundsToAdmin(){var admin=document.getElementById('adminSelect').value;var a=parseFloat(document.getElementById('addFundAmount').value);if(!a||a<=0){showAlert('❌','Lỗi','Nhập số tiền!');return;}var users=gU();users[admin]=users[admin]||{};if(addFundType==='BUILD')users[admin].build=(users[admin].build||0)+a;else users[admin].usdt=(users[admin].usdt||0)+a;sU(users);showAlert('✅','Thành công','Cộng '+a+' '+addFundType+' cho '+admin);}
 
 document.getElementById('btnLogin').onclick=doLogin;
 document.getElementById('btnRegister').onclick=doRegister;
