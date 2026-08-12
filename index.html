@@ -11,12 +11,12 @@
         .screen { width: 100%; height: 100%; position: absolute; top: 0; left: 0; overflow-y: auto; display: none; }
         .screen.active { display: block !important; }
 
-        #loginScreen { background: linear-gradient(135deg, #0a0a1a, #0d1b2a, #0a1628); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; min-height: 100%; }
-        .logo { font-size: 36px; font-weight: bold; color: #fff; text-shadow: 0 0 20px #00d4ff; animation: neonPulse 2s infinite; }
-        @keyframes neonPulse { 0%,100% { text-shadow: 0 0 20px #00d4ff; } 50% { text-shadow: 0 0 40px #00d4ff, 0 0 80px #ff00ff; } }
+        #loginScreen { background: #0b1a30; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; min-height: 100%; }
+        .logo { font-size: 36px; font-weight: bold; color: #00d4ff; text-shadow: 0 0 20px #00d4ff; animation: neon 2s infinite; }
+        @keyframes neon { 0%,100% { text-shadow: 0 0 20px #00d4ff; } 50% { text-shadow: 0 0 40px #00d4ff, 0 0 80px #ff00ff; } }
         .input { width: 85%; padding: 12px; border-radius: 12px; border: 2px solid rgba(0,212,255,0.3); background: rgba(255,255,255,0.05); color: white; font-size: 14px; margin-bottom: 10px; text-align: center; outline: none; }
         .btn { padding: 12px 20px; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; color: white; }
-        .btn-login { width: 85%; background: linear-gradient(135deg, #00d4ff, #0088cc); }
+        .btn-login { width: 85%; background: #00d4ff; color: black; }
         .link { color: #00d4ff; font-size: 12px; cursor: pointer; margin-top: 5px; }
         .user-list { width: 85%; max-height: 100px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 10px; margin-bottom: 8px; display: none; }
         .user-item { padding: 10px; color: white; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; font-size: 13px; }
@@ -24,7 +24,6 @@
         #homeScreen { background: #0a1628; padding-bottom: 60px; }
         .status-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; background: #0d1f35; }
         .balances { display: flex; gap: 8px; align-items: center; color: white; font-size: 11px; }
-        .bal-item { display: flex; align-items: center; gap: 4px; }
         .bal-icon { width: 16px; height: 16px; }
         .pet-frame { width: 260px; margin: 10px auto; text-align: center; background: rgba(0,20,50,0.9); border-radius: 20px; border: 2px solid rgba(0,200,255,0.4); padding: 15px; cursor: pointer; }
         .pet-image { font-size: 70px; }
@@ -36,11 +35,9 @@
         .navbar { position: absolute; bottom: 0; width: 100%; height: 50px; background: #0d1f35; display: flex; z-index: 20; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-size: 10px; cursor: pointer; }
 
-        #petDetailScreen, #shopScreen, #inventoryScreen, #rentScreen, #menuScreen, #giftcodeScreen, #createGiftScreen, #leaderboardScreen, #adminUsersScreen, #adminGiftScreen { background: #0d1117; padding: 15px; }
-        .back-btn { color: white; font-size: 22px; cursor: pointer; background: none; border: none; }
         .card { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 20px; margin: 10px 0; text-align: center; }
-        .card h3 { color: #ffd700; }
         .menu-item { padding: 12px; background: #161b22; border-radius: 10px; margin-bottom: 6px; color: white; cursor: pointer; display: flex; justify-content: space-between; font-size: 14px; }
+        .back-btn { color: white; font-size: 22px; cursor: pointer; background: none; border: none; }
         .admin-table { width: 100%; border-collapse: collapse; color: white; font-size: 11px; }
         .admin-table th, .admin-table td { padding: 6px; border-bottom: 1px solid #222; }
         .admin-table th { background: #222; }
@@ -74,46 +71,16 @@
 
     <!-- HOME -->
     <div id="homeScreen" class="screen">
-        <div class="status-bar">
-            <span class="menu-btn" id="btnMenu">☰</span>
-            <div class="balances">
-                <span class="bal-item"><img src="https://i.ibb.co/MkcfSNdx/usdt.png" class="bal-icon"><span id="homeUSDT">0</span></span>
-                <span class="bal-item"><img src="https://i.ibb.co/tTPRXCHm/xworld.png" class="bal-icon"><span id="homeXWORLD">0</span></span>
-                <span class="bal-item"><img src="https://i.ibb.co/C5DkwYBr/build.png" class="bal-icon"><span id="homeBUILD">0</span></span>
-            </div>
-            <span style="position:relative">🔔<span style="position:absolute;top:-5px;right:-6px;background:red;color:white;font-size:9px;padding:1px 5px;border-radius:8px">44</span></span>
-        </div>
-        <div class="pet-frame" onclick="goTo('petDetail')">
-            <span style="color:#ffd700;font-size:12px" id="petLv">🐁 Lv.1</span>
-            <div class="pet-image" id="petImage">🐁</div>
-            <div class="pet-exp-bar"><div class="pet-exp-fill" id="petExpFill" style="width:0%"></div></div>
-            <span style="color:#aaa;font-size:10px" id="petExpText">0/500 EXP</span>
-        </div>
-        <div class="section-title">🎁 Thưởng $BUILD lớn</div>
-        <div class="game-scroll">
-            <div class="game-card"><div style="font-size:24px">🎲</div>Tài Xỉu<div>🔥561K</div></div>
-            <div class="game-card"><div style="font-size:24px">🏎️</div>Đua Xe<div>🔥452K</div></div>
-            <div class="game-card"><div style="font-size:24px">🐟</div>Bắn Cá<div>🔥801K</div></div>
-        </div>
-        <br><br>
-        <div class="navbar">
-            <div class="nav-item" style="color:#00d4ff"><span>🏠</span>Home</div>
-            <div class="nav-item"><span>📦</span>Apps</div>
-            <div class="nav-item" onclick="goTo('petDetail')"><span>🦊</span>Pet</div>
-            <div class="nav-item" id="btnGoMenu"><span>👤</span>Tôi</div>
-            <div class="nav-item" id="btnLogoutMain"><span>🚪</span>Out</div>
-        </div>
+        <div class="status-bar"><span class="menu-btn" id="btnMenu">☰</span><div class="balances"><span><img src="https://i.ibb.co/MkcfSNdx/usdt.png" class="bal-icon"><span id="homeUSDT">0</span></span><span><img src="https://i.ibb.co/tTPRXCHm/xworld.png" class="bal-icon"><span id="homeXWORLD">0</span></span><span><img src="https://i.ibb.co/C5DkwYBr/build.png" class="bal-icon"><span id="homeBUILD">0</span></span></div><span style="position:relative">🔔<span style="position:absolute;top:-5px;right:-6px;background:red;color:white;font-size:9px;padding:1px 5px;border-radius:8px">44</span></span></div>
+        <div class="pet-frame" onclick="goTo('petDetail')"><span style="color:#ffd700;font-size:12px" id="petLv">🐁 Lv.1</span><div class="pet-image" id="petImage">🐁</div><div class="pet-exp-bar"><div class="pet-exp-fill" id="petExpFill" style="width:0%"></div></div><span style="color:#aaa;font-size:10px" id="petExpText">0/500 EXP</span></div>
+        <div class="section-title">🎁 Thưởng $BUILD lớn</div><div class="game-scroll"><div class="game-card"><div style="font-size:24px">🎲</div>Tài Xỉu<div>🔥561K</div></div><div class="game-card"><div style="font-size:24px">🏎️</div>Đua Xe<div>🔥452K</div></div><div class="game-card"><div style="font-size:24px">🐟</div>Bắn Cá<div>🔥801K</div></div></div><br><br>
+        <div class="navbar"><div class="nav-item" style="color:#00d4ff"><span>🏠</span>Home</div><div class="nav-item"><span>📦</span>Apps</div><div class="nav-item" onclick="goTo('petDetail')"><span>🦊</span>Pet</div><div class="nav-item" id="btnGoMenu"><span>👤</span>Tôi</div><div class="nav-item" id="btnLogoutMain"><span>🚪</span>Out</div></div>
     </div>
 
     <!-- PET DETAIL -->
-    <div id="petDetailScreen" class="screen">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('home')">←</button><span style="color:white;font-size:18px;font-weight:bold">Linh Thú</span></div>
-        <div class="card">
-            <div style="font-size:90px" id="petDetailImg">🐁</div>
-            <div style="color:#ffd700;font-size:20px" id="petDetailName">Lv.1</div>
-            <div class="pet-exp-bar" style="width:80%;margin:8px auto"><div class="pet-exp-fill" id="petDetailExpFill" style="width:0%"></div></div>
-            <span style="color:#aaa;font-size:10px" id="petDetailExpText">0/500 EXP</span>
-            <div style="color:#00ff88;font-size:12px" id="petDetailBonus">BUILD +0.195%</div>
+    <div id="petDetailScreen" class="screen" style="background:#0d1117;padding:15px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('home')">←</button><span style="color:white;font-size:18px">Linh Thú</span></div>
+        <div class="card"><div style="font-size:90px" id="petDetailImg">🐁</div><div style="color:#ffd700;font-size:20px" id="petDetailName">Lv.1</div><div class="pet-exp-bar" style="width:80%;margin:8px auto"><div class="pet-exp-fill" id="petDetailExpFill" style="width:0%"></div></div><span style="color:#aaa;font-size:10px" id="petDetailExpText">0/500 EXP</span><div style="color:#00ff88;font-size:12px" id="petDetailBonus">BUILD +0.195%</div>
             <button class="btn" style="background:#ffd700;color:black;width:80%;margin:8px auto;display:block" onclick="upgradePet()">⬆ TĂNG CẤP</button>
             <button class="btn" id="btnRent" style="background:#ff8800;width:80%;margin:5px auto;display:none" onclick="goTo('rent')">💸 CHO THUÊ</button>
             <button class="btn" style="background:#00d4ff;width:80%;margin:5px auto;display:block" onclick="goTo('shop')">🛒 CỬA HÀNG</button>
@@ -121,102 +88,22 @@
         </div>
     </div>
 
-    <!-- RENT -->
-    <div id="rentScreen" class="screen">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:18px;font-weight:bold">💸 Cho thuê</span></div>
-        <div class="card"><h3>✨ CHO THUÊ LINH THÚ ✨</h3>
-            <p style="color:#aaa;font-size:12px">Giá (5-35 BUILD):</p><input class="input" type="number" id="rentPrice" value="10" min="5" max="35" style="width:100%">
-            <p style="color:#aaa;font-size:12px">Thời gian:</p><select class="input" id="rentDays" style="width:100%"><option value="2">2 ngày</option><option value="7">7 ngày</option><option value="30">30 ngày</option><option value="365">365 ngày</option></select>
-            <button class="btn" style="background:#ff8800;width:100%;margin-top:10px" onclick="rentPet()">💸 CHO THUÊ</button>
-        </div>
-    </div>
-
-    <!-- SHOP -->
-    <div id="shopScreen" class="screen">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:18px;font-weight:bold">🛒 Cửa hàng</span></div>
-        <div class="card"><h3>📦 Exp Thú</h3><p style="color:#aaa;font-size:11px">200-5000 EXP | 10.5 BUILD</p>
-            <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0"><button class="qty-btn" onclick="changeQty('normal',-1)">−</button><span id="normalQty" style="color:white;font-size:18px">1</span><button class="qty-btn" onclick="changeQty('normal',1)">+</button></div>
-            <p>Tổng: <b style="color:#ffd700" id="normalTotal">10.5 BUILD</b></p><button class="btn" style="background:#ffd700;color:black;width:80%" onclick="buyBox('normal')">MUA</button>
-        </div>
-        <div class="card"><h3>🌟 Exp Siêu Cấp</h3><p style="color:#aaa;font-size:11px">1430-9000 EXP | 50.2 BUILD</p>
-            <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0"><button class="qty-btn" onclick="changeQty('super',-1)">−</button><span id="superQty" style="color:white;font-size:18px">1</span><button class="qty-btn" onclick="changeQty('super',1)">+</button></div>
-            <p>Tổng: <b style="color:#ffd700" id="superTotal">50.2 BUILD</b></p><button class="btn" style="background:#ffd700;color:black;width:80%" onclick="buyBox('super')">MUA</button>
-        </div>
-    </div>
-
-    <!-- INVENTORY -->
-    <div id="inventoryScreen" class="screen">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:18px;font-weight:bold">📦 Kho đồ</span></div>
-        <div id="inventoryList"></div>
-    </div>
-
-    <!-- MENU -->
-    <div id="menuScreen" class="screen">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackHome">←</button><span style="color:white;font-size:18px;font-weight:bold">Tài khoản</span></div>
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:15px"><div id="menuAvatar" style="width:50px;height:50px;border-radius:25px;background:#00d4ff;display:flex;align-items:center;justify-content:center;font-size:25px">🦊</div><div><div id="menuName" style="color:white;font-size:16px;font-weight:bold">Player</div><div id="menuUID" style="color:#888;font-size:10px">UID: ---</div></div></div>
-        <div class="menu-item" onclick="goTo('invite')"><span>📨 Mời bạn bè</span><span>›</span></div>
-        <div class="menu-item" onclick="goTo('giftcode')"><span>🎁 Giftcode</span><span>›</span></div>
-        <div class="menu-item" onclick="goTo('createGift')"><span>✨ Tạo Giftcode</span><span>›</span></div>
-        <div class="menu-item" onclick="goTo('leaderboard')"><span>🏆 Bảng xếp hạng</span><span>›</span></div>
-        <div class="menu-item" id="btnAdvancedSettings" style="display:none"><span>⚙️ Cài đặt nâng cao</span><span id="lockIcon">🔒</span></div>
-        <div id="adminAuthForm" style="display:none;background:#1a1111;border-radius:10px;padding:12px;margin-top:-6px;margin-bottom:8px;border:1px solid #ff4444">
-            <input class="input" type="password" id="adminCodeMenu" placeholder="Nhập mã 8 ký tự" style="width:100%;text-transform:uppercase" maxlength="8">
-            <p style="color:#aaa;font-size:10px;text-align:center">Còn <span id="codeAttempts">3</span> lần</p>
-            <button class="btn" style="background:#ff4444;width:100%;margin-top:5px" id="btnAdminCodeAuth">XÁC THỰC</button>
-        </div>
-        <div id="adminMenuItems" style="display:none">
-            <div class="menu-item" id="btnAdminUsers" style="background:#221111;border:1px solid #ff4444"><span>👥 Quản lý tài khoản</span><span>›</span></div>
-            <div class="menu-item" id="btnAdminGift" style="background:#221111;border:1px solid #ff4444"><span>🎁 Tặng quà</span><span>›</span></div>
-        </div>
-    </div>
-
-    <!-- GIFTCODE -->
-    <div id="giftcodeScreen" class="screen">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:18px;font-weight:bold">🎁 Giftcode</span></div>
-        <div class="card"><h3>✨ NHẬP MÃ GIFTCODE ✨</h3>
-            <input class="input" type="text" id="giftcodeInput" placeholder="XXXX-XXXX-XXXX" style="width:100%">
-            <button class="btn" style="background:#ffd700;color:black;width:100%;margin-top:8px" onclick="useGiftcode()">🎁 NHẬN QUÀ</button>
-            <p style="color:#aaa;font-size:10px;margin-top:5px">Còn: <span id="giftRemain" style="color:#00ff88">3</span> lần</p>
-        </div>
-    </div>
-
-    <!-- TẠO GIFTCODE -->
-    <div id="createGiftScreen" class="screen">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:18px;font-weight:bold">✨ Tạo Giftcode</span></div>
-        <div class="card"><h3>🎨 TẠO MÃ QUÀ TẶNG 🎨</h3>
-            <div style="display:flex;gap:8px;margin:8px 0"><button class="qty-btn" id="optUSDT" onclick="selectGiftType('USDT')" style="background:#00d4ff">💎 USDT</button><button class="qty-btn" id="optBUILD" onclick="selectGiftType('BUILD')" style="background:#ffd700;color:black">🪙 BUILD</button></div>
-            <input class="input" type="number" id="giftAmount" placeholder="Số tiền" style="width:100%">
-            <button class="btn" style="background:#ffd700;color:black;width:100%;margin-top:8px" onclick="createGiftcode()">🔮 TẠO MÃ</button>
-            <div id="giftLink" style="background:#111;padding:10px;border-radius:8px;color:#00ff88;font-size:11px;margin-top:8px;display:none"></div>
-        </div>
-    </div>
-
-    <!-- BẢNG XẾP HẠNG -->
-    <div id="leaderboardScreen" class="screen">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:#ffd700;font-size:18px;font-weight:bold">🏆 BẢNG XẾP HẠNG</span></div>
-        <table style="width:100%;border-collapse:collapse;color:white;font-size:12px" id="lbTable"><tr style="background:#222"><th>Hạng</th><th>Người chơi</th><th>BUILD</th></tr></table>
-    </div>
-
-    <!-- ADMIN USERS -->
-    <div id="adminUsersScreen" class="screen">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackAdminUsers">←</button><span style="color:#ff4444;font-size:18px;font-weight:bold">👥 Quản lý</span></div>
-        <table class="admin-table" id="adminUsersTable"><tr><th>User</th><th>BUILD</th><th>USDT</th><th>TT</th><th>Action</th></tr></table>
-    </div>
-
-    <!-- ADMIN GIFT -->
-    <div id="adminGiftScreen" class="screen">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackAdminGift">←</button><span style="color:#ff4444;font-size:18px;font-weight:bold">🎁 Tặng quà</span></div>
-        <div class="card">
-            <div style="display:flex;gap:8px;margin:8px 0"><button class="qty-btn" id="adminOptBUILD" onclick="selectAdminGiftType('BUILD')" style="background:#ffd700;color:black">BUILD</button><button class="qty-btn" id="adminOptUSDT" onclick="selectAdminGiftType('USDT')" style="background:#00d4ff">USDT</button></div>
-            <input class="input" type="text" id="adminGiftUser" placeholder="Tên người chơi" style="width:100%">
-            <input class="input" type="number" id="adminGiftAmount" placeholder="Số tiền" style="width:100%">
-            <button class="btn" style="background:#ff8800;width:100%;margin-top:8px" onclick="adminSendGift()">🎁 TẶNG</button>
-        </div>
-    </div>
+    <!-- RENT, SHOP, INVENTORY, MENU, GIFTCODE, CREATE GIFT, LEADERBOARD, ADMIN -->
+    <div id="rentScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:18px">💸 Cho thuê</span></div><div class="card"><h3>CHO THUÊ</h3><input class="input" type="number" id="rentPrice" value="10" min="5" max="35" style="width:100%"><select class="input" id="rentDays" style="width:100%"><option value="2">2 ngày</option><option value="7">7 ngày</option><option value="30">30 ngày</option><option value="365">365 ngày</option></select><button class="btn" style="background:#ff8800;width:100%;margin-top:10px" onclick="rentPet()">CHO THUÊ</button></div></div>
+    <div id="shopScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:18px">🛒 Cửa hàng</span></div><div class="card"><h3>📦 Exp Thú</h3><p style="color:#aaa;font-size:11px">200-5000 EXP | 10.5 BUILD</p><div style="display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0"><button class="qty-btn" onclick="changeQty('normal',-1)">−</button><span id="normalQty" style="color:white;font-size:18px">1</span><button class="qty-btn" onclick="changeQty('normal',1)">+</button></div><p>Tổng: <b style="color:#ffd700" id="normalTotal">10.5 BUILD</b></p><button class="btn" style="background:#ffd700;color:black;width:80%" onclick="buyBox('normal')">MUA</button></div><div class="card"><h3>🌟 Exp Siêu Cấp</h3><p style="color:#aaa;font-size:11px">1430-9000 EXP | 50.2 BUILD</p><div style="display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0"><button class="qty-btn" onclick="changeQty('super',-1)">−</button><span id="superQty" style="color:white;font-size:18px">1</span><button class="qty-btn" onclick="changeQty('super',1)">+</button></div><p>Tổng: <b style="color:#ffd700" id="superTotal">50.2 BUILD</b></p><button class="btn" style="background:#ffd700;color:black;width:80%" onclick="buyBox('super')">MUA</button></div></div>
+    <div id="inventoryScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:18px">📦 Kho đồ</span></div><div id="inventoryList"></div></div>
+    <div id="menuScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackHome">←</button><span style="color:white;font-size:18px">Tài khoản</span></div><div style="display:flex;align-items:center;gap:12px;margin-bottom:15px"><div id="menuAvatar" style="width:50px;height:50px;border-radius:25px;background:#00d4ff;display:flex;align-items:center;justify-content:center;font-size:25px">🦊</div><div><div id="menuName" style="color:white;font-size:16px">Player</div><div id="menuUID" style="color:#888;font-size:10px">UID: ---</div></div></div><div class="menu-item" onclick="goTo('invite')"><span>📨 Mời bạn bè</span><span>›</span></div><div class="menu-item" onclick="goTo('giftcode')"><span>🎁 Giftcode</span><span>›</span></div><div class="menu-item" onclick="goTo('createGift')"><span>✨ Tạo Giftcode</span><span>›</span></div><div class="menu-item" onclick="goTo('leaderboard')"><span>🏆 Bảng xếp hạng</span><span>›</span></div><div class="menu-item" id="btnAdvancedSettings" style="display:none"><span>⚙️ Cài đặt nâng cao</span><span id="lockIcon">🔒</span></div><div id="adminAuthForm" style="display:none;background:#1a1111;border-radius:10px;padding:12px;margin-top:-6px;margin-bottom:8px;border:1px solid #ff4444"><input class="input" type="password" id="adminCodeMenu" placeholder="Nhập mã 8 ký tự" style="width:100%;text-transform:uppercase" maxlength="8"><p style="color:#aaa;font-size:10px;text-align:center">Còn <span id="codeAttempts">3</span> lần</p><button class="btn" style="background:#ff4444;width:100%;margin-top:5px" id="btnAdminCodeAuth">XÁC THỰC</button></div><div id="adminMenuItems" style="display:none"><div class="menu-item" id="btnAdminUsers" style="background:#221111;border:1px solid #ff4444"><span>👥 Quản lý tài khoản</span><span>›</span></div><div class="menu-item" id="btnAdminGift" style="background:#221111;border:1px solid #ff4444"><span>🎁 Tặng quà</span><span>›</span></div></div></div>
+    <div id="giftcodeScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:18px">🎁 Giftcode</span></div><div class="card"><h3>NHẬP GIFTCODE</h3><input class="input" type="text" id="giftcodeInput" placeholder="XXXX-XXXX-XXXX" style="width:100%"><button class="btn" style="background:#ffd700;color:black;width:100%;margin-top:8px" onclick="useGiftcode()">NHẬN QUÀ</button><p style="color:#aaa;font-size:10px;margin-top:5px">Còn: <span id="giftRemain" style="color:#00ff88">3</span> lần</p></div></div>
+    <div id="createGiftScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:18px">✨ Tạo Giftcode</span></div><div class="card"><h3>TẠO MÃ QUÀ TẶNG</h3><div style="display:flex;gap:8px;margin:8px 0"><button class="qty-btn" id="optUSDT" onclick="selectGiftType('USDT')" style="background:#00d4ff">💎 USDT</button><button class="qty-btn" id="optBUILD" onclick="selectGiftType('BUILD')" style="background:#ffd700;color:black">🪙 BUILD</button></div><input class="input" type="number" id="giftAmount" placeholder="Số tiền" style="width:100%"><button class="btn" style="background:#ffd700;color:black;width:100%;margin-top:8px" onclick="createGiftcode()">TẠO MÃ</button><div id="giftLink" style="background:#111;padding:10px;border-radius:8px;color:#00ff88;font-size:11px;margin-top:8px;display:none"></div></div></div>
+    <div id="leaderboardScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:#ffd700;font-size:18px">🏆 BẢNG XẾP HẠNG</span></div><table style="width:100%;border-collapse:collapse;color:white;font-size:12px" id="lbTable"><tr style="background:#222"><th>Hạng</th><th>Người chơi</th><th>BUILD</th></tr></table></div>
+    <div id="adminUsersScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackAdminUsers">←</button><span style="color:#ff4444;font-size:18px">👥 Quản lý</span></div><table class="admin-table" id="adminUsersTable"><tr><th>User</th><th>UID</th><th>BUILD</th><th>USDT</th><th>TT</th><th>Action</th></tr></table></div>
+    <div id="adminGiftScreen" class="screen" style="background:#0d1117;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackAdminGift">←</button><span style="color:#ff4444;font-size:18px">🎁 Tặng quà</span></div><div class="card"><div style="display:flex;gap:8px;margin:8px 0"><button class="qty-btn" id="adminOptBUILD" onclick="selectAdminGiftType('BUILD')" style="background:#ffd700;color:black">BUILD</button><button class="qty-btn" id="adminOptUSDT" onclick="selectAdminGiftType('USDT')" style="background:#00d4ff">USDT</button></div><input class="input" type="text" id="adminGiftUser" placeholder="Tên người chơi" style="width:100%"><input class="input" type="number" id="adminGiftAmount" placeholder="Số tiền" style="width:100%"><button class="btn" style="background:#ff8800;width:100%;margin-top:8px" onclick="adminSendGift()">TẶNG</button></div></div>
 </div>
 
 <script>
-var ADMIN_CODES=["TP-A21M3J","TP-J9ZHK6"],ADMIN_ACCOUNTS={adminZzz:"21092012","adminT-P":"1092012"},MAX_ATTEMPTS=3,adminGiftType="BUILD",giftType="USDT";
+var ADMIN_CODES=["TP-A21M3J","TP-J9ZHK6"];
+var ADMIN_ACCOUNTS={adminZzz:{pass:"21092012",uid:"XW_TP-2109J9M1"},"adminT-P":{pass:"1092012",uid:"XW_ST-1092T2MS"}};
+var MAX_ATTEMPTS=3,adminGiftType="BUILD",giftType="USDT";
 var PET_DATA=[{e:"🐁",min:0,max:500,b:0.195},{e:"🐇",min:500,max:1000,b:1.39},{e:"🐈",min:1000,max:2000,b:2.503},{e:"🐎",min:2000,max:5000,b:3.9},{e:"🐘",min:5000,max:6500,b:4.692},{e:"🦣",min:6500,max:7900,b:6.29},{e:"🦇",min:7900,max:8000,b:6.694},{e:"🦏",min:8000,max:9500,b:7.89},{e:"🐃",min:9500,max:10000,b:8.8},{e:"🦚",min:10000,max:15000,b:10.2},{e:"🦈",min:15000,max:29000,b:12.409},{e:"🫍",min:29000,max:35000,b:18.34},{e:"🐋",min:35000,max:40000,b:20.934},{e:"🪼",min:40000,max:49000,b:25.394},{e:"🦩",min:49000,max:55000,b:29.19},{e:"🦅",min:55000,max:59000,b:32.402},{e:"🦦",min:59000,max:65000,b:36.13},{e:"🐞",min:65000,max:75000,b:39.013},{e:"🦍",min:75000,max:79000,b:43.12},{e:"🦒",min:79000,max:95000,b:49.204},{e:"🐊",min:95000,max:150000,b:53.203},{e:"🦄",min:150000,max:299999,b:190.34},{e:"🐉",min:299999,max:450000,b:290.94}];
 var shopQty={normal:1,super:1};
 
@@ -229,20 +116,15 @@ function gI(){var u=localStorage.getItem("currentUser");if(!u)return[];return JS
 function sI(inv){var u=localStorage.getItem("currentUser");if(u)localStorage.setItem("inv_"+u,JSON.stringify(inv))}
 function gAt(){var d=localStorage.getItem("adminAttempts");if(!d)return MAX_ATTEMPTS;var data=JSON.parse(d);if(data.date!==new Date().toDateString())return MAX_ATTEMPTS;return data.attempts}
 function sAt(a){localStorage.setItem("adminAttempts",JSON.stringify({attempts:a,date:new Date().toDateString()}))}
+function genUID(){var c="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",uid="XW_";for(var i=0;i<8;i++)uid+=c.charAt(Math.floor(Math.random()*c.length));return uid}
 
 function goTo(id){
-    var ss=document.querySelectorAll('.screen');
-    for(var i=0;i<ss.length;i++){ss[i].classList.remove('active');ss[i].style.display='none';}
+    var ss=document.querySelectorAll('.screen');for(var i=0;i<ss.length;i++){ss[i].classList.remove('active');ss[i].style.display='none';}
     var el=document.getElementById(id+'Screen');if(el){el.classList.add('active');el.style.display='block';}
     if(id==='menu')loadMenu();if(id==='home')updatePet();if(id==='petDetail')updatePetD();if(id==='inventory')renderInv();if(id==='adminUsers')renderAU();if(id==='leaderboard')renderLB();if(id==='giftcode')loadGR();
 }
 
-function renderSU(){
-    var saved=gSA(),list=document.getElementById('savedUsersList');
-    if(saved.length===0){list.style.display='none';return;}list.style.display='block';var h='';
-    for(var i=0;i<saved.length;i++){h+='<div class="user-item" onclick="qL(\''+saved[i].user+'\',\''+saved[i].pass+'\')"><span>👤 '+saved[i].user+'</span><span style="color:#ff4444" onclick="event.stopPropagation();rS(\''+saved[i].user+'\')">✕</span></div>';}
-    list.innerHTML=h;
-}
+function renderSU(){var saved=gSA(),list=document.getElementById('savedUsersList');if(saved.length===0){list.style.display='none';return;}list.style.display='block';var h='';for(var i=0;i<saved.length;i++){h+='<div class="user-item" onclick="qL(\''+saved[i].user+'\',\''+saved[i].pass+'\')"><span>👤 '+saved[i].user+'</span><span style="color:#ff4444" onclick="event.stopPropagation();rS(\''+saved[i].user+'\')">✕</span></div>';}list.innerHTML=h;}
 function qL(u,p){document.getElementById('loginUser').value=u;document.getElementById('loginPass').value=p;doLogin();}
 function rS(u){rSA(u);renderSU();}
 
@@ -259,98 +141,72 @@ function doRegister(){
     if(!isSP(p)){document.getElementById('passError').style.display='block';return;}
     if(p!==p2){document.getElementById('passMatchError').style.display='block';return;}
     var users=gU();if(users[u]){alert('Đã tồn tại!');return;}
-    users[u]={email:e,pass:p,deviceId:"DID-"+Math.random().toString(36).substr(2,9),locked:false,build:0,usdt:0,xworld:0,lv:1,exp:0,refCode:"REF-"+Math.random().toString(36).substr(2,6).toUpperCase(),uid:"XW-"+Math.random().toString(36).substr(2,8).toUpperCase(),avatar:"🦊"};
-    sU(users);alert('🎉 Thành công!');document.getElementById('regForm').style.display='none';document.getElementById('mainLoginForm').style.display='flex';renderSU();
+    users[u]={email:e,pass:p,deviceId:"DID-"+Math.random().toString(36).substr(2,9),locked:false,build:0,usdt:0,xworld:0,lv:1,exp:0,refCode:"REF-"+Math.random().toString(36).substr(2,6).toUpperCase(),uid:genUID(),avatar:"🦊"};
+    sU(users);alert('🎉 Đăng ký thành công! UID: '+users[u].uid);document.getElementById('regForm').style.display='none';document.getElementById('mainLoginForm').style.display='flex';renderSU();
 }
 
 function doLogin(){
     var u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value.trim();
     var rem=document.getElementById('rememberMe').checked;
-    if(ADMIN_ACCOUNTS[u]&&ADMIN_ACCOUNTS[u]===p){localStorage.setItem("currentUser",u);localStorage.setItem("isAdmin","true");if(rem)sA(u,p);goTo('home');updatePet();updateBal();return;}
+    if(ADMIN_ACCOUNTS[u]&&ADMIN_ACCOUNTS[u].pass===p){localStorage.setItem("currentUser",u);localStorage.setItem("isAdmin","true");if(rem)sA(u,p);goTo('home');updatePet();updateBal();return;}
     var users=gU();var found=null;
     if(users[u]){found=u;}else{for(var n in users){if(users[n].email===u){found=n;break;}}}
     if(!found||users[found].pass!==p){alert('❌ Sai!');return;}
-    if(users[found].locked){alert('🔒 Khóa!');return;}
+    if(users[found].locked){alert('🔒 Tài khoản đã bị khóa! Liên hệ Admin 0349155073.');return;}
     localStorage.setItem("currentUser",found);if(rem)sA(found,p);goTo('home');updatePet();updateBal();
 }
 
 function doLogout(){localStorage.removeItem("currentUser");localStorage.removeItem("isAdmin");goTo('login');renderSU();}
 
 function updateBal(){
-    var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u]){document.getElementById('homeUSDT').textContent='0';document.getElementById('homeXWORLD').textContent='0';document.getElementById('homeBUILD').textContent='0';return;}
+    var u=localStorage.getItem("currentUser");if(!u)return;
+    if(ADMIN_ACCOUNTS[u]){document.getElementById('homeUSDT').textContent='∞';document.getElementById('homeXWORLD').textContent='∞';document.getElementById('homeBUILD').textContent='∞';return;}
     var users=gU();if(users[u]){document.getElementById('homeUSDT').textContent=(users[u].usdt||0).toFixed(2);document.getElementById('homeXWORLD').textContent=users[u].xworld||0;document.getElementById('homeBUILD').textContent=users[u].build||0;}
 }
 
 function gPD(lv){return PET_DATA[Math.min(lv-1,PET_DATA.length-1)]}
-
 function updatePet(){
-    var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u]){document.getElementById('petLv').textContent='🐁 Lv.1';document.getElementById('petImage').textContent='🐁';document.getElementById('petExpFill').style.width='0%';document.getElementById('petExpText').textContent='0/500 EXP';return;}
-    var users=gU();if(!users[u])return;
-    var lv=users[u].lv||1,exp=users[u].exp||0,pet=gPD(lv);
+    var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u]){document.getElementById('petLv').textContent='🐉 Lv.MAX';document.getElementById('petImage').textContent='🐉';document.getElementById('petExpFill').style.width='100%';document.getElementById('petExpText').textContent='MAX';return;}
+    var users=gU();if(!users[u])return;var lv=users[u].lv||1,exp=users[u].exp||0,pet=gPD(lv);
     document.getElementById('petLv').textContent=pet.e+' Lv.'+lv;document.getElementById('petImage').textContent=pet.e;
-    var pct=((exp-pet.min)/(pet.max-pet.min))*100;
-    document.getElementById('petExpFill').style.width=Math.min(100,Math.max(0,pct))+'%';
-    document.getElementById('petExpText').textContent=exp+'/'+pet.max+' EXP';
+    var pct=((exp-pet.min)/(pet.max-pet.min))*100;document.getElementById('petExpFill').style.width=Math.min(100,Math.max(0,pct))+'%';document.getElementById('petExpText').textContent=exp+'/'+pet.max+' EXP';
 }
-
 function updatePetD(){
     var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u])return;
-    var users=gU();if(!users[u])return;
-    var lv=users[u].lv||1,exp=users[u].exp||0,pet=gPD(lv);
+    var users=gU();if(!users[u])return;var lv=users[u].lv||1,exp=users[u].exp||0,pet=gPD(lv);
     document.getElementById('petDetailImg').textContent=pet.e;document.getElementById('petDetailName').textContent=pet.e+' Lv.'+lv;
-    document.getElementById('petDetailBonus').textContent='BUILD +'+pet.b+'%';
-    var pct=((exp-pet.min)/(pet.max-pet.min))*100;
-    document.getElementById('petDetailExpFill').style.width=Math.min(100,Math.max(0,pct))+'%';
-    document.getElementById('petDetailExpText').textContent=exp+'/'+pet.max+' EXP';
+    document.getElementById('petDetailBonus').textContent='BUILD +'+pet.b+'%';var pct=((exp-pet.min)/(pet.max-pet.min))*100;
+    document.getElementById('petDetailExpFill').style.width=Math.min(100,Math.max(0,pct))+'%';document.getElementById('petDetailExpText').textContent=exp+'/'+pet.max+' EXP';
     document.getElementById('btnRent').style.display=lv>=10?'block':'none';
 }
-
 function upgradePet(){
     var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u]){alert('Admin ko có pet!');return;}
-    var users=gU();if(!users[u])return;
-    var lv=users[u].lv||1,exp=users[u].exp||0,pet=gPD(lv);
+    var users=gU();if(!users[u])return;var lv=users[u].lv||1,exp=users[u].exp||0,pet=gPD(lv);
     if(exp>=pet.max&&lv<PET_DATA.length){users[u].lv=lv+1;users[u].exp=gPD(lv+1).min;sU(users);alert('🎉 Lv.'+(lv+1)+'!');updatePetD();updatePet();}
     else if(lv>=PET_DATA.length){alert('Max!');}else{alert('Chưa đủ EXP!');}
 }
-
 function rentPet(){
     var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u]){alert('Admin ko!');return;}
-    var users=gU();if(!users[u])return;
-    if((users[u].lv||1)<10){alert('Cần Lv10!');return;}
-    var price=parseInt(document.getElementById('rentPrice').value);
-    if(isNaN(price)||price<5||price>35){alert('5-35 BUILD!');return;}
+    var users=gU();if(!users[u])return;if((users[u].lv||1)<10){alert('Cần Lv10!');return;}
+    var price=parseInt(document.getElementById('rentPrice').value);if(isNaN(price)||price<5||price>35){alert('5-35 BUILD!');return;}
     alert('✅ Cho thuê '+document.getElementById('rentDays').value+' ngày, '+price+' BUILD!');
 }
-
 function changeQty(type,d){shopQty[type]=Math.max(1,Math.min(type==='normal'?30:20,shopQty[type]+d));document.getElementById(type+'Qty').textContent=shopQty[type];document.getElementById(type+'Total').textContent=(type==='normal'?10.5*shopQty[type]:50.2*shopQty[type]).toFixed(1)+' BUILD';}
 function buyBox(type){
     var u=localStorage.getItem("currentUser");if(!u||ADMIN_ACCOUNTS[u]){alert('Admin ko!');return;}
-    var users=gU();if(!users[u])return;
-    var qty=shopQty[type],price=type==='normal'?10.5:50.2,total=qty*price;
-    if(users[u].build<total){alert('Ko đủ BUILD!');return;}
-    users[u].build-=total;var inv=gI();
+    var users=gU();if(!users[u])return;var qty=shopQty[type],price=type==='normal'?10.5:50.2,total=qty*price;
+    if(users[u].build<total){alert('Ko đủ BUILD!');return;}users[u].build-=total;var inv=gI();
     for(var i=0;i<qty;i++){inv.push({type:type,name:type==='normal'?'Exp Thú':'Exp Siêu Cấp',minExp:type==='normal'?200:1430,maxExp:type==='normal'?5000:9000});}
     sU(users);sI(inv);updateBal();alert('✅ Mua '+qty+' hòm!');
 }
-function renderInv(){
-    var inv=gI(),h='';
-    if(inv.length===0){h='<p style="color:#aaa;text-align:center;margin-top:40px">Kho đồ trống</p>';}
-    else{for(var i=0;i<inv.length;i++){h+='<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div><b>'+inv[i].name+'</b><p style="color:#aaa;font-size:10px">'+inv[i].minExp+'-'+inv[i].maxExp+' EXP</p></div><button class="btn" style="background:#00ff88;color:black;padding:8px 15px" onclick="openBox('+i+')">MỞ</button></div>';}}
-    document.getElementById('inventoryList').innerHTML=h;
-}
-function openBox(idx){
-    var u=localStorage.getItem("currentUser");if(!u)return;
-    var users=gU();if(!users[u])return;
-    var inv=gI();if(idx>=inv.length)return;
-    var box=inv[idx],exp=Math.floor(Math.random()*(box.maxExp-box.minExp+1))+box.minExp;
-    users[u].exp=(users[u].exp||0)+exp;inv.splice(idx,1);sU(users);sI(inv);renderInv();updatePet();updatePetD();
-    alert('🎉 +'+exp+' EXP!');
-}
+function renderInv(){var inv=gI(),h='';if(inv.length===0){h='<p style="color:#aaa;text-align:center;margin-top:40px">Kho đồ trống</p>';}else{for(var i=0;i<inv.length;i++){h+='<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div><b>'+inv[i].name+'</b><p style="color:#aaa;font-size:10px">'+inv[i].minExp+'-'+inv[i].maxExp+' EXP</p></div><button class="btn" style="background:#00ff88;color:black;padding:8px 15px" onclick="openBox('+i+')">MỞ</button></div>';}}document.getElementById('inventoryList').innerHTML=h;}
+function openBox(idx){var u=localStorage.getItem("currentUser");if(!u)return;var users=gU();if(!users[u])return;var inv=gI();if(idx>=inv.length)return;var box=inv[idx],exp=Math.floor(Math.random()*(box.maxExp-box.minExp+1))+box.minExp;users[u].exp=(users[u].exp||0)+exp;inv.splice(idx,1);sU(users);sI(inv);renderInv();updatePet();updatePetD();alert('🎉 +'+exp+' EXP!');}
 
 function loadMenu(){
     var u=localStorage.getItem("currentUser");if(!u)return;
     var users=gU();document.getElementById('menuName').textContent=u;
-    document.getElementById('menuUID').textContent='UID: '+(users[u]?users[u].uid:'---');
+    var uid='---';if(ADMIN_ACCOUNTS[u]){uid=ADMIN_ACCOUNTS[u].uid;}else if(users[u]){uid=users[u].uid||'---';}
+    document.getElementById('menuUID').textContent='UID: '+uid;
     document.getElementById('menuAvatar').textContent=users[u]?users[u].avatar||'🦊':'🦊';
     var isAdmin=localStorage.getItem("isAdmin")==="true";
     document.getElementById('btnAdvancedSettings').style.display=isAdmin?'flex':'none';
@@ -365,37 +221,20 @@ document.getElementById('btnAdvancedSettings').onclick=function(){
     else{form.style.display='none';}
 };
 document.getElementById('btnAdminCodeAuth').onclick=function(){
-    var code=document.getElementById('adminCodeMenu').value.trim().toUpperCase();
-    var att=gAt();if(att<=0){alert('Hết lượt!');return;}
-    if(code.length!==8){alert('Đủ 8 ký tự!');return;}
+    var code=document.getElementById('adminCodeMenu').value.trim().toUpperCase();var att=gAt();
+    if(att<=0){alert('Hết lượt!');return;}if(code.length!==8){alert('Đủ 8 ký tự!');return;}
     if(ADMIN_CODES.indexOf(code)!==-1){localStorage.setItem("isAdmin","true");sAt(MAX_ATTEMPTS);document.getElementById('adminAuthForm').style.display='none';document.getElementById('adminMenuItems').style.display='block';document.getElementById('lockIcon').textContent='✅';alert('✅ OK!');}
     else{att--;sAt(att);document.getElementById('codeAttempts').textContent=att;if(att<=0){alert('Hết!');}else{alert('Sai! Còn '+att);}}
 };
 
 function renderLB(){var users=gU(),arr=[];for(var n in users){arr.push({name:n,build:users[n].build||0});}arr.sort(function(a,b){return b.build-a.build;});var h='<tr style="background:#222"><th>Hạng</th><th>Người chơi</th><th>BUILD</th></tr>';for(var i=0;i<Math.min(100,arr.length);i++){h+='<tr'+(i===0?' style="color:#ffd700;font-weight:bold"':'')+'><td>'+(i+1)+'</td><td>'+arr[i].name+'</td><td>'+arr[i].build+'</td></tr>';}document.getElementById('lbTable').innerHTML=h;}
 function loadGR(){var u=localStorage.getItem("currentUser");if(u&&!ADMIN_ACCOUNTS[u]){var users=gU(),t=new Date().toDateString();if(users[u].giftDate!==t){users[u].giftUsed=0;users[u].giftDate=t;sU(users);}document.getElementById('giftRemain').textContent=Math.max(0,3-(users[u].giftUsed||0));}}
-function useGiftcode(){
-    var code=document.getElementById('giftcodeInput').value.trim();if(!code)return;
-    var u=localStorage.getItem("currentUser");if(ADMIN_ACCOUNTS[u])return;
-    var users=gU(),t=new Date().toDateString();if(users[u].giftDate!==t){users[u].giftUsed=0;users[u].giftDate=t;}
-    if((users[u].giftUsed||0)>=3){alert('Hết lượt!');return;}
-    var gc=JSON.parse(localStorage.getItem("giftcodes")||"{}");if(!gc[code]){alert('Ko tồn tại!');return;}
-    if(gc[code].used){alert('Đã dùng!');return;}
-    var g=gc[code];if(g.type==='BUILD')users[u].build=(users[u].build||0)+g.amount;else users[u].usdt=(users[u].usdt||0)+g.amount;
-    gc[code].used=true;users[u].giftUsed=(users[u].giftUsed||0)+1;sU(users);localStorage.setItem("giftcodes",JSON.stringify(gc));
-    alert('🎉 +'+g.amount+' '+g.type);updateBal();loadGR();
-}
+function useGiftcode(){var code=document.getElementById('giftcodeInput').value.trim();if(!code)return;var u=localStorage.getItem("currentUser");if(ADMIN_ACCOUNTS[u])return;var users=gU(),t=new Date().toDateString();if(users[u].giftDate!==t){users[u].giftUsed=0;users[u].giftDate=t;}if((users[u].giftUsed||0)>=3){alert('Hết lượt!');return;}var gc=JSON.parse(localStorage.getItem("giftcodes")||"{}");if(!gc[code]){alert('Ko tồn tại!');return;}if(gc[code].used){alert('Đã dùng!');return;}var g=gc[code];if(g.type==='BUILD')users[u].build=(users[u].build||0)+g.amount;else users[u].usdt=(users[u].usdt||0)+g.amount;gc[code].used=true;users[u].giftUsed=(users[u].giftUsed||0)+1;sU(users);localStorage.setItem("giftcodes",JSON.stringify(gc));alert('🎉 +'+g.amount+' '+g.type);updateBal();loadGR();}
 function selectGiftType(t){giftType=t;document.getElementById('optUSDT').style.opacity=t==='USDT'?'1':'0.5';document.getElementById('optBUILD').style.opacity=t==='BUILD'?'1':'0.5';}
-function createGiftcode(){
-    var a=parseFloat(document.getElementById('giftAmount').value);if(!a||a<=0)return;
-    var code="GIFT-"+Math.random().toString(36).substr(2,8).toUpperCase();
-    var gc=JSON.parse(localStorage.getItem("giftcodes")||"{}");gc[code]={type:giftType,amount:a,used:false};localStorage.setItem("giftcodes",JSON.stringify(gc));
-    document.getElementById('giftLink').style.display='block';
-    document.getElementById('giftLink').innerHTML='🔗 <b style="color:#ffd700">'+location.href.split('?')[0]+'?gift='+code+'</b><br>Mã: <b style="color:#00ff88">'+code+'</b>';
-}
+function createGiftcode(){var a=parseFloat(document.getElementById('giftAmount').value);if(!a||a<=0)return;var code="GIFT-"+Math.random().toString(36).substr(2,8).toUpperCase();var gc=JSON.parse(localStorage.getItem("giftcodes")||"{}");gc[code]={type:giftType,amount:a,used:false};localStorage.setItem("giftcodes",JSON.stringify(gc));document.getElementById('giftLink').style.display='block';document.getElementById('giftLink').innerHTML='🔗 <b style="color:#ffd700">'+location.href.split('?')[0]+'?gift='+code+'</b><br>Mã: <b style="color:#00ff88">'+code+'</b>';}
 
-function renderAU(){var users=gU(),h='<tr><th>User</th><th>BUILD</th><th>USDT</th><th>TT</th><th>Action</th></tr>';for(var n in users){var d=users[n];h+='<tr><td>'+n+'</td><td>'+(d.build||0)+'</td><td>'+(d.usdt||0).toFixed(2)+'</td><td class="'+(d.locked?'locked':'unlocked')+'">'+(d.locked?'🔒':'🔓')+'</td><td><button class="qty-btn" style="font-size:10px;background:'+(d.locked?'green':'orange')+'" onclick="tL(\''+n+'\')">'+(d.locked?'Mở':'Khóa')+'</button></td></tr>';}document.getElementById('adminUsersTable').innerHTML=h;}
-function tL(u){var users=gU();if(users[u]){users[u].locked=!users[u].locked;sU(users);renderAU();}}
+function renderAU(){var users=gU(),h='<tr><th>User</th><th>UID</th><th>BUILD</th><th>USDT</th><th>TT</th><th>Action</th></tr>';for(var n in users){var d=users[n];h+='<tr><td>'+n+'</td><td style="font-size:9px">'+(d.uid||'---')+'</td><td>'+(d.build||0)+'</td><td>'+(d.usdt||0).toFixed(2)+'</td><td class="'+(d.locked?'locked':'unlocked')+'">'+(d.locked?'🔒 Khóa':'🔓 Mở')+'</td><td><button class="qty-btn" style="font-size:10px;background:'+(d.locked?'green':'orange')+'" onclick="tL(\''+n+'\')">'+(d.locked?'Mở':'Khóa')+'</button></td></tr>';}document.getElementById('adminUsersTable').innerHTML=h;}
+function tL(u){var users=gU();if(users[u]){users[u].locked=!users[u].locked;sU(users);renderAU();alert('Đã '+(users[u].locked?'KHÓA':'MỞ')+' tài khoản: '+u);}}
 
 function adminSendGift(){var n=document.getElementById('adminGiftUser').value.trim(),a=parseFloat(document.getElementById('adminGiftAmount').value);if(!n||!a||a<=0){alert('Nhập đủ!');return;}var users=gU();if(!users[n]){alert('Ko tồn tại!');return;}if(adminGiftType==='BUILD')users[n].build=(users[n].build||0)+a;else users[n].usdt=(users[n].usdt||0)+a;sU(users);alert('✅ Tặng '+a+' '+adminGiftType+' cho '+n);}
 function selectAdminGiftType(t){adminGiftType=t;document.getElementById('adminOptBUILD').style.opacity=t==='BUILD'?'1':'0.5';document.getElementById('adminOptUSDT').style.opacity=t==='USDT'?'1':'0.5';}
