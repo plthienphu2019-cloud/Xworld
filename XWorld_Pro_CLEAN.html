@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>XWorld Pro v2.3.6</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #0a1628; font-family: Arial, sans-serif; touch-action: manipulation; }
+        .phone { width: 100%; height: 100vh; height: 100dvh; background: #0a1628; position: relative; overflow: hidden; }
+        .screen { width: 100%; height: 100%; position: absolute; top: 0; left: 0; overflow-y: auto; display: none; }
+        .screen.active { display: block !important; }
+
+        .logo { font-size: 36px; font-weight: bold; color: #00d4ff; text-align: center; padding: 40px 0 20px; text-shadow: 0 0 20px #00d4ff; animation: neon 2s infinite; }
+        @keyframes neon { 0%,100% { text-shadow: 0 0 20px #00d4ff; } 50% { text-shadow: 0 0 40px #00d4ff, 0 0 80px #ff00ff; } }
+        .input { width: 85%; padding: 12px; border-radius: 12px; border: 2px solid rgba(0,212,255,0.3); background: rgba(255,255,255,0.05); color: white; font-size: 14px; margin: 0 auto 10px; text-align: center; outline: none; display: block; }
+        .btn { padding: 12px 20px; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; color: white; display: block; margin: 0 auto; }
+        .btn-login { width: 85%; background: #00d4ff; color: black; }
+        .link { color: #00d4ff; font-size: 12px; cursor: pointer; text-align: center; display: block; margin-top: 5px; }
+        .back-btn { color: white; font-size: 24px; cursor: pointer; background: none; border: none; }
+        .menu-item { width: 100%; min-height: 55px; padding: 0 20px; background: #171c23; border-radius: 15px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; color: #f2f2f2; font-size: 15px; cursor: pointer; }
+        .menu-item.admin { background: #241011; border: 1px solid #ff3b3b; }
+        .info-box { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 20px; margin: 10px 0; color: white; }
+        .info-box h3 { color: #ffd700; margin-bottom: 10px; }
+        .rule-box { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 20px; margin: 10px 0; color: #ddd; font-size: 13px; line-height: 1.8; }
+        .card { background: #0d1f35; border-radius: 15px; padding: 20px; margin: 10px 0; text-align: center; }
+        .qty-btn { width: 35px; height: 35px; border-radius: 8px; background: #0d1f35; color: white; font-size: 18px; border: none; cursor: pointer; }
+        .admin-table { width: 100%; border-collapse: collapse; color: white; font-size: 11px; }
+        .admin-table th, .admin-table td { padding: 6px; border: 1px solid #333; }
+        .admin-table th { background: #222; }
+        .lb-table { width: 100%; border-collapse: collapse; color: white; font-size: 12px; }
+        .lb-table th, .lb-table td { padding: 8px; border: 1px solid #333; }
+        .alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 9999; display: none; align-items: center; justify-content: center; }
+        .alert-box { background: linear-gradient(135deg, #1a1a2e, #16213e); border: 2px solid #ffd700; border-radius: 20px; padding: 30px; text-align: center; width: 85%; max-width: 350px; color: white; box-shadow: 0 0 60px rgba(255,215,0,0.6); animation: popIn 0.4s; position: relative; overflow: hidden; }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .alert-icon { font-size: 60px; animation: bounce 1s infinite; }
+        @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .alert-title { color: #ffd700; font-size: 22px; font-weight: bold; margin: 15px 0; }
+        .alert-text { color: #ddd; font-size: 14px; line-height: 1.6; }
+        .alert-close-btn { background: #ffd700; color: black; padding: 10px 30px; border-radius: 25px; font-size: 14px; font-weight: bold; border: none; cursor: pointer; margin-top: 20px; }
+        .firework { position: absolute; width: 8px; height: 8px; border-radius: 50%; animation: explode 1s ease-out forwards; }
+        @keyframes explode { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
+        .error-icon { color: #ff4444; animation: shake 0.5s; }
+        @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        .navbar { position: fixed; left: 0; right: 0; bottom: 0; height: 55px; background: #0d1f35; display: flex; z-index: 999; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-size: 10px; cursor: pointer; }
+        .nav-item.active { color: #00d4ff; }
+        .chat-msg { background: #1a1a2e; border-radius: 10px; padding: 10px; margin: 5px 0; color: white; font-size: 13px; }
+        .chat-msg b { color: #00d4ff; }
+        .snowflake { position: fixed; top: -20px; color: white; font-size: 20px; pointer-events: none; animation: fall linear infinite; z-index: 9998; }
+        @keyframes fall { to { transform: translateY(110vh); } }
+    </style>
+</head>
+<body>
+<div class="phone">
+    <div class="alert-overlay" id="alertOverlay">
+        <div class="alert-box" id="alertBox">
+            <div class="alert-icon" id="alertIcon">✅</div>
+            <div class="alert-title" id="alertTitle">Thành công</div>
+            <div class="alert-text" id="alertText">Nội dung</div>
+            <button class="alert-close-btn" onclick="closeAlert()">OK</button>
+        </div>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="loginScreen" class="screen active">
+        <div class="logo">XWORLD PRO<span style="font-size:11px;color:#888;display:block">v2.3.6</span></div>
+        <div id="mainLoginForm">
+            <input class="input" type="text" id="loginUser" placeholder="Tên đăng nhập hoặc Email">
+            <input class="input" type="password" id="loginPass" placeholder="Mật khẩu">
+            <label style="display:block;text-align:center;color:#aaa;font-size:11px;margin-bottom:8px"><input type="checkbox" id="rememberMe" checked> Ghi nhớ</label>
+            <button class="btn btn-login" id="btnLogin">ĐĂNG NHẬP</button>
+            <span class="link" id="linkRegister">Chưa có tài khoản? Đăng ký</span>
+        </div>
+        <div id="regForm" style="display:none">
+            <input class="input" type="email" id="regEmail" placeholder="Email">
+            <input class="input" type="text" id="regUser" placeholder="Tên đăng nhập">
+            <input class="input" type="password" id="regPass" placeholder="Mật khẩu (8+ ký tự)">
+            <input class="input" type="password" id="regPassConfirm" placeholder="Nhập lại mật khẩu">
+            <button class="btn btn-login" id="btnRegister">ĐĂNG KÝ</button>
+            <span class="link" id="linkBackToLogin">← Quay lại</span>
+        </div>
+    </div>
+
+    <!-- HOME -->
+    <div id="homeScreen" class="screen">
+        <div style="text-align:center;padding:20px;color:white">
+            <p style="font-size:20px">XWorld Pro</p>
+            <button class="btn btn-login" onclick="goTo('menu')" style="margin-top:20px">☰ Menu</button>
+        </div>
+        <div class="navbar">
+            <div class="nav-item active" onclick="goTo('home')">🏠<br>Home</div>
+            <div class="nav-item">📦<br>Kho app</div>
+            <div class="nav-item" onclick="goTo('petDetail')">🦊<br>Pet</div>
+            <div class="nav-item" onclick="goTo('trade')">📈<br>Giao Dịch</div>
+            <div class="nav-item" onclick="goTo('wallet')">👛<br>Ví</div>
+        </div>
+    </div>
+
+    <!-- MENU -->
+    <div id="menuScreen" class="screen">
+        <div style="padding:20px 27px 80px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('home')">←</button><span style="color:white;font-size:20px;font-weight:bold">Tài khoản</span></div>
+            <div class="menu-item" onclick="goTo('invite')"><span>📨 Mời bạn bè</span><span>›</span></div>
+            <div class="menu-item" onclick="goTo('giftcode')"><span>🎁 Giftcode</span><span>›</span></div>
+            <div class="menu-item" onclick="goTo('createGift')"><span>✨ Tạo Giftcode</span><span>›</span></div>
+            <div class="menu-item" onclick="goTo('leaderboard')"><span>🏆 Bảng xếp hạng</span><span>›</span></div>
+            <div class="menu-item" onclick="goTo('chat')"><span>💬 Chat</span><span>›</span></div>
+            <div class="menu-item" onclick="goTo('info')"><span>ℹ️ Thông tin</span><span>›</span></div>
+            <div class="menu-item" onclick="doLogout()"><span>🚪 Đăng xuất</span><span>›</span></div>
+        </div>
+    </div>
+
+    <!-- INVITE -->
+    <div id="inviteScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:20px;font-weight:bold">📨 Mã mời</span></div>
+            <div class="info-box">
+                <h3>Mã mời của bạn</h3>
+                <p id="myRefCode" style="font-size:24px;font-weight:bold;color:#ffd700;letter-spacing:3px">---</p>
+            </div>
+            <button class="btn btn-login" onclick="goTo('changeRef')">✏️ Chỉnh sửa mã mời</button>
+        </div>
+    </div>
+
+    <!-- CHANGE REF -->
+    <div id="changeRefScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('invite')">←</button><span style="color:white;font-size:20px;font-weight:bold">✏️ Đổi mã mời</span></div>
+            <input class="input" type="text" id="newRefCode" placeholder="Nhập mã mời mới">
+            <button class="btn btn-login" onclick="confirmChangeRef()">✅ Xác nhận</button>
+        </div>
+    </div>
+
+    <!-- GIFTCODE -->
+    <div id="giftcodeScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:20px;font-weight:bold">🎁 Giftcode</span></div>
+            <div class="card">
+                <h3 style="color:#ffd700">NHẬP GIFTCODE</h3>
+                <input class="input" type="text" id="giftcodeInput" placeholder="XXXX-XXXX-XXXX">
+                <button class="btn btn-login" onclick="useGiftcode()">NHẬN QUÀ</button>
+                <p style="color:#aaa;font-size:10px;margin-top:5px">Còn: <span id="giftRemain" style="color:#00ff88">3</span> lần</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CREATE GIFTCODE -->
+    <div id="createGiftScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:20px;font-weight:bold">✨ Tạo Giftcode</span></div>
+            <div class="card">
+                <h3 style="color:#ffd700">TẠO MÃ QUÀ TẶNG</h3>
+                <select class="input" id="giftTypeSelect"><option value="BUILD">BUILD</option><option value="USDT">USDT</option></select>
+                <input class="input" type="number" id="giftAmount" placeholder="Số tiền tặng">
+                <input class="input" type="number" id="giftLimit" placeholder="Giới hạn người nhập">
+                <input class="input" type="date" id="giftExpiry">
+                <button class="btn btn-login" onclick="createGiftcode()">TẠO CODE</button>
+                <div id="giftLink" style="background:#111;padding:10px;border-radius:8px;color:#00ff88;font-size:11px;margin-top:8px;display:none"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div id="leaderboardScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:#ffd700;font-size:20px;font-weight:bold">🏆 BẢNG XẾP HẠNG</span></div>
+            <table class="lb-table" id="lbTable"><tr><th>Hạng</th><th>Người chơi</th><th>BUILD</th></tr></table>
+        </div>
+    </div>
+
+    <!-- CHAT -->
+    <div id="chatScreen" class="screen">
+        <div style="padding:20px 20px 80px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:20px;font-weight:bold">💬 Chat thế giới</span></div>
+            <div id="chatMessages" style="max-height:60%;overflow-y:auto"></div>
+            <div style="display:flex;gap:10px;position:fixed;bottom:70px;left:20px;right:20px">
+                <input class="input" type="text" id="chatInput" placeholder="Nhập tin nhắn..." style="flex:1;margin:0">
+                <button class="btn" style="background:#00d4ff;color:black" onclick="sendChat()">GỬI</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- INFO -->
+    <div id="infoScreen" class="screen">
+        <div style="padding:20px 27px 80px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:20px;font-weight:bold">ℹ️ Thông tin</span></div>
+            <div class="info-box">
+                <h3>NHÀ PHÁT HÀNH</h3>
+                <p>Admin chính: <b style="color:#ffd700">Thiên Phú</b></p>
+                <p>Admin phụ: <b style="color:#ffd700">Song Thư</b></p>
+                <p>Zalo: <b style="color:#00d4ff">0349.155.073</b></p>
+                <p>Email: <b style="color:#00d4ff">plthienphu2012@gmail.com</b></p>
+                <p>Hoạt động: <b style="color:#00ff88">24/7</b></p>
+            </div>
+            <div class="rule-box">
+                <h3 style="color:#ffd700;margin-bottom:15px">NỘI QUY XWORLD PRO</h3>
+                <p><b>1. Tài khoản người chơi</b><br>Mỗi người chỉ được một tài khoản.</p>
+                <p><b>2. Hành vi trong game</b><br>Cấm chửi bới, xúc phạm.</p>
+                <p><b>3. Gian lận</b><br>Cấm hack, cheat, auto.</p>
+                <p><b>4. Giao dịch</b><br>Theo quy định app.</p>
+                <p><b>5. Xử phạt</b><br>Cảnh cáo, khóa chat, khóa tài khoản.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PET DETAIL -->
+    <div id="petDetailScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('home')">←</button><span style="color:white;font-size:20px;font-weight:bold">Linh Thú</span></div>
+            <div class="card">
+                <div style="font-size:80px" id="petDetailImg">🐁</div>
+                <div style="color:#ffd700;font-size:20px" id="petDetailName">Lv.1</div>
+                <div style="color:#00ff88;font-size:12px">BUILD +0.195%</div>
+                <button class="btn btn-login" onclick="upgradePet()">TĂNG CẤP</button>
+                <button class="btn btn-login" onclick="goTo('shop')">CỬA HÀNG</button>
+                <button class="btn btn-login" onclick="goTo('inventory')">KHO ĐỒ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHOP -->
+    <div id="shopScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:20px;font-weight:bold">🛒 Cửa hàng</span></div>
+            <div class="card">
+                <h3 style="color:#ffd700">📦 Exp Thú</h3>
+                <p style="color:#aaa">200-3000 EXP | Tỉ lệ cao 20%</p>
+                <p style="color:#aaa">Rate: 29.45 BUILD</p>
+                <div style="display:flex;justify-content:center;gap:10px;align-items:center">
+                    <button class="qty-btn" onclick="changeQty('normal',-1)">−</button>
+                    <span id="normalQty" style="color:white;font-size:18px">1</span>
+                    <button class="qty-btn" onclick="changeQty('normal',1)">+</button>
+                </div>
+                <p>Tổng: <b id="normalTotal" style="color:#ffd700">29.45 BUILD</b></p>
+                <button class="btn btn-login" onclick="buyBox('normal')">MUA</button>
+            </div>
+            <div class="card">
+                <h3 style="color:#ffd700">🌟 Exp Thú Siêu Cấp</h3>
+                <p style="color:#aaa">1-8000 EXP | Tỉ lệ cao 40%</p>
+                <p style="color:#aaa">Rate: 59.23 BUILD</p>
+                <div style="display:flex;justify-content:center;gap:10px;align-items:center">
+                    <button class="qty-btn" onclick="changeQty('super',-1)">−</button>
+                    <span id="superQty" style="color:white;font-size:18px">1</span>
+                    <button class="qty-btn" onclick="changeQty('super',1)">+</button>
+                </div>
+                <p>Tổng: <b id="superTotal" style="color:#ffd700">59.23 BUILD</b></p>
+                <button class="btn btn-login" onclick="buyBox('super')">MUA</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- INVENTORY -->
+    <div id="inventoryScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:20px;font-weight:bold">📦 Kho đồ</span></div>
+            <div id="inventoryList"></div>
+        </div>
+    </div>
+
+    <!-- TRADE -->
+    <div id="tradeScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('home')">←</button><span style="color:white;font-size:20px;font-weight:bold">📈 Giao Dịch</span></div>
+            <div class="card">
+                <h3 style="color:#ffd700">PET CHO THUÊ</h3>
+                <div id="tradeList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WALLET -->
+    <div id="walletScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('home')">←</button><span style="color:white;font-size:20px;font-weight:bold">👛 Ví</span></div>
+            <div class="card">
+                <h3 style="color:#ffd700">TÀI SẢN</h3>
+                <p>USDT: <b id="walletUSDT">0</b></p>
+                <p>XWORLD: <b id="walletXWORLD">0</b></p>
+                <p>BUILD: <b id="walletBUILD">0</b></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN USERS -->
+    <div id="adminUsersScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" id="btnBackAdminUsers">←</button><span style="color:#ff4444;font-size:20px;font-weight:bold">👥 Quản lý</span></div>
+            <table class="admin-table" id="adminUsersTable"><tr><th>User</th><th>UID</th><th>BUILD</th><th>USDT</th><th>Action</th></tr></table>
+        </div>
+    </div>
+
+    <!-- ADMIN GIFT -->
+    <div id="adminGiftScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" id="btnBackAdminGift">←</button><span style="color:#ff4444;font-size:20px;font-weight:bold">🎁 Tặng quà</span></div>
+            <div class="card">
+                <select class="input" id="adminGiftType"><option value="BUILD">BUILD</option><option value="USDT">USDT</option></select>
+                <input class="input" type="text" id="adminGiftUser" placeholder="Tên người chơi">
+                <input class="input" type="number" id="adminGiftAmount" placeholder="Số tiền">
+                <button class="btn btn-login" onclick="adminSendGift()">TẶNG</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN SUB FUNDS -->
+    <div id="adminSubFundsScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" id="btnBackAdminSubFunds">←</button><span style="color:#ff4444;font-size:20px;font-weight:bold">➖ Trừ tiền User</span></div>
+            <div class="card">
+                <select class="input" id="subTypeSelect"><option value="BUILD">BUILD</option><option value="USDT">USDT</option></select>
+                <input class="input" type="text" id="subUser" placeholder="ID hoặc tên">
+                <input class="input" type="number" id="subAmount" placeholder="Số tiền trừ">
+                <button class="btn btn-login" onclick="adminSubFunds()">TRỪ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN ADD FUNDS -->
+    <div id="adminAddFundsScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" id="btnBackAdminAddFunds">←</button><span style="color:#ff4444;font-size:20px;font-weight:bold">💰 Cộng tiền Admin</span></div>
+            <div class="card">
+                <select class="input" id="addFundTypeSelect"><option value="BUILD">BUILD</option><option value="USDT">USDT</option></select>
+                <input class="input" type="number" id="addFundAmount" placeholder="Số tiền cộng">
+                <button class="btn btn-login" onclick="adminAddFunds()">CỘNG</button>
+            </div>
+        </div>
+    </div>
+<!-- RENT -->
+    <div id="rentScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:20px;font-weight:bold">💸 Cho thuê</span></div>
+            <div class="card"><h3 style="color:#ffd700">CHO THUÊ LINH THÚ</h3><input class="input" type="number" id="rentPrice" placeholder="Giá (5-35 BUILD)" min="5" max="35"><select class="input" id="rentDays"><option value="1">1 ngày</option><option value="3">3 ngày</option><option value="7">7 ngày</option><option value="30">30 ngày</option><option value="90">90 ngày</option></select><button class="btn btn-login" onclick="rentPet()">CHO THUÊ</button></div>
+        </div>
+    </div>
+<script>
+var users = JSON.parse(localStorage.getItem("users") || "{}");
+var savedAccounts = JSON.parse(localStorage.getItem("savedAccounts") || "[]");
+var chatMessages = JSON.parse(localStorage.getItem("chatMessages") || "[]");
+var giftcodes = JSON.parse(localStorage.getItem("giftcodes") || "{}");
+var shopQty = { normal: 1, super: 1 };
+var rentData = JSON.parse(localStorage.getItem("rentData") || "[]");
+var PET_DATA = [
+    { e: "🐁", min: 0, max: 500, b: 0.195 }, { e: "🐇", min: 500, max: 1000, b: 1.39 },
+    { e: "🐈", min: 1000, max: 2000, b: 2.503 }, { e: "🐎", min: 2000, max: 5000, b: 3.9 },
+    { e: "🐘", min: 5000, max: 6500, b: 4.692 }, { e: "🦣", min: 6500, max: 7900, b: 6.29 },
+    { e: "🦇", min: 7900, max: 8000, b: 6.694 }, { e: "🦏", min: 8000, max: 9500, b: 7.89 },
+    { e: "🐃", min: 9500, max: 10000, b: 8.8 }, { e: "🦚", min: 10000, max: 15000, b: 10.2 },
+    { e: "🦈", min: 15000, max: 29000, b: 12.409 }, { e: "🫍", min: 29000, max: 35000, b: 18.34 },
+    { e: "🐋", min: 35000, max: 40000, b: 20.934 }, { e: "🪼", min: 40000, max: 49000, b: 25.394 },
+    { e: "🦩", min: 49000, max: 55000, b: 29.19 }, { e: "🦅", min: 55000, max: 59000, b: 32.402 },
+    { e: "🦦", min: 59000, max: 65000, b: 36.13 }, { e: "🐞", min: 65000, max: 75000, b: 39.013 },
+    { e: "🦍", min: 75000, max: 79000, b: 43.12 }, { e: "🦒", min: 79000, max: 95000, b: 49.204 },
+    { e: "🐊", min: 95000, max: 150000, b: 53.203 }, { e: "🦄", min: 150000, max: 299999, b: 190.34 },
+    { e: "🐉", min: 299999, max: 450000, b: 290.94 }
+];
+var rentData = JSON.parse(localStorage.getItem("rentData") || "[]");
+
+function goTo(id) {
+    document.querySelectorAll('.screen').forEach(s => {
+        s.classList.remove('active');
+        s.style.display = 'none';
+    });
+
+    const el = document.getElementById(id + 'Screen');
+    if (el) {
+        el.classList.add('active');
+        el.style.display = 'block';
+    }
+
+    if (id === 'menu' && typeof checkAdmin === 'function') checkAdmin();
+    if (id === 'invite' && typeof loadRefCode === 'function') loadRefCode();
+    if (id === 'leaderboard' && typeof renderLeaderboard === 'function') renderLeaderboard();
+    if (id === 'chat' && typeof renderChat === 'function') renderChat();
+    if (id === 'adminUsers' && typeof renderAdminUsers === 'function') renderAdminUsers();
+    if (id === 'petDetail' && typeof updatePetUI === 'function') updatePetUI();
+    if (id === 'inventory' && typeof renderInventory === 'function') renderInventory();
+}
+
+function showAlert(icon, title, text, isError) {
+    document.getElementById('alertIcon').textContent = icon;
+    document.getElementById('alertIcon').className = 'alert-icon' + (isError ? ' error-icon' : '');
+    document.getElementById('alertTitle').textContent = title;
+    document.getElementById('alertText').textContent = text;
+    document.getElementById('alertOverlay').style.display = 'flex';
+    if (!isError) createFireworks();
+}
+
+function closeAlert() {
+    document.getElementById('alertOverlay').style.display = 'none';
+}
+
+function createFireworks() {
+    const box = document.getElementById('alertBox');
+    const colors = ['#ff0000', '#ffd700', '#00ff00', '#00d4ff', '#ff00ff', '#ff8800', '#00ff88'];
+    for (let i = 0; i < 25; i++) {
+        const fw = document.createElement('div');
+        fw.className = 'firework';
+        fw.style.background = colors[Math.floor(Math.random() * colors.length)];
+        fw.style.left = Math.random() * 100 + '%';
+        fw.style.top = Math.random() * 100 + '%';
+        fw.style.animationDelay = Math.random() * 0.5 + 's';
+        box.appendChild(fw);
+        setTimeout(() => fw.remove(), 1500);
+    }
+}
+
+function isValidEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+function isStrongPassword(pass) { return pass.length >= 8 && /[A-Z]/.test(pass) && /[0-9]/.test(pass) && /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pass); }
+function generateUID(prefix) { const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; let uid = prefix; for (let i = 0; i < 8; i++) uid += chars.charAt(Math.floor(Math.random() * chars.length)); return uid; }
+
+function showRegister() { document.getElementById('mainLoginForm').style.display = 'none'; document.getElementById('regForm').style.display = 'block'; }
+function hideRegister() { document.getElementById('regForm').style.display = 'none'; document.getElementById('mainLoginForm').style.display = 'block'; }
+
+function doRegister() {
+    const email = document.getElementById('regEmail').value.trim();
+    const username = document.getElementById('regUser').value.trim();
+    const pass = document.getElementById('regPass').value;
+    const passConfirm = document.getElementById('regPassConfirm').value;
+    if (!email || !username || !pass || !passConfirm) { showAlert('❌', 'Lỗi', 'Điền đầy đủ!', true); return; }
+    if (!isValidEmail(email)) { showAlert('🚫', 'Email sai', 'Email sai, vui lòng nhập đúng email', true); return; }
+    if (users[username]) { showAlert('❌', 'Tên đăng nhập', 'Tên đăng nhập đã tồn tại!', true); return; }
+    for (let u in users) { if (users[u].email === email) { showAlert('📢', 'Email tồn tại', 'Email đã tồn tại, vui lòng nhập email khác', true); return; } }
+    if (!isStrongPassword(pass)) { showAlert('❌', 'Mật khẩu yếu', 'Mật khẩu phải 8+ ký tự, hoa, số, đặc biệt!', true); return; }
+    if (pass !== passConfirm) { showAlert('❌', 'Mật khẩu không khớp', 'Nhập lại mật khẩu không đúng!', true); return; }
+    const uid = generateUID("U_S-K");
+    users[username] = { email, pass, uid, build: 0, usdt: 0, xworld: 0, lv: 1, exp: 0, locked: false, lockUntil: null, isAdmin: false, myGiftcode: null, refCode: "REF-" + Math.random().toString(36).substr(2, 6).toUpperCase() };
+    localStorage.setItem("users", JSON.stringify(users));
+    showAlert('🎉', 'Chúc Mừng ' + username + ' đã đăng kí thành công', 'Id User: ' + uid, false);
+    hideRegister();
+}
+
+function doLogin() {
+    const username = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    const remember = document.getElementById('rememberMe').checked;
+    if (!username || !pass) { showAlert('❌', 'Lỗi', 'Nhập đầy đủ!', true); return; }
+    let foundKey = null;
+    if (users[username]) foundKey = username;
+    else { for (let key in users) { if (users[key].email === username) { foundKey = key; break; } } }
+    if (!foundKey || users[foundKey].pass !== pass) { showAlert('❌', 'Lỗi', 'Sai tài khoản hoặc mật khẩu!', true); return; }
+    if (users[foundKey].locked) { showAlert('🚫', 'Tài khoản bị khóa', 'Tài khoản sẽ bị khóa, vì lý do Admin ghi', true); return; }
+    localStorage.setItem("currentUser", foundKey);
+    if (remember) { savedAccounts = savedAccounts.filter(a => a.username !== foundKey); savedAccounts.unshift({ username: foundKey, pass }); if (savedAccounts.length > 5) savedAccounts.pop(); localStorage.setItem("savedAccounts", JSON.stringify(savedAccounts)); }
+    goTo('home');
+}
+
+function doLogout() { localStorage.removeItem("currentUser"); goTo('login'); }
+
+function loadRefCode() {
+    const u = localStorage.getItem("currentUser");
+    if (u && users[u]) document.getElementById('myRefCode').textContent = users[u].refCode || '---';
+}
+
+function confirmChangeRef() {
+    const newCode = document.getElementById('newRefCode').value.trim();
+    if (!newCode) { showAlert('❌', 'Lỗi', 'Nhập mã mời mới!', true); return; }
+    showAlert('🤔', 'Xác nhận', 'Bạn chắc chắn muốn đổi mã?', false);
+}
+
+function renderLeaderboard() {
+    const arr = Object.entries(users).map(([name, data]) => ({ name, build: data.build || 0 }));
+    arr.sort((a, b) => b.build - a.build);
+    let h = '<tr><th>Hạng</th><th>Người chơi</th><th>BUILD</th></tr>';
+    arr.slice(0, 100).forEach((u, i) => { h += `<tr><td>${i+1}</td><td>${u.name}</td><td>${u.build}</td></tr>`; });
+    document.getElementById('lbTable').innerHTML = h;
+}
+
+function renderChat() {
+    const h = chatMessages.map(msg => `<div class="chat-msg"><b>${msg.user}</b>: ${msg.text}</div>`).join('');
+    document.getElementById('chatMessages').innerHTML = h;
+}
+
+function sendChat() {
+    const text = document.getElementById('chatInput').value.trim();
+    const user = localStorage.getItem("currentUser");
+    if (!text || !user) return;
+    chatMessages.push({ user, text, time: Date.now() });
+    if (chatMessages.length > 100) chatMessages.shift();
+    localStorage.setItem("chatMessages", JSON.stringify(chatMessages));
+    document.getElementById('chatInput').value = '';
+    renderChat();
+}
+
+
+
+
+
+
+
+
+
+function useGiftcode() {
+    const code = document.getElementById('giftcodeInput').value.trim();
+    if (!code) { showAlert('🚫', 'Lỗi', 'Bạn nhập sai code rồi', true); return; }
+    const user = localStorage.getItem("currentUser");
+    if (!user || !users[user]) return;
+    const g = giftcodes[code];
+    if (!g) { showAlert('🚫', 'Lỗi', 'Bạn nhập sai code rồi', true); return; }
+    if (g.expiry && new Date(g.expiry).getTime() < Date.now()) { showAlert('💡', 'Hết hạn', 'Code đã hết hạn', true); return; }
+    if (g.claimed >= g.maxClaims) { showAlert('🛑', 'Giới hạn', 'Code đã giới hạn, bạn chậm tay quá', true); return; }
+    if (g.type === 'BUILD') users[user].build += g.amount; else users[user].usdt += g.amount;
+    g.claimed++;
+    giftcodes[code] = g;
+    localStorage.setItem("giftcodes", JSON.stringify(giftcodes));
+    localStorage.setItem("users", JSON.stringify(users));
+    showAlert('🎉', 'Thành công', '+' + g.amount + ' ' + g.type, false);
+}
+
+function createGiftcode() {
+    const user = localStorage.getItem("currentUser");
+    if (!user || !users[user]) return;
+    if (users[user].myGiftcode) { showAlert('❌', 'Lỗi', 'Đã tạo code rồi: ' + users[user].myGiftcode, true); return; }
+    const type = document.getElementById('giftTypeSelect').value;
+    const amount = parseFloat(document.getElementById('giftAmount').value);
+    const limit = parseInt(document.getElementById('giftLimit').value);
+    const expiry = document.getElementById('giftExpiry').value;
+    if (!amount || !limit || !expiry) { showAlert('❌', 'Lỗi', 'Nhập đầy đủ!', true); return; }
+    const code = "GIFT-" + Math.random().toString(36).substr(2, 8).toUpperCase();
+    giftcodes[code] = { type, amount, maxClaims: limit, claimed: 0, expiry, creator: user };
+    localStorage.setItem("giftcodes", JSON.stringify(giftcodes));
+    users[user].myGiftcode = code;
+    users[user].build -= 1;
+    localStorage.setItem("users", JSON.stringify(users));
+    document.getElementById('giftLink').style.display = 'block';
+    document.getElementById('giftLink').innerHTML = 'Mã: <b style="color:#00ff88">' + code + '</b>';
+    showAlert('✅', 'Thành công', 'Tạo code: ' + code, false);
+}
+
+function renderAdminUsers() {
+    let h = '<tr><th>User</th><th>UID</th><th>BUILD</th><th>USDT</th><th>Action</th></tr>';
+    for (let name in users) {
+        const d = users[name];
+        h += `<tr><td>${name}</td><td>${d.uid}</td><td>${d.build}</td><td>${d.usdt}</td><td><button class="qty-btn" onclick="toggleLock('${name}')">${d.locked ? 'Mở' : 'Khóa'}</button></td></tr>`;
+    }
+    document.getElementById('adminUsersTable').innerHTML = h;
+}
+
+function toggleLock(name) {
+    users[name].locked = !users[name].locked;
+    localStorage.setItem("users", JSON.stringify(users));
+    renderAdminUsers();
+}
+
+function adminSendGift() {
+    const name = document.getElementById('adminGiftUser').value.trim();
+    const amount = parseFloat(document.getElementById('adminGiftAmount').value);
+    const type = document.getElementById('adminGiftType').value;
+    if (!name || !amount || !users[name]) return;
+    if (type === 'BUILD') users[name].build += amount; else users[name].usdt += amount;
+    localStorage.setItem("users", JSON.stringify(users));
+    showAlert('✅', 'Thành công', 'Tặng ' + amount + ' ' + type + ' cho ' + name, false);
+}
+
+function adminSubFunds() {
+    const name = document.getElementById('subUser').value.trim();
+    const amount = parseFloat(document.getElementById('subAmount').value);
+    const type = document.getElementById('subTypeSelect').value;
+    if (!name || !amount) return;
+    for (let key in users) {
+        if (key === name || users[key].uid === name) {
+            if (type === 'BUILD') users[key].build = Math.max(0, users[key].build - amount);
+            else users[key].usdt = Math.max(0, users[key].usdt - amount);
+        }
+    }
+    localStorage.setItem("users", JSON.stringify(users));
+    showAlert('✅', 'Thành công', 'Trừ ' + amount + ' ' + type, false);
+}
+
+function adminAddFunds() {
+    const amount = parseFloat(document.getElementById('addFundAmount').value);
+    const type = document.getElementById('addFundTypeSelect').value;
+    if (!amount) return;
+    showAlert('✅', 'Thành công', 'Cộng ' + amount + ' ' + type + ' cho Admin', false);
+}
+
+document.getElementById('btnLogin').onclick = doLogin;
+document.getElementById('btnRegister').onclick = doRegister;
+document.getElementById('linkRegister').onclick = showRegister;
+document.getElementById('linkBackToLogin').onclick = hideRegister;
+
+window.addEventListener('load', function() {
+    if (localStorage.getItem("currentUser")) goTo('home');
+});
+
+function ensurePetData() {
+    const user = localStorage.getItem("currentUser");
+    if (!user || !users[user]) return false;
+    if (!Number.isFinite(Number(users[user].lv)) || Number(users[user].lv) < 1) users[user].lv = 1;
+    if (!Number.isFinite(Number(users[user].exp)) || Number(users[user].exp) < 0) users[user].exp = 0;
+    return true;
+}
+
+function getPetData(lv) {
+    if (lv >= PET_DATA.length) return PET_DATA[PET_DATA.length - 1];
+    return PET_DATA[Math.max(0, lv - 1)];
+}
+function updatePetUI() {
+    if (!ensurePetData()) return;
+    const user = localStorage.getItem("currentUser");
+    if (!user || !users[user]) return;
+    const lv = users[user].lv || 1, exp = users[user].exp || 0, pet = getPetData(lv);
+    document.getElementById('petDetailImg').textContent = pet.e;
+    document.getElementById('petDetailName').textContent = pet.e + ' Lv.' + lv;
+    document.getElementById('petBuildBonus').textContent = 'BUILD +' + pet.b + '%';
+    const pct = lv >= PET_DATA.length ? 100 : ((exp - pet.min) / (pet.max - pet.min)) * 100;
+    document.getElementById('petExpBar').style.width = Math.min(100, Math.max(0, pct)) + '%';
+    document.getElementById('petExpText').textContent = lv >= PET_DATA.length ? 'MAX' : exp + '/' + pet.max + ' EXP';
+    document.getElementById('btnRent').style.display = lv >= 10 ? 'block' : 'none';
+}
+function upgradePet() {
+    if (!ensurePetData()) return;
+    const user = localStorage.getItem("currentUser"); if (!user || !users[user]) return;
+    let lv = users[user].lv || 1, exp = users[user].exp || 0, pet = getPetData(lv);
+    if (lv >= PET_DATA.length) { showAlert('❌','Max level','Đã đạt level tối đa!',true); return; }
+    if (exp >= pet.max) { users[user].lv = lv + 1; users[user].exp = getPetData(lv + 1).min + (exp - pet.max); localStorage.setItem("users",JSON.stringify(users)); showAlert('🎉','Nâng cấp','Lên Lv.'+(lv+1)+'!',false); updatePetUI(); }
+    else showAlert('❌','Thiếu EXP','Cần '+pet.max+' EXP để nâng cấp!',true);
+}
+function rentPet() {
+    const user=localStorage.getItem("currentUser"); if(!user||!users[user]) return;
+    const price=parseInt(document.getElementById('rentPrice').value), days=parseInt(document.getElementById('rentDays').value);
+    if(!price||price<5||price>35){showAlert('❌','Lỗi','Giá 5-35 BUILD!',true);return;}
+    rentData.push({user,price,days,time:Date.now()}); localStorage.setItem('rentData',JSON.stringify(rentData));
+    showAlert('✅','Cho thuê','Đã cho thuê '+days+' ngày với giá '+price+' BUILD!',false);
+}
+function changeQty(type,delta){shopQty[type]=Math.max(1,shopQty[type]+delta);document.getElementById(type+'Qty').textContent=shopQty[type];document.getElementById(type+'Total').textContent=((type==='normal'?29.45:59.23)*shopQty[type]).toFixed(2)+' BUILD';}
+function buyBox(type){
+    const user=localStorage.getItem('currentUser'); if(!user||!users[user]) return;
+    const qty=shopQty[type], price=type==='normal'?29.45:59.23, total=qty*price;
+    if((users[user].build||0)<total){showAlert('❌','Lỗi','Không đủ BUILD!',true);return;}
+    users[user].build-=total; const inv=JSON.parse(localStorage.getItem('inventory')||'[]');
+    for(let i=0;i<qty;i++) inv.push({name:type==='normal'?'Exp Thú':'Exp Siêu Cấp',minExp:type==='normal'?200:1,maxExp:type==='normal'?3000:8000,highRate:type==='normal'?0.2:0.4});
+    localStorage.setItem('inventory',JSON.stringify(inv)); localStorage.setItem('users',JSON.stringify(users)); showAlert('✅','Mua hòm','Mua '+qty+' hòm thành công!',false);
+}
+function renderInventory(){
+    const inv=JSON.parse(localStorage.getItem('inventory')||'[]'); let h='';
+    if(!inv.length) h='<p style="color:#aaa;text-align:center">Kho đồ trống</p>';
+    else inv.forEach((box,i)=>{h+='<div class="card"><b>'+box.name+'</b><p style="color:#aaa">'+box.minExp+'-'+box.maxExp+' EXP</p><button class="btn btn-login" onclick="openBox('+i+')">MỞ</button></div>';});
+    document.getElementById('inventoryList').innerHTML=h;
+}
+function openBox(index){
+    const inv=JSON.parse(localStorage.getItem('inventory')||'[]'); if(index>=inv.length)return; const box=inv[index], highRoll=Math.random()<box.highRate;
+    let exp=highRoll?Math.floor(Math.random()*(box.maxExp-box.minExp+1))+box.minExp:Math.floor((Math.random()*(box.maxExp-box.minExp+1))*0.3)+box.minExp;
+    inv.splice(index,1); localStorage.setItem('inventory',JSON.stringify(inv)); const user=localStorage.getItem('currentUser'); users[user].exp=(users[user].exp||0)+exp; localStorage.setItem('users',JSON.stringify(users));
+    showAlert(highRoll?'🌟':'🎁',highRoll?'May mắn!':'Nhận thưởng','+'+exp+' EXP',false); renderInventory(); updatePetUI();
+}
+</script>
+</body>
+</html>
