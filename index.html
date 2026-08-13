@@ -4,1729 +4,592 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>XWorld Pro v2.3.6</title>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #0a1628; font-family: Arial, sans-serif; touch-action: manipulation; }
+        .phone { width: 100%; height: 100vh; height: 100dvh; background: #0a1628; position: relative; overflow: hidden; }
+        .screen { width: 100%; height: 100%; position: absolute; top: 0; left: 0; overflow-y: auto; display: none; }
+        .screen.active { display: block !important; }
 
-        html,
-        body {
-            width: 100%;
-            height: 100%;
-            background: #0a1628;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .phone {
-            width: 100%;
-            max-width: 400px;
-            height: 100vh;
-            background: #0b1a30;
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow-y: auto;
-        }
-
-        .logo {
-            font-size: 36px;
-            font-weight: bold;
-            color: #00d4ff;
-            text-shadow: 0 0 20px #00d4ff;
-            margin-bottom: 40px;
-            text-align: center;
-        }
-
-        .input {
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            border: 2px solid rgba(0,212,255,0.3);
-            background: rgba(255,255,255,0.05);
-            color: white;
-            font-size: 14px;
-            margin-bottom: 12px;
-            text-align: center;
-            outline: none;
-        }
-
-        .input:focus {
-            border-color: #00d4ff;
-        }
-
-        .input::placeholder {
-            color: #8d9bad;
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            background: #00d4ff;
-            color: black;
-            margin-bottom: 20px;
-        }
-
-        .btn-login:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .divider {
-            color: #aaa;
-            font-size: 12px;
-            margin: 10px 0;
-            width: 100%;
-            text-align: center;
-        }
-
-        .google-btn {
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            border: 1px solid #ddd;
-            background: white;
-            color: #444;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .google-btn img {
-            width: 22px;
-            height: 22px;
-        }
-
-        .link {
-            color: #00d4ff;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .link:hover {
-            text-decoration: underline;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .alert {
-            color: #ffd700;
-            font-size: 14px;
-            margin-bottom: 15px;
-            text-align: center;
-            line-height: 1.5;
-        }
-
-        .info {
-            color: #9db0c8;
-            font-size: 13px;
-            text-align: center;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-
-        .otp-input {
-            letter-spacing: 10px;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .back-link {
-            text-align: center;
-            margin-top: 5px;
-        }
-
-        .timer {
-            color: #9db0c8;
-            font-size: 12px;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .success {
-            color: #00ff9d;
-        }
-
-        .error {
-            color: #ff6464;
-        }
+        .logo { font-size: 36px; font-weight: bold; color: #00d4ff; text-align: center; padding: 40px 0 20px; text-shadow: 0 0 20px #00d4ff; animation: neon 2s infinite; }
+        @keyframes neon { 0%,100% { text-shadow: 0 0 20px #00d4ff; } 50% { text-shadow: 0 0 40px #00d4ff, 0 0 80px #ff00ff; } }
+        .input { width: 85%; padding: 12px; border-radius: 12px; border: 2px solid rgba(0,212,255,0.3); background: rgba(255,255,255,0.05); color: white; font-size: 14px; margin: 0 auto 10px; text-align: center; outline: none; display: block; }
+        .btn { padding: 12px 20px; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; color: white; display: block; margin: 0 auto; }
+        .btn-login { width: 85%; background: #00d4ff; color: black; }
+        .link { color: #00d4ff; font-size: 12px; cursor: pointer; text-align: center; display: block; margin-top: 5px; }
+        .back-btn { color: white; font-size: 24px; cursor: pointer; background: none; border: none; }
+        .menu-item { width: 100%; min-height: 55px; padding: 0 20px; background: #171c23; border-radius: 15px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; color: #f2f2f2; font-size: 15px; cursor: pointer; }
+        .menu-item.admin { background: #241011; border: 1px solid #ff3b3b; }
+        .info-box { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 20px; margin: 10px 0; color: white; }
+        .info-box h3 { color: #ffd700; margin-bottom: 10px; }
+        .rule-box { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 20px; margin: 10px 0; color: #ddd; font-size: 13px; line-height: 1.8; }
+        .card { background: #0d1f35; border-radius: 15px; padding: 20px; margin: 10px 0; text-align: center; }
+        .qty-btn { width: 35px; height: 35px; border-radius: 8px; background: #0d1f35; color: white; font-size: 18px; border: none; cursor: pointer; }
+        .admin-table { width: 100%; border-collapse: collapse; color: white; font-size: 11px; }
+        .admin-table th, .admin-table td { padding: 6px; border: 1px solid #333; }
+        .admin-table th { background: #222; }
+        .lb-table { width: 100%; border-collapse: collapse; color: white; font-size: 12px; }
+        .lb-table th, .lb-table td { padding: 8px; border: 1px solid #333; }
+        .alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 9999; display: none; align-items: center; justify-content: center; }
+        .alert-box { background: linear-gradient(135deg, #1a1a2e, #16213e); border: 2px solid #ffd700; border-radius: 20px; padding: 30px; text-align: center; width: 85%; max-width: 350px; color: white; box-shadow: 0 0 60px rgba(255,215,0,0.6); animation: popIn 0.4s; position: relative; overflow: hidden; }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .alert-icon { font-size: 60px; animation: bounce 1s infinite; }
+        @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .alert-title { color: #ffd700; font-size: 22px; font-weight: bold; margin: 15px 0; }
+        .alert-text { color: #ddd; font-size: 14px; line-height: 1.6; }
+        .alert-close-btn { background: #ffd700; color: black; padding: 10px 30px; border-radius: 25px; font-size: 14px; font-weight: bold; border: none; cursor: pointer; margin-top: 20px; }
+        .firework { position: absolute; width: 8px; height: 8px; border-radius: 50%; animation: explode 1s ease-out forwards; }
+        @keyframes explode { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
+        .error-icon { color: #ff4444; animation: shake 0.5s; }
+        @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        .navbar { position: fixed; left: 0; right: 0; bottom: 0; height: 55px; background: #0d1f35; display: flex; z-index: 999; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-size: 10px; cursor: pointer; }
+        .nav-item.active { color: #00d4ff; }
+        .chat-msg { background: #1a1a2e; border-radius: 10px; padding: 10px; margin: 5px 0; color: white; font-size: 13px; }
+        .chat-msg b { color: #00d4ff; }
+        .snowflake { position: fixed; top: -20px; color: white; font-size: 20px; pointer-events: none; animation: fall linear infinite; z-index: 9998; }
+        @keyframes fall { to { transform: translateY(110vh); } }
     </style>
 </head>
-
 <body>
-
 <div class="phone">
-
-    <div class="logo">
-        XWORLD PRO
-        <span style="font-size:11px;color:#888;display:block">
-            v2.3.6
-        </span>
+    <div class="alert-overlay" id="alertOverlay">
+        <div class="alert-box" id="alertBox">
+            <div class="alert-icon" id="alertIcon">✅</div>
+            <div class="alert-title" id="alertTitle">Thành công</div>
+            <div class="alert-text" id="alertText">Nội dung</div>
+            <button class="alert-close-btn" onclick="closeAlert()">OK</button>
+        </div>
     </div>
 
-
-    <!-- ================= LOGIN ================= -->
-
-    <div id="loginForm" style="width:100%">
-
-        <input
-            class="input"
-            type="email"
-            id="loginUser"
-            placeholder="Email"
-            autocomplete="email"
-        >
-
-        <input
-            class="input"
-            type="password"
-            id="loginPass"
-            placeholder="Mật khẩu"
-            autocomplete="current-password"
-        >
-
-        <button class="btn-login" onclick="doLogin()">
-            ĐĂNG NHẬP
-        </button>
-
-        <div class="divider">
-            ─── hoặc ───
+    <!-- LOGIN -->
+    <div id="loginScreen" class="screen active">
+        <div class="logo">XWORLD PRO<span style="font-size:11px;color:#888;display:block">v2.3.6</span></div>
+        <div id="mainLoginForm">
+            <input class="input" type="text" id="loginUser" placeholder="Tên đăng nhập hoặc Email">
+            <input class="input" type="password" id="loginPass" placeholder="Mật khẩu">
+            <label style="display:block;text-align:center;color:#aaa;font-size:11px;margin-bottom:8px"><input type="checkbox" id="rememberMe" checked> Ghi nhớ</label>
+            <button class="btn btn-login" id="btnLogin">ĐĂNG NHẬP</button>
+            <span class="link" id="linkRegister">Chưa có tài khoản? Đăng ký</span>
         </div>
-
-        <button class="google-btn" onclick="signInWithGoogle()">
-            <img
-                src="https://www.google.com/favicon.ico"
-                alt="G"
-            >
-            Đăng nhập bằng Google
-        </button>
-
-        <div style="text-align:center;margin-bottom:15px">
-            <span
-                class="link"
-                onclick="showForgotPassword()"
-            >
-                Quên mật khẩu?
-            </span>
+        <div id="regForm" style="display:none">
+            <input class="input" type="email" id="regEmail" placeholder="Email">
+            <input class="input" type="text" id="regUser" placeholder="Tên đăng nhập">
+            <input class="input" type="password" id="regPass" placeholder="Mật khẩu (8+ ký tự)">
+            <input class="input" type="password" id="regPassConfirm" placeholder="Nhập lại mật khẩu">
+            <button class="btn btn-login" id="btnRegister">ĐĂNG KÝ</button>
+            <span class="link" id="linkBackToLogin">← Quay lại</span>
         </div>
-
-        <div style="text-align:center">
-            <span
-                class="link"
-                onclick="showRegister()"
-            >
-                Chưa có tài khoản? Đăng ký
-            </span>
-        </div>
-
     </div>
 
-
-    <!-- ================= REGISTER ================= -->
-
-    <div
-        id="registerForm"
-        class="hidden"
-        style="width:100%"
-    >
-
-        <input
-            class="input"
-            type="email"
-            id="regEmail"
-            placeholder="Email"
-            autocomplete="email"
-        >
-
-        <input
-            class="input"
-            type="text"
-            id="regUser"
-            placeholder="Tên đăng nhập"
-            autocomplete="username"
-        >
-
-        <input
-            class="input"
-            type="password"
-            id="regPass"
-            placeholder="Mật khẩu"
-            autocomplete="new-password"
-        >
-
-        <input
-            class="input"
-            type="password"
-            id="regPassConfirm"
-            placeholder="Nhập lại mật khẩu"
-            autocomplete="new-password"
-        >
-
-        <button
-            class="btn-login"
-            onclick="doRegister()"
-        >
-            ĐĂNG KÝ
-        </button>
-
-        <div style="text-align:center">
-            <span
-                class="link"
-                onclick="showLogin()"
-            >
-                ← Quay lại
-            </span>
+    <!-- HOME -->
+    <div id="homeScreen" class="screen">
+        <div style="text-align:center;padding:20px;color:white">
+            <p style="font-size:20px">XWorld Pro</p>
+            <button class="btn btn-login" onclick="goTo('menu')" style="margin-top:20px">☰ Menu</button>
         </div>
-
+        <div class="navbar">
+            <div class="nav-item active" onclick="goTo('home')">🏠<br>Home</div>
+            <div class="nav-item">📦<br>Kho app</div>
+            <div class="nav-item" onclick="goTo('petDetail')">🦊<br>Pet</div>
+            <div class="nav-item" onclick="goTo('trade')">📈<br>Giao Dịch</div>
+            <div class="nav-item" onclick="goTo('wallet')">👛<br>Ví</div>
+        </div>
     </div>
 
-
-    <!-- ================= FORGOT PASSWORD ================= -->
-
-    <div
-        id="forgotPasswordForm"
-        class="hidden"
-        style="width:100%"
-    >
-
-        <div class="alert">
-            🔐 Quên mật khẩu
+    <!-- MENU -->
+    <div id="menuScreen" class="screen">
+        <div style="padding:20px 27px 80px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('home')">←</button><span style="color:white;font-size:20px;font-weight:bold">Tài khoản</span></div>
+            <div class="menu-item" onclick="goTo('invite')"><span>📨 Mời bạn bè</span><span>›</span></div>
+            <div class="menu-item" onclick="goTo('giftcode')"><span>🎁 Giftcode</span><span>›</span></div>
+            <div class="menu-item" onclick="goTo('createGift')"><span>✨ Tạo Giftcode</span><span>›</span></div>
+            <div class="menu-item" onclick="goTo('leaderboard')"><span>🏆 Bảng xếp hạng</span><span>›</span></div>
+            <div class="menu-item" onclick="goTo('chat')"><span>💬 Chat</span><span>›</span></div>
+            <div class="menu-item" onclick="goTo('info')"><span>ℹ️ Thông tin</span><span>›</span></div>
+            <div class="menu-item" onclick="doLogout()"><span>🚪 Đăng xuất</span><span>›</span></div>
         </div>
-
-        <div class="info">
-            Nhập email tài khoản của bạn.
-            <br>
-            X World Pro sẽ gửi mã xác thực 6 số.
-        </div>
-
-        <input
-            class="input"
-            type="email"
-            id="forgotEmail"
-            placeholder="Email tài khoản"
-            autocomplete="email"
-        >
-
-        <button
-            class="btn-login"
-            id="sendOtpBtn"
-            onclick="sendResetOTP()"
-        >
-            GỬI MÃ XÁC THỰC
-        </button>
-
-        <div class="back-link">
-            <span
-                class="link"
-                onclick="showLogin()"
-            >
-                ← Quay lại đăng nhập
-            </span>
-        </div>
-
     </div>
 
-
-    <!-- ================= OTP ================= -->
-
-    <div
-        id="otpForm"
-        class="hidden"
-        style="width:100%"
-    >
-
-        <div class="alert">
-            📩 Nhập mã xác thực
+    <!-- INVITE -->
+    <div id="inviteScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:20px;font-weight:bold">📨 Mã mời</span></div>
+            <div class="info-box">
+                <h3>Mã mời của bạn</h3>
+                <p id="myRefCode" style="font-size:24px;font-weight:bold;color:#ffd700;letter-spacing:3px">---</p>
+            </div>
+            <button class="btn btn-login" onclick="goTo('changeRef')">✏️ Chỉnh sửa mã mời</button>
         </div>
-
-        <div class="info">
-            Mã 6 số đã được gửi đến email của bạn.
-            <br>
-            Mã có hiệu lực trong 5 phút.
-        </div>
-
-        <input
-            class="input otp-input"
-            type="text"
-            id="resetOtp"
-            placeholder="000000"
-            maxlength="6"
-            inputmode="numeric"
-            autocomplete="one-time-code"
-        >
-
-        <button
-            class="btn-login"
-            id="verifyOtpBtn"
-            onclick="verifyResetOTP()"
-        >
-            XÁC THỰC MÃ
-        </button>
-
-        <div
-            id="otpTimer"
-            class="timer"
-        >
-            Bạn có thể yêu cầu mã mới sau 60 giây.
-        </div>
-
-        <div style="text-align:center;margin-bottom:15px">
-            <span
-                id="resendOtpLink"
-                class="link"
-                onclick="resendResetOTP()"
-                style="pointer-events:none;opacity:0.5"
-            >
-                Gửi lại mã
-            </span>
-        </div>
-
-        <div class="back-link">
-            <span
-                class="link"
-                onclick="showLogin()"
-            >
-                ← Quay lại
-            </span>
-        </div>
-
     </div>
 
-
-    <!-- ================= NEW PASSWORD ================= -->
-
-    <div
-        id="newPasswordForm"
-        class="hidden"
-        style="width:100%"
-    >
-
-        <div class="alert">
-            🔒 Tạo mật khẩu mới
+    <!-- CHANGE REF -->
+    <div id="changeRefScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('invite')">←</button><span style="color:white;font-size:20px;font-weight:bold">✏️ Đổi mã mời</span></div>
+            <input class="input" type="text" id="newRefCode" placeholder="Nhập mã mời mới">
+            <button class="btn btn-login" onclick="confirmChangeRef()">✅ Xác nhận</button>
         </div>
-
-        <div class="info">
-            Mã xác thực đã được xác nhận.
-            <br>
-            Nhập mật khẩu mới cho tài khoản.
-        </div>
-
-        <input
-            class="input"
-            type="password"
-            id="newPassword"
-            placeholder="Mật khẩu mới"
-            autocomplete="new-password"
-        >
-
-        <input
-            class="input"
-            type="password"
-            id="newPasswordConfirm"
-            placeholder="Nhập lại mật khẩu"
-            autocomplete="new-password"
-        >
-
-        <button
-            class="btn-login"
-            onclick="updateNewPassword()"
-        >
-            ĐỔI MẬT KHẨU
-        </button>
-
     </div>
 
-
-    <!-- ================= GOOGLE PASSWORD SETUP ================= -->
-
-    <div
-        id="passwordSetupForm"
-        class="hidden"
-        style="width:100%"
-    >
-
-        <div class="alert">
-            🔒 Tạo mật khẩu cho tài khoản Google
+    <!-- GIFTCODE -->
+    <div id="giftcodeScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:20px;font-weight:bold">🎁 Giftcode</span></div>
+            <div class="card">
+                <h3 style="color:#ffd700">NHẬP GIFTCODE</h3>
+                <input class="input" type="text" id="giftcodeInput" placeholder="XXXX-XXXX-XXXX">
+                <button class="btn btn-login" onclick="useGiftcode()">NHẬN QUÀ</button>
+                <p style="color:#aaa;font-size:10px;margin-top:5px">Còn: <span id="giftRemain" style="color:#00ff88">3</span> lần</p>
+            </div>
         </div>
-
-        <input
-            class="input"
-            type="password"
-            id="googlePass"
-            placeholder="Mật khẩu mới"
-            autocomplete="new-password"
-        >
-
-        <input
-            class="input"
-            type="password"
-            id="googlePassConfirm"
-            placeholder="Nhập lại mật khẩu"
-            autocomplete="new-password"
-        >
-
-        <button
-            class="btn-login"
-            onclick="setupGooglePassword()"
-        >
-            XÁC NHẬN
-        </button>
-
     </div>
 
+    <!-- CREATE GIFTCODE -->
+    <div id="createGiftScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:20px;font-weight:bold">✨ Tạo Giftcode</span></div>
+            <div class="card">
+                <h3 style="color:#ffd700">TẠO MÃ QUÀ TẶNG</h3>
+                <select class="input" id="giftTypeSelect"><option value="BUILD">BUILD</option><option value="USDT">USDT</option></select>
+                <input class="input" type="number" id="giftAmount" placeholder="Số tiền tặng">
+                <input class="input" type="number" id="giftLimit" placeholder="Giới hạn người nhập">
+                <input class="input" type="date" id="giftExpiry">
+                <button class="btn btn-login" onclick="createGiftcode()">TẠO CODE</button>
+                <div id="giftLink" style="background:#111;padding:10px;border-radius:8px;color:#00ff88;font-size:11px;margin-top:8px;display:none"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div id="leaderboardScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:#ffd700;font-size:20px;font-weight:bold">🏆 BẢNG XẾP HẠNG</span></div>
+            <table class="lb-table" id="lbTable"><tr><th>Hạng</th><th>Người chơi</th><th>BUILD</th></tr></table>
+        </div>
+    </div>
+
+    <!-- CHAT -->
+    <div id="chatScreen" class="screen">
+        <div style="padding:20px 20px 80px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:20px;font-weight:bold">💬 Chat thế giới</span></div>
+            <div id="chatMessages" style="max-height:60%;overflow-y:auto"></div>
+            <div style="display:flex;gap:10px;position:fixed;bottom:70px;left:20px;right:20px">
+                <input class="input" type="text" id="chatInput" placeholder="Nhập tin nhắn..." style="flex:1;margin:0">
+                <button class="btn" style="background:#00d4ff;color:black" onclick="sendChat()">GỬI</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- INFO -->
+    <div id="infoScreen" class="screen">
+        <div style="padding:20px 27px 80px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:20px;font-weight:bold">ℹ️ Thông tin</span></div>
+            <div class="info-box">
+                <h3>NHÀ PHÁT HÀNH</h3>
+                <p>Admin chính: <b style="color:#ffd700">Thiên Phú</b></p>
+                <p>Admin phụ: <b style="color:#ffd700">Song Thư</b></p>
+                <p>Zalo: <b style="color:#00d4ff">0349.155.073</b></p>
+                <p>Email: <b style="color:#00d4ff">plthienphu2012@gmail.com</b></p>
+                <p>Hoạt động: <b style="color:#00ff88">24/7</b></p>
+            </div>
+            <div class="rule-box">
+                <h3 style="color:#ffd700;margin-bottom:15px">NỘI QUY XWORLD PRO</h3>
+                <p><b>1. Tài khoản người chơi</b><br>Mỗi người chỉ được một tài khoản.</p>
+                <p><b>2. Hành vi trong game</b><br>Cấm chửi bới, xúc phạm.</p>
+                <p><b>3. Gian lận</b><br>Cấm hack, cheat, auto.</p>
+                <p><b>4. Giao dịch</b><br>Theo quy định app.</p>
+                <p><b>5. Xử phạt</b><br>Cảnh cáo, khóa chat, khóa tài khoản.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PET DETAIL -->
+    <div id="petDetailScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('home')">←</button><span style="color:white;font-size:20px;font-weight:bold">Linh Thú</span></div>
+            <div class="card">
+                <div style="font-size:80px" id="petDetailImg">🐁</div>
+                <div style="color:#ffd700;font-size:20px" id="petDetailName">Lv.1</div>
+                <div style="color:#00ff88;font-size:12px">BUILD +0.195%</div>
+                <button class="btn btn-login" onclick="upgradePet()">TĂNG CẤP</button>
+                <button class="btn btn-login" onclick="goTo('shop')">CỬA HÀNG</button>
+                <button class="btn btn-login" onclick="goTo('inventory')">KHO ĐỒ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHOP -->
+    <div id="shopScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:20px;font-weight:bold">🛒 Cửa hàng</span></div>
+            <div class="card">
+                <h3 style="color:#ffd700">📦 Exp Thú</h3>
+                <p style="color:#aaa">200-3000 EXP | Tỉ lệ cao 20%</p>
+                <p style="color:#aaa">Rate: 29.45 BUILD</p>
+                <div style="display:flex;justify-content:center;gap:10px;align-items:center">
+                    <button class="qty-btn" onclick="changeQty('normal',-1)">−</button>
+                    <span id="normalQty" style="color:white;font-size:18px">1</span>
+                    <button class="qty-btn" onclick="changeQty('normal',1)">+</button>
+                </div>
+                <p>Tổng: <b id="normalTotal" style="color:#ffd700">29.45 BUILD</b></p>
+                <button class="btn btn-login" onclick="buyBox('normal')">MUA</button>
+            </div>
+            <div class="card">
+                <h3 style="color:#ffd700">🌟 Exp Thú Siêu Cấp</h3>
+                <p style="color:#aaa">1-8000 EXP | Tỉ lệ cao 40%</p>
+                <p style="color:#aaa">Rate: 59.23 BUILD</p>
+                <div style="display:flex;justify-content:center;gap:10px;align-items:center">
+                    <button class="qty-btn" onclick="changeQty('super',-1)">−</button>
+                    <span id="superQty" style="color:white;font-size:18px">1</span>
+                    <button class="qty-btn" onclick="changeQty('super',1)">+</button>
+                </div>
+                <p>Tổng: <b id="superTotal" style="color:#ffd700">59.23 BUILD</b></p>
+                <button class="btn btn-login" onclick="buyBox('super')">MUA</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- INVENTORY -->
+    <div id="inventoryScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('petDetail')">←</button><span style="color:white;font-size:20px;font-weight:bold">📦 Kho đồ</span></div>
+            <div id="inventoryList"></div>
+        </div>
+    </div>
+
+    <!-- TRADE -->
+    <div id="tradeScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('home')">←</button><span style="color:white;font-size:20px;font-weight:bold">📈 Giao Dịch</span></div>
+            <div class="card">
+                <h3 style="color:#ffd700">PET CHO THUÊ</h3>
+                <div id="tradeList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WALLET -->
+    <div id="walletScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" onclick="goTo('home')">←</button><span style="color:white;font-size:20px;font-weight:bold">👛 Ví</span></div>
+            <div class="card">
+                <h3 style="color:#ffd700">TÀI SẢN</h3>
+                <p>USDT: <b id="walletUSDT">0</b></p>
+                <p>XWORLD: <b id="walletXWORLD">0</b></p>
+                <p>BUILD: <b id="walletBUILD">0</b></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN USERS -->
+    <div id="adminUsersScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" id="btnBackAdminUsers">←</button><span style="color:#ff4444;font-size:20px;font-weight:bold">👥 Quản lý</span></div>
+            <table class="admin-table" id="adminUsersTable"><tr><th>User</th><th>UID</th><th>BUILD</th><th>USDT</th><th>Action</th></tr></table>
+        </div>
+    </div>
+
+    <!-- ADMIN GIFT -->
+    <div id="adminGiftScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" id="btnBackAdminGift">←</button><span style="color:#ff4444;font-size:20px;font-weight:bold">🎁 Tặng quà</span></div>
+            <div class="card">
+                <select class="input" id="adminGiftType"><option value="BUILD">BUILD</option><option value="USDT">USDT</option></select>
+                <input class="input" type="text" id="adminGiftUser" placeholder="Tên người chơi">
+                <input class="input" type="number" id="adminGiftAmount" placeholder="Số tiền">
+                <button class="btn btn-login" onclick="adminSendGift()">TẶNG</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN SUB FUNDS -->
+    <div id="adminSubFundsScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" id="btnBackAdminSubFunds">←</button><span style="color:#ff4444;font-size:20px;font-weight:bold">➖ Trừ tiền User</span></div>
+            <div class="card">
+                <select class="input" id="subTypeSelect"><option value="BUILD">BUILD</option><option value="USDT">USDT</option></select>
+                <input class="input" type="text" id="subUser" placeholder="ID hoặc tên">
+                <input class="input" type="number" id="subAmount" placeholder="Số tiền trừ">
+                <button class="btn btn-login" onclick="adminSubFunds()">TRỪ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN ADD FUNDS -->
+    <div id="adminAddFundsScreen" class="screen">
+        <div style="padding:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><button class="back-btn" id="btnBackAdminAddFunds">←</button><span style="color:#ff4444;font-size:20px;font-weight:bold">💰 Cộng tiền Admin</span></div>
+            <div class="card">
+                <select class="input" id="addFundTypeSelect"><option value="BUILD">BUILD</option><option value="USDT">USDT</option></select>
+                <input class="input" type="number" id="addFundAmount" placeholder="Số tiền cộng">
+                <button class="btn btn-login" onclick="adminAddFunds()">CỘNG</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-
 <script>
+var users = JSON.parse(localStorage.getItem("users") || "{}");
+var savedAccounts = JSON.parse(localStorage.getItem("savedAccounts") || "[]");
+var chatMessages = JSON.parse(localStorage.getItem("chatMessages") || "[]");
+var giftcodes = JSON.parse(localStorage.getItem("giftcodes") || "{}");
+var shopQty = { normal: 1, super: 1 };
 
-const SUPABASE_URL =
-    "https://zaktjzapycopyjkaypav.supabase.co";
-
-const SUPABASE_ANON_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpha3RqemFweWNvcHlqa2F5cGF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MDM2MDIsImV4cCI6MjEwMjE3OTYwMn0.zu15iKLYkzgyiX43V2oM_1DKrw6WhXMegOz3umULR2o";
-
-const supabase =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-    );
-
-
-let resetEmail = null;
-let otpTimerInterval = null;
-let otpSeconds = 60;
-
-
-/* =====================================================
-   ALERT
-===================================================== */
-
-function showAlert(message) {
-    alert(message);
-}
-
-
-/* =====================================================
-   HIDE ALL FORMS
-===================================================== */
-
-function hideAllForms() {
-
-    document
-        .getElementById("loginForm")
-        .classList.add("hidden");
-
-    document
-        .getElementById("registerForm")
-        .classList.add("hidden");
-
-    document
-        .getElementById("forgotPasswordForm")
-        .classList.add("hidden");
-
-    document
-        .getElementById("otpForm")
-        .classList.add("hidden");
-
-    document
-        .getElementById("newPasswordForm")
-        .classList.add("hidden");
-
-    document
-        .getElementById("passwordSetupForm")
-        .classList.add("hidden");
-}
-
-
-/* =====================================================
-   SHOW LOGIN
-===================================================== */
-
-function showLogin() {
-
-    hideAllForms();
-
-    document
-        .getElementById("loginForm")
-        .classList.remove("hidden");
-
-    resetForgotPasswordState();
-}
-
-
-/* =====================================================
-   SHOW REGISTER
-===================================================== */
-
-function showRegister() {
-
-    hideAllForms();
-
-    document
-        .getElementById("registerForm")
-        .classList.remove("hidden");
-}
-
-
-/* =====================================================
-   SHOW FORGOT PASSWORD
-===================================================== */
-
-function showForgotPassword() {
-
-    hideAllForms();
-
-    document
-        .getElementById("forgotPasswordForm")
-        .classList.remove("hidden");
-
-    document
-        .getElementById("forgotEmail")
-        .focus();
-}
-
-
-/* =====================================================
-   SHOW OTP
-===================================================== */
-
-function showOTPForm() {
-
-    hideAllForms();
-
-    document
-        .getElementById("otpForm")
-        .classList.remove("hidden");
-
-    document
-        .getElementById("resetOtp")
-        .focus();
-}
-
-
-/* =====================================================
-   SHOW NEW PASSWORD
-===================================================== */
-
-function showNewPasswordForm() {
-
-    hideAllForms();
-
-    document
-        .getElementById("newPasswordForm")
-        .classList.remove("hidden");
-
-    document
-        .getElementById("newPassword")
-        .focus();
-}
-
-
-/* =====================================================
-   RESET STATE
-===================================================== */
-
-function resetForgotPasswordState() {
-
-    resetEmail = null;
-
-    if (otpTimerInterval) {
-        clearInterval(otpTimerInterval);
-        otpTimerInterval = null;
+function goTo(id) {
+    document.querySelectorAll('.screen').forEach(s => {
+        s.classList.remove('active');
+        s.style.display = 'none';
+    });
+    const el = document.getElementById(id + 'Screen');
+    if (el) {
+        el.classList.add('active');
+        el.style.display = 'block';
     }
+    if (id === 'invite') loadRefCode();
+    if (id === 'leaderboard') renderLeaderboard();
+    if (id === 'chat') renderChat();
+    if (id === 'adminUsers') renderAdminUsers();
+    if (id === 'inventory') renderInventory();
+}
 
-    otpSeconds = 60;
+function showAlert(icon, title, text, isError) {
+    document.getElementById('alertIcon').textContent = icon;
+    document.getElementById('alertIcon').className = 'alert-icon' + (isError ? ' error-icon' : '');
+    document.getElementById('alertTitle').textContent = title;
+    document.getElementById('alertText').textContent = text;
+    document.getElementById('alertOverlay').style.display = 'flex';
+    if (!isError) createFireworks();
+}
 
-    const resend =
-        document.getElementById("resendOtpLink");
+function closeAlert() {
+    document.getElementById('alertOverlay').style.display = 'none';
+}
 
-    if (resend) {
-        resend.style.pointerEvents = "none";
-        resend.style.opacity = "0.5";
+function createFireworks() {
+    const box = document.getElementById('alertBox');
+    const colors = ['#ff0000', '#ffd700', '#00ff00', '#00d4ff', '#ff00ff', '#ff8800', '#00ff88'];
+    for (let i = 0; i < 25; i++) {
+        const fw = document.createElement('div');
+        fw.className = 'firework';
+        fw.style.background = colors[Math.floor(Math.random() * colors.length)];
+        fw.style.left = Math.random() * 100 + '%';
+        fw.style.top = Math.random() * 100 + '%';
+        fw.style.animationDelay = Math.random() * 0.5 + 's';
+        box.appendChild(fw);
+        setTimeout(() => fw.remove(), 1500);
     }
 }
 
+function isValidEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+function isStrongPassword(pass) { return pass.length >= 8 && /[A-Z]/.test(pass) && /[0-9]/.test(pass) && /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pass); }
+function generateUID(prefix) { const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; let uid = prefix; for (let i = 0; i < 8; i++) uid += chars.charAt(Math.floor(Math.random() * chars.length)); return uid; }
 
-/* =====================================================
-   GENERATE UID
-===================================================== */
+function showRegister() { document.getElementById('mainLoginForm').style.display = 'none'; document.getElementById('regForm').style.display = 'block'; }
+function hideRegister() { document.getElementById('regForm').style.display = 'none'; document.getElementById('mainLoginForm').style.display = 'block'; }
 
-function generateUID() {
-
-    const chars =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-    let uid = "XW_";
-
-    for (let i = 0; i < 8; i++) {
-
-        uid += chars.charAt(
-            Math.floor(
-                Math.random() * chars.length
-            )
-        );
-
-    }
-
-    return uid;
+function doRegister() {
+    const email = document.getElementById('regEmail').value.trim();
+    const username = document.getElementById('regUser').value.trim();
+    const pass = document.getElementById('regPass').value;
+    const passConfirm = document.getElementById('regPassConfirm').value;
+    if (!email || !username || !pass || !passConfirm) { showAlert('❌', 'Lỗi', 'Điền đầy đủ!', true); return; }
+    if (!isValidEmail(email)) { showAlert('🚫', 'Email sai', 'Email sai, vui lòng nhập đúng email', true); return; }
+    if (users[username]) { showAlert('❌', 'Tên đăng nhập', 'Tên đăng nhập đã tồn tại!', true); return; }
+    for (let u in users) { if (users[u].email === email) { showAlert('📢', 'Email tồn tại', 'Email đã tồn tại, vui lòng nhập email khác', true); return; } }
+    if (!isStrongPassword(pass)) { showAlert('❌', 'Mật khẩu yếu', 'Mật khẩu phải 8+ ký tự, hoa, số, đặc biệt!', true); return; }
+    if (pass !== passConfirm) { showAlert('❌', 'Mật khẩu không khớp', 'Nhập lại mật khẩu không đúng!', true); return; }
+    const uid = generateUID("U_S-K");
+    users[username] = { email, pass, uid, build: 0, usdt: 0, xworld: 0, lv: 1, exp: 0, locked: false, lockUntil: null, isAdmin: false, myGiftcode: null, refCode: "REF-" + Math.random().toString(36).substr(2, 6).toUpperCase() };
+    localStorage.setItem("users", JSON.stringify(users));
+    showAlert('🎉', 'Chúc Mừng ' + username + ' đã đăng kí thành công', 'Id User: ' + uid, false);
+    hideRegister();
 }
 
-
-/* =====================================================
-   GOOGLE LOGIN
-===================================================== */
-
-async function signInWithGoogle() {
-
-    try {
-
-        const redirectUrl =
-            window.location.origin +
-            window.location.pathname;
-
-        const { error } =
-            await supabase.auth.signInWithOAuth({
-
-                provider: "google",
-
-                options: {
-                    redirectTo: redirectUrl
-                }
-
-            });
-
-        if (error) {
-
-            showAlert(
-                "Lỗi đăng nhập Google: " +
-                error.message
-            );
-
-        }
-
-    } catch (e) {
-
-        showAlert(
-            "Lỗi: " + e.message
-        );
-
-    }
-
+function doLogin() {
+    const username = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    const remember = document.getElementById('rememberMe').checked;
+    if (!username || !pass) { showAlert('❌', 'Lỗi', 'Nhập đầy đủ!', true); return; }
+    let foundKey = null;
+    if (users[username]) foundKey = username;
+    else { for (let key in users) { if (users[key].email === username) { foundKey = key; break; } } }
+    if (!foundKey || users[foundKey].pass !== pass) { showAlert('❌', 'Lỗi', 'Sai tài khoản hoặc mật khẩu!', true); return; }
+    if (users[foundKey].locked) { showAlert('🚫', 'Tài khoản bị khóa', 'Tài khoản sẽ bị khóa, vì lý do Admin ghi', true); return; }
+    localStorage.setItem("currentUser", foundKey);
+    if (remember) { savedAccounts = savedAccounts.filter(a => a.username !== foundKey); savedAccounts.unshift({ username: foundKey, pass }); if (savedAccounts.length > 5) savedAccounts.pop(); localStorage.setItem("savedAccounts", JSON.stringify(savedAccounts)); }
+    goTo('home');
 }
 
+function doLogout() { localStorage.removeItem("currentUser"); goTo('login'); }
 
-/* =====================================================
-   CHECK SESSION
-===================================================== */
-
-async function checkGoogleSession() {
-
-    try {
-
-        const {
-            data: { session },
-            error
-        } = await supabase.auth.getSession();
-
-        if (error) {
-            console.error(error);
-            return;
-        }
-
-        if (!session || !session.user) {
-            return;
-        }
-
-        const email =
-            session.user.email;
-
-        const {
-            data: existingUser,
-            error: queryError
-        } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", session.user.id)
-            .maybeSingle();
-
-        if (queryError) {
-
-            console.error(
-                "Profile error:",
-                queryError
-            );
-
-            return;
-        }
-
-        if (existingUser) {
-
-            showAlert(
-                "Đăng nhập Google thành công!"
-            );
-
-            return;
-        }
-
-        hideAllForms();
-
-        document
-            .getElementById("passwordSetupForm")
-            .classList.remove("hidden");
-
-    } catch (e) {
-
-        console.error(e);
-
-    }
-
+function loadRefCode() {
+    const u = localStorage.getItem("currentUser");
+    if (u && users[u]) document.getElementById('myRefCode').textContent = users[u].refCode || '---';
 }
 
-
-/* =====================================================
-   GOOGLE PASSWORD SETUP
-===================================================== */
-
-async function setupGooglePassword() {
-
-    const pass =
-        document
-            .getElementById("googlePass")
-            .value;
-
-    const passConfirm =
-        document
-            .getElementById("googlePassConfirm")
-            .value;
-
-
-    if (!pass || !passConfirm) {
-
-        showAlert(
-            "Vui lòng nhập đầy đủ mật khẩu!"
-        );
-
-        return;
-    }
-
-
-    if (pass !== passConfirm) {
-
-        showAlert(
-            "Mật khẩu không khớp!"
-        );
-
-        return;
-    }
-
-
-    if (pass.length < 8) {
-
-        showAlert(
-            "Mật khẩu phải có ít nhất 8 ký tự!"
-        );
-
-        return;
-    }
-
-
-    try {
-
-        const {
-            data: { session }
-        } = await supabase.auth.getSession();
-
-
-        if (!session || !session.user) {
-
-            showAlert(
-                "Phiên đăng nhập Google đã hết hạn!"
-            );
-
-            return;
-        }
-
-
-        /*
-         * Đặt mật khẩu bằng Supabase Auth.
-         * KHÔNG lưu mật khẩu vào profiles.
-         */
-
-        const {
-            error: passwordError
-        } = await supabase.auth.updateUser({
-            password: pass
-        });
-
-
-        if (passwordError) {
-
-            showAlert(
-                "Lỗi tạo mật khẩu: " +
-                passwordError.message
-            );
-
-            return;
-        }
-
-
-        const uid =
-            generateUID();
-
-
-        const username =
-            session.user.user_metadata?.full_name ||
-            session.user.email.split("@")[0];
-
-
-        const {
-            error: profileError
-        } = await supabase
-            .from("profiles")
-            .insert({
-
-                id: session.user.id,
-
-                email: session.user.email,
-
-                username: username,
-
-                uid: uid,
-
-                build: 0,
-
-                usdt: 0,
-
-                xworld: 0,
-
-                lv: 1,
-
-                exp: 0,
-
-                is_admin: false,
-
-                locked: false
-
-            });
-
-
-        if (profileError) {
-
-            showAlert(
-                "Lỗi tạo profile: " +
-                profileError.message
-            );
-
-            return;
-        }
-
-
-        showAlert(
-            "✅ Tạo tài khoản thành công!\nUID: " +
-            uid
-        );
-
-
-        showLogin();
-
-
-    } catch (e) {
-
-        showAlert(
-            "Lỗi: " + e.message
-        );
-
-    }
-
+function confirmChangeRef() {
+    const newCode = document.getElementById('newRefCode').value.trim();
+    if (!newCode) { showAlert('❌', 'Lỗi', 'Nhập mã mời mới!', true); return; }
+    showAlert('🤔', 'Xác nhận', 'Bạn chắc chắn muốn đổi mã?', false);
 }
 
-
-/* =====================================================
-   REGISTER
-===================================================== */
-
-async function doRegister() {
-
-    const email =
-        document
-            .getElementById("regEmail")
-            .value
-            .trim();
-
-    const username =
-        document
-            .getElementById("regUser")
-            .value
-            .trim();
-
-    const pass =
-        document
-            .getElementById("regPass")
-            .value;
-
-    const passConfirm =
-        document
-            .getElementById("regPassConfirm")
-            .value;
-
-
-    if (!email ||
-        !username ||
-        !pass ||
-        !passConfirm) {
-
-        showAlert(
-            "Vui lòng nhập đầy đủ thông tin!"
-        );
-
-        return;
-    }
-
-
-    if (pass !== passConfirm) {
-
-        showAlert(
-            "Mật khẩu không khớp!"
-        );
-
-        return;
-    }
-
-
-    if (pass.length < 8) {
-
-        showAlert(
-            "Mật khẩu phải có ít nhất 8 ký tự!"
-        );
-
-        return;
-    }
-
-
-    try {
-
-        const {
-            data,
-            error
-        } = await supabase.auth.signUp({
-
-            email: email,
-
-            password: pass
-
-        });
-
-
-        if (error) {
-
-            showAlert(
-                "Lỗi đăng ký: " +
-                error.message
-            );
-
-            return;
-        }
-
-
-        if (!data.user) {
-
-            showAlert(
-                "Không thể tạo tài khoản."
-            );
-
-            return;
-        }
-
-
-        const uid =
-            generateUID();
-
-
-        /*
-         * KHÔNG lưu password vào profiles.
-         */
-
-        const {
-            error: profileError
-        } = await supabase
-            .from("profiles")
-            .insert({
-
-                id: data.user.id,
-
-                email: email,
-
-                username: username,
-
-                uid: uid,
-
-                build: 0,
-
-                usdt: 0,
-
-                xworld: 0,
-
-                lv: 1,
-
-                exp: 0,
-
-                is_admin: false,
-
-                locked: false
-
-            });
-
-
-        if (profileError) {
-
-            showAlert(
-                "Lỗi tạo profile: " +
-                profileError.message
-            );
-
-            return;
-        }
-
-
-        showAlert(
-            "✅ Đăng ký thành công!\n\n" +
-            "Hãy kiểm tra email để xác nhận tài khoản."
-        );
-
-
-        showLogin();
-
-
-    } catch (e) {
-
-        showAlert(
-            "Lỗi: " + e.message
-        );
-
-    }
-
+function renderLeaderboard() {
+    const arr = Object.entries(users).map(([name, data]) => ({ name, build: data.build || 0 }));
+    arr.sort((a, b) => b.build - a.build);
+    let h = '<tr><th>Hạng</th><th>Người chơi</th><th>BUILD</th></tr>';
+    arr.slice(0, 100).forEach((u, i) => { h += `<tr><td>${i+1}</td><td>${u.name}</td><td>${u.build}</td></tr>`; });
+    document.getElementById('lbTable').innerHTML = h;
 }
 
-
-/* =====================================================
-   LOGIN
-===================================================== */
-
-async function doLogin() {
-
-    const email =
-        document
-            .getElementById("loginUser")
-            .value
-            .trim();
-
-    const password =
-        document
-            .getElementById("loginPass")
-            .value;
-
-
-    if (!email || !password) {
-
-        showAlert(
-            "Nhập email và mật khẩu!"
-        );
-
-        return;
-    }
-
-
-    try {
-
-        const {
-            data,
-            error
-        } = await supabase.auth.signInWithPassword({
-
-            email: email,
-
-            password: password
-
-        });
-
-
-        if (error) {
-
-            showAlert(
-                "Đăng nhập thất bại: " +
-                error.message
-            );
-
-            return;
-        }
-
-
-        if (!data.user) {
-
-            showAlert(
-                "Không tìm thấy tài khoản."
-            );
-
-            return;
-        }
-
-
-        showAlert(
-            "✅ Đăng nhập thành công!"
-        );
-
-
-    } catch (e) {
-
-        showAlert(
-            "Lỗi: " + e.message
-        );
-
-    }
-
+function renderChat() {
+    const h = chatMessages.map(msg => `<div class="chat-msg"><b>${msg.user}</b>: ${msg.text}</div>`).join('');
+    document.getElementById('chatMessages').innerHTML = h;
 }
 
-
-/* =====================================================
-   SEND RESET OTP
-===================================================== */
-
-async function sendResetOTP() {
-
-    const email =
-        document
-            .getElementById("forgotEmail")
-            .value
-            .trim();
-
-
-    if (!email) {
-
-        showAlert(
-            "Vui lòng nhập email!"
-        );
-
-        return;
-    }
-
-
-    const button =
-        document.getElementById("sendOtpBtn");
-
-
-    button.disabled = true;
-
-
-    try {
-
-        /*
-         * Supabase gửi email Reset Password.
-         * Template Reset Password dùng:
-         *
-         * {{ .Token }}
-         *
-         * để hiển thị OTP.
-         */
-
-        const {
-            error
-        } = await supabase.auth.resetPasswordForEmail(
-
-            email,
-
-            {
-                redirectTo:
-                    window.location.origin +
-                    window.location.pathname
-            }
-
-        );
-
-
-        if (error) {
-
-            showAlert(
-                "Không thể gửi mã: " +
-                error.message
-            );
-
-            button.disabled = false;
-
-            return;
-        }
-
-
-        resetEmail = email;
-
-
-        showAlert(
-            "✅ Mã xác thực đã được gửi đến email của bạn."
-        );
-
-
-        showOTPForm();
-
-
-        startOtpTimer();
-
-
-    } catch (e) {
-
-        showAlert(
-            "Lỗi: " + e.message
-        );
-
-        button.disabled = false;
-
-    }
-
+function sendChat() {
+    const text = document.getElementById('chatInput').value.trim();
+    const user = localStorage.getItem("currentUser");
+    if (!text || !user) return;
+    chatMessages.push({ user, text, time: Date.now() });
+    if (chatMessages.length > 100) chatMessages.shift();
+    localStorage.setItem("chatMessages", JSON.stringify(chatMessages));
+    document.getElementById('chatInput').value = '';
+    renderChat();
 }
 
-
-/* =====================================================
-   OTP TIMER
-===================================================== */
-
-function startOtpTimer() {
-
-    if (otpTimerInterval) {
-        clearInterval(otpTimerInterval);
-    }
-
-
-    otpSeconds = 60;
-
-
-    const timer =
-        document.getElementById("otpTimer");
-
-    const resend =
-        document.getElementById("resendOtpLink");
-
-
-    resend.style.pointerEvents = "none";
-
-    resend.style.opacity = "0.5";
-
-
-    function updateTimer() {
-
-        if (otpSeconds > 0) {
-
-            timer.textContent =
-                "Bạn có thể yêu cầu mã mới sau " +
-                otpSeconds +
-                " giây.";
-
-            otpSeconds--;
-
-        } else {
-
-            clearInterval(otpTimerInterval);
-
-            timer.textContent =
-                "Bạn có thể yêu cầu mã mới.";
-
-            resend.style.pointerEvents =
-                "auto";
-
-            resend.style.opacity =
-                "1";
-
-        }
-
-    }
-
-
-    updateTimer();
-
-    otpTimerInterval =
-        setInterval(updateTimer, 1000);
-
+function renderInventory() {
+    const inv = JSON.parse(localStorage.getItem("inventory") || "[]");
+    let h = '';
+    if (inv.length === 0) h = '<p style="color:#aaa;text-align:center">Kho đồ trống</p>';
+    else inv.forEach((box, i) => { h += `<div class="card"><b>${box.name}</b><p style="color:#aaa">${box.minExp}-${box.maxExp} EXP</p><button class="btn btn-login" onclick="openBox(${i})">MỞ</button></div>`; });
+    document.getElementById('inventoryList').innerHTML = h;
 }
 
-
-/* =====================================================
-   VERIFY RESET OTP
-===================================================== */
-
-async function verifyResetOTP() {
-
-    const token =
-        document
-            .getElementById("resetOtp")
-            .value
-            .trim();
-
-
-    if (!resetEmail) {
-
-        showAlert(
-            "Phiên đổi mật khẩu không hợp lệ. Hãy yêu cầu mã mới."
-        );
-
-        showForgotPassword();
-
-        return;
-    }
-
-
-    if (!/^\d{6}$/.test(token)) {
-
-        showAlert(
-            "Mã xác thực phải gồm đúng 6 chữ số!"
-        );
-
-        return;
-    }
-
-
-    const button =
-        document.getElementById("verifyOtpBtn");
-
-
-    button.disabled = true;
-
-
-    try {
-
-        /*
-         * Xác thực OTP Reset Password.
-         */
-
-        const {
-            data,
-            error
-        } = await supabase.auth.verifyOtp({
-
-            email: resetEmail,
-
-            token: token,
-
-            type: "recovery"
-
-        });
-
-
-        if (error) {
-
-            showAlert(
-                "Mã xác thực không đúng hoặc đã hết hạn.\n\n" +
-                error.message
-            );
-
-            button.disabled = false;
-
-            return;
-        }
-
-
-        if (!data.session) {
-
-            showAlert(
-                "Không tạo được phiên đổi mật khẩu."
-            );
-
-            button.disabled = false;
-
-            return;
-        }
-
-
-        showAlert(
-            "✅ Xác thực mã thành công!"
-        );
-
-
-        showNewPasswordForm();
-
-
-    } catch (e) {
-
-        showAlert(
-            "Lỗi xác thực: " +
-            e.message
-        );
-
-    }
-
-
-    button.disabled = false;
-
+function openBox(index) {
+    const inv = JSON.parse(localStorage.getItem("inventory") || "[]");
+    if (index >= inv.length) return;
+    const box = inv[index];
+    const exp = Math.floor(Math.random() * (box.maxExp - box.minExp + 1)) + box.minExp;
+    inv.splice(index, 1);
+    localStorage.setItem("inventory", JSON.stringify(inv));
+    showAlert('🎁', 'Mở hòm', 'Nhận ' + exp + ' EXP!', false);
+    renderInventory();
 }
 
-
-/* =====================================================
-   RESEND OTP
-===================================================== */
-
-async function resendResetOTP() {
-
-    if (!resetEmail) {
-
-        showForgotPassword();
-
-        return;
-    }
-
-
-    const resend =
-        document.getElementById("resendOtpLink");
-
-
-    resend.style.pointerEvents =
-        "none";
-
-    resend.style.opacity =
-        "0.5";
-
-
-    try {
-
-        const {
-            error
-        } = await supabase.auth.resetPasswordForEmail(
-
-            resetEmail,
-
-            {
-                redirectTo:
-                    window.location.origin +
-                    window.location.pathname
-            }
-
-        );
-
-
-        if (error) {
-
-            showAlert(
-                "Không thể gửi lại mã: " +
-                error.message
-            );
-
-            resend.style.pointerEvents =
-                "auto";
-
-            resend.style.opacity =
-                "1";
-
-            return;
-        }
-
-
-        document
-            .getElementById("resetOtp")
-            .value = "";
-
-
-        showAlert(
-            "✅ Mã mới đã được gửi!"
-        );
-
-
-        startOtpTimer();
-
-
-    } catch (e) {
-
-        showAlert(
-            "Lỗi: " + e.message
-        );
-
-        resend.style.pointerEvents =
-            "auto";
-
-        resend.style.opacity =
-            "1";
-
-    }
-
+function changeQty(type, delta) {
+    shopQty[type] = Math.max(1, shopQty[type] + delta);
+    document.getElementById(type + 'Qty').textContent = shopQty[type];
+    document.getElementById(type + 'Total').textContent = (type === 'normal' ? 29.45 * shopQty[type] : 59.23 * shopQty[type]).toFixed(2) + ' BUILD';
 }
 
-
-/* =====================================================
-   UPDATE NEW PASSWORD
-===================================================== */
-
-async function updateNewPassword() {
-
-    const newPassword =
-        document
-            .getElementById("newPassword")
-            .value;
-
-    const confirmPassword =
-        document
-            .getElementById("newPasswordConfirm")
-            .value;
-
-
-    if (!newPassword ||
-        !confirmPassword) {
-
-        showAlert(
-            "Vui lòng nhập đầy đủ mật khẩu!"
-        );
-
-        return;
-    }
-
-
-    if (newPassword !== confirmPassword) {
-
-        showAlert(
-            "Hai mật khẩu không khớp!"
-        );
-
-        return;
-    }
-
-
-    if (newPassword.length < 8) {
-
-        showAlert(
-            "Mật khẩu phải có ít nhất 8 ký tự!"
-        );
-
-        return;
-    }
-
-
-    try {
-
-        /*
-         * Đổi mật khẩu trực tiếp trong Supabase Auth.
-         * Không lưu mật khẩu vào profiles.
-         */
-
-        const {
-            error
-        } = await supabase.auth.updateUser({
-
-            password: newPassword
-
-        });
-
-
-        if (error) {
-
-            showAlert(
-                "Đổi mật khẩu thất bại: " +
-                error.message
-            );
-
-            return;
-        }
-
-
-        showAlert(
-            "✅ Đổi mật khẩu thành công!"
-        );
-
-
-        /*
-         * Đăng xuất phiên recovery.
-         */
-
-        await supabase.auth.signOut();
-
-
-        document
-            .getElementById("newPassword")
-            .value = "";
-
-        document
-            .getElementById("newPasswordConfirm")
-            .value = "";
-
-        document
-            .getElementById("resetOtp")
-            .value = "";
-
-
-        resetForgotPasswordState();
-
-
-        showLogin();
-
-
-    } catch (e) {
-
-        showAlert(
-            "Lỗi: " + e.message
-        );
-
-    }
-
+function buyBox(type) {
+    const user = localStorage.getItem("currentUser");
+    if (!user || !users[user]) return;
+    const qty = shopQty[type];
+    const price = type === 'normal' ? 29.45 : 59.23;
+    const total = qty * price;
+    if ((users[user].build || 0) < total) { showAlert('❌', 'Lỗi', 'Không đủ BUILD!', true); return; }
+    users[user].build -= total;
+    const inv = JSON.parse(localStorage.getItem("inventory") || "[]");
+    for (let i = 0; i < qty; i++) inv.push({ name: type === 'normal' ? 'Exp Thú' : 'Exp Siêu Cấp', minExp: type === 'normal' ? 200 : 1, maxExp: type === 'normal' ? 3000 : 8000 });
+    localStorage.setItem("inventory", JSON.stringify(inv));
+    localStorage.setItem("users", JSON.stringify(users));
+    showAlert('✅', 'Thành công', 'Mua ' + qty + ' hòm!', false);
 }
 
+function useGiftcode() {
+    const code = document.getElementById('giftcodeInput').value.trim();
+    if (!code) { showAlert('🚫', 'Lỗi', 'Bạn nhập sai code rồi', true); return; }
+    const user = localStorage.getItem("currentUser");
+    if (!user || !users[user]) return;
+    const g = giftcodes[code];
+    if (!g) { showAlert('🚫', 'Lỗi', 'Bạn nhập sai code rồi', true); return; }
+    if (g.expiry && new Date(g.expiry).getTime() < Date.now()) { showAlert('💡', 'Hết hạn', 'Code đã hết hạn', true); return; }
+    if (g.claimed >= g.maxClaims) { showAlert('🛑', 'Giới hạn', 'Code đã giới hạn, bạn chậm tay quá', true); return; }
+    if (g.type === 'BUILD') users[user].build += g.amount; else users[user].usdt += g.amount;
+    g.claimed++;
+    giftcodes[code] = g;
+    localStorage.setItem("giftcodes", JSON.stringify(giftcodes));
+    localStorage.setItem("users", JSON.stringify(users));
+    showAlert('🎉', 'Thành công', '+' + g.amount + ' ' + g.type, false);
+}
 
-/* =====================================================
-   AUTH STATE
-===================================================== */
+function createGiftcode() {
+    const user = localStorage.getItem("currentUser");
+    if (!user || !users[user]) return;
+    if (users[user].myGiftcode) { showAlert('❌', 'Lỗi', 'Đã tạo code rồi: ' + users[user].myGiftcode, true); return; }
+    const type = document.getElementById('giftTypeSelect').value;
+    const amount = parseFloat(document.getElementById('giftAmount').value);
+    const limit = parseInt(document.getElementById('giftLimit').value);
+    const expiry = document.getElementById('giftExpiry').value;
+    if (!amount || !limit || !expiry) { showAlert('❌', 'Lỗi', 'Nhập đầy đủ!', true); return; }
+    const code = "GIFT-" + Math.random().toString(36).substr(2, 8).toUpperCase();
+    giftcodes[code] = { type, amount, maxClaims: limit, claimed: 0, expiry, creator: user };
+    localStorage.setItem("giftcodes", JSON.stringify(giftcodes));
+    users[user].myGiftcode = code;
+    users[user].build -= 1;
+    localStorage.setItem("users", JSON.stringify(users));
+    document.getElementById('giftLink').style.display = 'block';
+    document.getElementById('giftLink').innerHTML = 'Mã: <b style="color:#00ff88">' + code + '</b>';
+    showAlert('✅', 'Thành công', 'Tạo code: ' + code, false);
+}
 
-supabase.auth.onAuthStateChange(
-    async (event, session) => {
+function renderAdminUsers() {
+    let h = '<tr><th>User</th><th>UID</th><th>BUILD</th><th>USDT</th><th>Action</th></tr>';
+    for (let name in users) {
+        const d = users[name];
+        h += `<tr><td>${name}</td><td>${d.uid}</td><td>${d.build}</td><td>${d.usdt}</td><td><button class="qty-btn" onclick="toggleLock('${name}')">${d.locked ? 'Mở' : 'Khóa'}</button></td></tr>`;
+    }
+    document.getElementById('adminUsersTable').innerHTML = h;
+}
 
-        console.log(
-            "Auth event:",
-            event
-        );
+function toggleLock(name) {
+    users[name].locked = !users[name].locked;
+    localStorage.setItem("users", JSON.stringify(users));
+    renderAdminUsers();
+}
 
-        /*
-         * PASSWORD_RECOVERY:
-         * Supabase tạo session sau khi
-         * xác thực recovery.
-         */
+function adminSendGift() {
+    const name = document.getElementById('adminGiftUser').value.trim();
+    const amount = parseFloat(document.getElementById('adminGiftAmount').value);
+    const type = document.getElementById('adminGiftType').value;
+    if (!name || !amount || !users[name]) return;
+    if (type === 'BUILD') users[name].build += amount; else users[name].usdt += amount;
+    localStorage.setItem("users", JSON.stringify(users));
+    showAlert('✅', 'Thành công', 'Tặng ' + amount + ' ' + type + ' cho ' + name, false);
+}
 
-        if (event === "PASSWORD_RECOVERY") {
-
-            console.log(
-                "Recovery session detected."
-            );
-
+function adminSubFunds() {
+    const name = document.getElementById('subUser').value.trim();
+    const amount = parseFloat(document.getElementById('subAmount').value);
+    const type = document.getElementById('subTypeSelect').value;
+    if (!name || !amount) return;
+    for (let key in users) {
+        if (key === name || users[key].uid === name) {
+            if (type === 'BUILD') users[key].build = Math.max(0, users[key].build - amount);
+            else users[key].usdt = Math.max(0, users[key].usdt - amount);
         }
-
     }
-);
+    localStorage.setItem("users", JSON.stringify(users));
+    showAlert('✅', 'Thành công', 'Trừ ' + amount + ' ' + type, false);
+}
 
+function adminAddFunds() {
+    const amount = parseFloat(document.getElementById('addFundAmount').value);
+    const type = document.getElementById('addFundTypeSelect').value;
+    if (!amount) return;
+    showAlert('✅', 'Thành công', 'Cộng ' + amount + ' ' + type + ' cho Admin', false);
+}
 
-/* =====================================================
-   PAGE LOAD
-===================================================== */
+document.getElementById('btnLogin').onclick = doLogin;
+document.getElementById('btnRegister').onclick = doRegister;
+document.getElementById('linkRegister').onclick = showRegister;
+document.getElementById('linkBackToLogin').onclick = hideRegister;
 
-window.addEventListener(
-    "load",
-    function () {
-
-        checkGoogleSession();
-
-    }
-);
-
+window.addEventListener('load', function() {
+    if (localStorage.getItem("currentUser")) goTo('home');
+});
 </script>
-
 </body>
 </html>
