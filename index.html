@@ -4,48 +4,1729 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>XWorld Pro v2.3.6</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; overflow: hidden; background: #0a1628; font-family: Arial, sans-serif; touch-action: manipulation; overscroll-behavior: none; }
-        .phone { width: 100%; height: 100vh; height: 100dvh; background: #0a1628; position: relative; overflow: hidden; }
-        .screen { width: 100%; height: 100%; position: absolute; top: 0; left: 0; overflow-y: auto; display: none; }
-        .screen.active { display: block !important; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        #loginScreen { background: #0b1a30; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; min-height: 100%; }
-        .logo { font-size: 36px; font-weight: bold; color: #00d4ff; }
-        .input { width: 85%; padding: 12px; border-radius: 12px; border: 2px solid rgba(0,212,255,0.3); background: rgba(255,255,255,0.05); color: white; font-size: 14px; margin-bottom: 10px; text-align: center; outline: none; }
-        .btn { padding: 12px 20px; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; color: white; }
-        .btn-login { width: 85%; background: #00d4ff; color: black; }
-        .link { color: #00d4ff; font-size: 12px; cursor: pointer; margin-top: 5px; }
-        .user-list { width: 85%; max-height: 100px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 10px; margin-bottom: 8px; display: none; }
-        .user-item { padding: 10px; color: white; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; }
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            background: #0a1628;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-        #homeScreen { background: #0a1628; padding-bottom: 60px; }
-        .status-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; background: #0d1f35; }
-        .balances { display: flex; gap: 8px; align-items: center; color: white; font-size: 11px; }
-        .bal-icon { width: 16px; height: 16px; }
-        .pet-frame { width: 260px; margin: 10px auto; text-align: center; background: #0d1f35; border-radius: 20px; border: 2px solid #00d4ff; padding: 15px; cursor: pointer; }
-        .pet-image { font-size: 70px; }
-        .pet-exp-bar { width: 100%; height: 6px; background: #222; border-radius: 3px; margin: 5px 0; overflow: hidden; }
-        .pet-exp-fill { height: 100%; background: linear-gradient(90deg, #00d4ff, #00ff88); }
-        .section-title { padding: 5px 15px; color: white; font-weight: bold; font-size: 13px; }
-        .game-scroll { display: flex; gap: 8px; padding: 0 15px; overflow-x: auto; }
-        .game-card { min-width: 80px; background: #0d1f35; border-radius: 10px; padding: 8px; text-align: center; color: white; font-size: 10px; }
-        .navbar { position: fixed; left: 0; right: 0; bottom: 0; height: 55px; background: #0d1f35; display: flex; z-index: 999; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-size: 10px; cursor: pointer; }
+        .phone {
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: #0b1a30;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+        }
 
-        .card { background: #0d1f35; border-radius: 15px; padding: 20px; margin: 10px 0; text-align: center; }
-        .back-btn { color: white; font-size: 22px; cursor: pointer; background: none; border: none; padding: 5px; }
-        .menu-item { width: 100%; min-height: 55px; padding: 0 20px; background: #171c23; border-radius: 15px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; color: #f2f2f2; font-size: 15px; cursor: pointer; }
-        .menu-item.admin { background: #241011; border: 1px solid #ff3b3b; }
-        .qty-btn { width: 35px; height: 35px; border-radius: 8px; background: #0d1f35; color: white; font-size: 18px; border: none; cursor: pointer; }
-        .admin-table { width: 100%; border-collapse: collapse; color: white; font-size: 11px; }
-        .admin-table th, .admin-table td { padding: 6px; border: 1px solid #333; }
-        .admin-table th { background: #222; }
-        .lb-table { width: 100%; border-collapse: collapse; color: white; font-size: 12px; }
-        .lb-table th, .lb-table td { padding: 8px; border: 1px solid #333; }
-        .alert-box { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #1a1a2e; border: 2px solid #ffd700; border-radius: 20px; padding: 25px; text-align: center; z-index: 999; display: none; min-width: 280px; color: white; }
-        .alert-icon { font-size: 50px; }
-        .alert-title { color: #ffd700; font-size: 20px; font-weight: bold; margin: 10px 0; }
-        .alert-text { color: #ddd; font-size: 14px; }
-        .ban-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: none; align-items: center; justify-content: center; }
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            color: #00d4ff;
+            text-shadow: 0 0 20px #00d4ff;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 2px solid rgba(0,212,255,0.3);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-size: 14px;
+            margin-bottom: 12px;
+            text-align: center;
+            outline: none;
+        }
+
+        .input:focus {
+            border-color: #00d4ff;
+        }
+
+        .input::placeholder {
+            color: #8d9bad;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            background: #00d4ff;
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .divider {
+            color: #aaa;
+            font-size: 12px;
+            margin: 10px 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            background: white;
+            color: #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .google-btn img {
+            width: 22px;
+            height: 22px;
+        }
+
+        .link {
+            color: #00d4ff;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .alert {
+            color: #ffd700;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .info {
+            color: #9db0c8;
+            font-size: 13px;
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .otp-input {
+            letter-spacing: 10px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .timer {
+            color: #9db0c8;
+            font-size: 12px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .success {
+            color: #00ff9d;
+        }
+
+        .error {
+            color: #ff6464;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="phone">
+
+    <div class="logo">
+        XWORLD PRO
+        <span style="font-size:11px;color:#888;display:block">
+            v2.3.6
+        </span>
+    </div>
+
+
+    <!-- ================= LOGIN ================= -->
+
+    <div id="loginForm" style="width:100%">
+
+        <input
+            class="input"
+            type="email"
+            id="loginUser"
+            placeholder="Email"
+            autocomplete="email"
+        >
+
+        <input
+            class="input"
+            type="password"
+            id="loginPass"
+            placeholder="Mật khẩu"
+            autocomplete="current-password"
+        >
+
+        <button class="btn-login" onclick="doLogin()">
+            ĐĂNG NHẬP
+        </button>
+
+        <div class="divider">
+            ─── hoặc ───
+        </div>
+
+        <button class="google-btn" onclick="signInWithGoogle()">
+            <img
+                src="https://www.google.com/favicon.ico"
+                alt="G"
+            >
+            Đăng nhập bằng Google
+        </button>
+
+        <div style="text-align:center;margin-bottom:15px">
+            <span
+                class="link"
+                onclick="showForgotPassword()"
+            >
+                Quên mật khẩu?
+            </span>
+        </div>
+
+        <div style="text-align:center">
+            <span
+                class="link"
+                onclick="showRegister()"
+            >
+                Chưa có tài khoản? Đăng ký
+            </span>
+        </div>
+
+    </div>
+
+
+    <!-- ================= REGISTER ================= -->
+
+    <div
+        id="registerForm"
+        class="hidden"
+        style="width:100%"
+    >
+
+        <input
+            class="input"
+            type="email"
+            id="regEmail"
+            placeholder="Email"
+            autocomplete="email"
+        >
+
+        <input
+            class="input"
+            type="text"
+            id="regUser"
+            placeholder="Tên đăng nhập"
+            autocomplete="username"
+        >
+
+        <input
+            class="input"
+            type="password"
+            id="regPass"
+            placeholder="Mật khẩu"
+            autocomplete="new-password"
+        >
+
+        <input
+            class="input"
+            type="password"
+            id="regPassConfirm"
+            placeholder="Nhập lại mật khẩu"
+            autocomplete="new-password"
+        >
+
+        <button
+            class="btn-login"
+            onclick="doRegister()"
+        >
+            ĐĂNG KÝ
+        </button>
+
+        <div style="text-align:center">
+            <span
+                class="link"
+                onclick="showLogin()"
+            >
+                ← Quay lại
+            </span>
+        </div>
+
+    </div>
+
+
+    <!-- ================= FORGOT PASSWORD ================= -->
+
+    <div
+        id="forgotPasswordForm"
+        class="hidden"
+        style="width:100%"
+    >
+
+        <div class="alert">
+            🔐 Quên mật khẩu
+        </div>
+
+        <div class="info">
+            Nhập email tài khoản của bạn.
+            <br>
+            X World Pro sẽ gửi mã xác thực 6 số.
+        </div>
+
+        <input
+            class="input"
+            type="email"
+            id="forgotEmail"
+            placeholder="Email tài khoản"
+            autocomplete="email"
+        >
+
+        <button
+            class="btn-login"
+            id="sendOtpBtn"
+            onclick="sendResetOTP()"
+        >
+            GỬI MÃ XÁC THỰC
+        </button>
+
+        <div class="back-link">
+            <span
+                class="link"
+                onclick="showLogin()"
+            >
+                ← Quay lại đăng nhập
+            </span>
+        </div>
+
+    </div>
+
+
+    <!-- ================= OTP ================= -->
+
+    <div
+        id="otpForm"
+        class="hidden"
+        style="width:100%"
+    >
+
+        <div class="alert">
+            📩 Nhập mã xác thực
+        </div>
+
+        <div class="info">
+            Mã 6 số đã được gửi đến email của bạn.
+            <br>
+            Mã có hiệu lực trong 5 phút.
+        </div>
+
+        <input
+            class="input otp-input"
+            type="text"
+            id="resetOtp"
+            placeholder="000000"
+            maxlength="6"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+        >
+
+        <button
+            class="btn-login"
+            id="verifyOtpBtn"
+            onclick="verifyResetOTP()"
+        >
+            XÁC THỰC MÃ
+        </button>
+
+        <div
+            id="otpTimer"
+            class="timer"
+        >
+            Bạn có thể yêu cầu mã mới sau 60 giây.
+        </div>
+
+        <div style="text-align:center;margin-bottom:15px">
+            <span
+                id="resendOtpLink"
+                class="link"
+                onclick="resendResetOTP()"
+                style="pointer-events:none;opacity:0.5"
+            >
+                Gửi lại mã
+            </span>
+        </div>
+
+        <div class="back-link">
+            <span
+                class="link"
+                onclick="showLogin()"
+            >
+                ← Quay lại
+            </span>
+        </div>
+
+    </div>
+
+
+    <!-- ================= NEW PASSWORD ================= -->
+
+    <div
+        id="newPasswordForm"
+        class="hidden"
+        style="width:100%"
+    >
+
+        <div class="alert">
+            🔒 Tạo mật khẩu mới
+        </div>
+
+        <div class="info">
+            Mã xác thực đã được xác nhận.
+            <br>
+            Nhập mật khẩu mới cho tài khoản.
+        </div>
+
+        <input
+            class="input"
+            type="password"
+            id="newPassword"
+            placeholder="Mật khẩu mới"
+            autocomplete="new-password"
+        >
+
+        <input
+            class="input"
+            type="password"
+            id="newPasswordConfirm"
+            placeholder="Nhập lại mật khẩu"
+            autocomplete="new-password"
+        >
+
+        <button
+            class="btn-login"
+            onclick="updateNewPassword()"
+        >
+            ĐỔI MẬT KHẨU
+        </button>
+
+    </div>
+
+
+    <!-- ================= GOOGLE PASSWORD SETUP ================= -->
+
+    <div
+        id="passwordSetupForm"
+        class="hidden"
+        style="width:100%"
+    >
+
+        <div class="alert">
+            🔒 Tạo mật khẩu cho tài khoản Google
+        </div>
+
+        <input
+            class="input"
+            type="password"
+            id="googlePass"
+            placeholder="Mật khẩu mới"
+            autocomplete="new-password"
+        >
+
+        <input
+            class="input"
+            type="password"
+            id="googlePassConfirm"
+            placeholder="Nhập lại mật khẩu"
+            autocomplete="new-password"
+        >
+
+        <button
+            class="btn-login"
+            onclick="setupGooglePassword()"
+        >
+            XÁC NHẬN
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+    "https://zaktjzapycopyjkaypav.supabase.co";
+
+const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpha3RqemFweWNvcHlqa2F5cGF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MDM2MDIsImV4cCI6MjEwMjE3OTYwMn0.zu15iKLYkzgyiX43V2oM_1DKrw6WhXMegOz3umULR2o";
+
+const supabase =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+
+let resetEmail = null;
+let otpTimerInterval = null;
+let otpSeconds = 60;
+
+
+/* =====================================================
+   ALERT
+===================================================== */
+
+function showAlert(message) {
+    alert(message);
+}
+
+
+/* =====================================================
+   HIDE ALL FORMS
+===================================================== */
+
+function hideAllForms() {
+
+    document
+        .getElementById("loginForm")
+        .classList.add("hidden");
+
+    document
+        .getElementById("registerForm")
+        .classList.add("hidden");
+
+    document
+        .getElementById("forgotPasswordForm")
+        .classList.add("hidden");
+
+    document
+        .getElementById("otpForm")
+        .classList.add("hidden");
+
+    document
+        .getElementById("newPasswordForm")
+        .classList.add("hidden");
+
+    document
+        .getElementById("passwordSetupForm")
+        .classList.add("hidden");
+}
+
+
+/* =====================================================
+   SHOW LOGIN
+===================================================== */
+
+function showLogin() {
+
+    hideAllForms();
+
+    document
+        .getElementById("loginForm")
+        .classList.remove("hidden");
+
+    resetForgotPasswordState();
+}
+
+
+/* =====================================================
+   SHOW REGISTER
+===================================================== */
+
+function showRegister() {
+
+    hideAllForms();
+
+    document
+        .getElementById("registerForm")
+        .classList.remove("hidden");
+}
+
+
+/* =====================================================
+   SHOW FORGOT PASSWORD
+===================================================== */
+
+function showForgotPassword() {
+
+    hideAllForms();
+
+    document
+        .getElementById("forgotPasswordForm")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("forgotEmail")
+        .focus();
+}
+
+
+/* =====================================================
+   SHOW OTP
+===================================================== */
+
+function showOTPForm() {
+
+    hideAllForms();
+
+    document
+        .getElementById("otpForm")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("resetOtp")
+        .focus();
+}
+
+
+/* =====================================================
+   SHOW NEW PASSWORD
+===================================================== */
+
+function showNewPasswordForm() {
+
+    hideAllForms();
+
+    document
+        .getElementById("newPasswordForm")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("newPassword")
+        .focus();
+}
+
+
+/* =====================================================
+   RESET STATE
+===================================================== */
+
+function resetForgotPasswordState() {
+
+    resetEmail = null;
+
+    if (otpTimerInterval) {
+        clearInterval(otpTimerInterval);
+        otpTimerInterval = null;
+    }
+
+    otpSeconds = 60;
+
+    const resend =
+        document.getElementById("resendOtpLink");
+
+    if (resend) {
+        resend.style.pointerEvents = "none";
+        resend.style.opacity = "0.5";
+    }
+}
+
+
+/* =====================================================
+   GENERATE UID
+===================================================== */
+
+function generateUID() {
+
+    const chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+    let uid = "XW_";
+
+    for (let i = 0; i < 8; i++) {
+
+        uid += chars.charAt(
+            Math.floor(
+                Math.random() * chars.length
+            )
+        );
+
+    }
+
+    return uid;
+}
+
+
+/* =====================================================
+   GOOGLE LOGIN
+===================================================== */
+
+async function signInWithGoogle() {
+
+    try {
+
+        const redirectUrl =
+            window.location.origin +
+            window.location.pathname;
+
+        const { error } =
+            await supabase.auth.signInWithOAuth({
+
+                provider: "google",
+
+                options: {
+                    redirectTo: redirectUrl
+                }
+
+            });
+
+        if (error) {
+
+            showAlert(
+                "Lỗi đăng nhập Google: " +
+                error.message
+            );
+
+        }
+
+    } catch (e) {
+
+        showAlert(
+            "Lỗi: " + e.message
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   CHECK SESSION
+===================================================== */
+
+async function checkGoogleSession() {
+
+    try {
+
+        const {
+            data: { session },
+            error
+        } = await supabase.auth.getSession();
+
+        if (error) {
+            console.error(error);
+            return;
+        }
+
+        if (!session || !session.user) {
+            return;
+        }
+
+        const email =
+            session.user.email;
+
+        const {
+            data: existingUser,
+            error: queryError
+        } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", session.user.id)
+            .maybeSingle();
+
+        if (queryError) {
+
+            console.error(
+                "Profile error:",
+                queryError
+            );
+
+            return;
+        }
+
+        if (existingUser) {
+
+            showAlert(
+                "Đăng nhập Google thành công!"
+            );
+
+            return;
+        }
+
+        hideAllForms();
+
+        document
+            .getElementById("passwordSetupForm")
+            .classList.remove("hidden");
+
+    } catch (e) {
+
+        console.error(e);
+
+    }
+
+}
+
+
+/* =====================================================
+   GOOGLE PASSWORD SETUP
+===================================================== */
+
+async function setupGooglePassword() {
+
+    const pass =
+        document
+            .getElementById("googlePass")
+            .value;
+
+    const passConfirm =
+        document
+            .getElementById("googlePassConfirm")
+            .value;
+
+
+    if (!pass || !passConfirm) {
+
+        showAlert(
+            "Vui lòng nhập đầy đủ mật khẩu!"
+        );
+
+        return;
+    }
+
+
+    if (pass !== passConfirm) {
+
+        showAlert(
+            "Mật khẩu không khớp!"
+        );
+
+        return;
+    }
+
+
+    if (pass.length < 8) {
+
+        showAlert(
+            "Mật khẩu phải có ít nhất 8 ký tự!"
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const {
+            data: { session }
+        } = await supabase.auth.getSession();
+
+
+        if (!session || !session.user) {
+
+            showAlert(
+                "Phiên đăng nhập Google đã hết hạn!"
+            );
+
+            return;
+        }
+
+
+        /*
+         * Đặt mật khẩu bằng Supabase Auth.
+         * KHÔNG lưu mật khẩu vào profiles.
+         */
+
+        const {
+            error: passwordError
+        } = await supabase.auth.updateUser({
+            password: pass
+        });
+
+
+        if (passwordError) {
+
+            showAlert(
+                "Lỗi tạo mật khẩu: " +
+                passwordError.message
+            );
+
+            return;
+        }
+
+
+        const uid =
+            generateUID();
+
+
+        const username =
+            session.user.user_metadata?.full_name ||
+            session.user.email.split("@")[0];
+
+
+        const {
+            error: profileError
+        } = await supabase
+            .from("profiles")
+            .insert({
+
+                id: session.user.id,
+
+                email: session.user.email,
+
+                username: username,
+
+                uid: uid,
+
+                build: 0,
+
+                usdt: 0,
+
+                xworld: 0,
+
+                lv: 1,
+
+                exp: 0,
+
+                is_admin: false,
+
+                locked: false
+
+            });
+
+
+        if (profileError) {
+
+            showAlert(
+                "Lỗi tạo profile: " +
+                profileError.message
+            );
+
+            return;
+        }
+
+
+        showAlert(
+            "✅ Tạo tài khoản thành công!\nUID: " +
+            uid
+        );
+
+
+        showLogin();
+
+
+    } catch (e) {
+
+        showAlert(
+            "Lỗi: " + e.message
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   REGISTER
+===================================================== */
+
+async function doRegister() {
+
+    const email =
+        document
+            .getElementById("regEmail")
+            .value
+            .trim();
+
+    const username =
+        document
+            .getElementById("regUser")
+            .value
+            .trim();
+
+    const pass =
+        document
+            .getElementById("regPass")
+            .value;
+
+    const passConfirm =
+        document
+            .getElementById("regPassConfirm")
+            .value;
+
+
+    if (!email ||
+        !username ||
+        !pass ||
+        !passConfirm) {
+
+        showAlert(
+            "Vui lòng nhập đầy đủ thông tin!"
+        );
+
+        return;
+    }
+
+
+    if (pass !== passConfirm) {
+
+        showAlert(
+            "Mật khẩu không khớp!"
+        );
+
+        return;
+    }
+
+
+    if (pass.length < 8) {
+
+        showAlert(
+            "Mật khẩu phải có ít nhất 8 ký tự!"
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabase.auth.signUp({
+
+            email: email,
+
+            password: pass
+
+        });
+
+
+        if (error) {
+
+            showAlert(
+                "Lỗi đăng ký: " +
+                error.message
+            );
+
+            return;
+        }
+
+
+        if (!data.user) {
+
+            showAlert(
+                "Không thể tạo tài khoản."
+            );
+
+            return;
+        }
+
+
+        const uid =
+            generateUID();
+
+
+        /*
+         * KHÔNG lưu password vào profiles.
+         */
+
+        const {
+            error: profileError
+        } = await supabase
+            .from("profiles")
+            .insert({
+
+                id: data.user.id,
+
+                email: email,
+
+                username: username,
+
+                uid: uid,
+
+                build: 0,
+
+                usdt: 0,
+
+                xworld: 0,
+
+                lv: 1,
+
+                exp: 0,
+
+                is_admin: false,
+
+                locked: false
+
+            });
+
+
+        if (profileError) {
+
+            showAlert(
+                "Lỗi tạo profile: " +
+                profileError.message
+            );
+
+            return;
+        }
+
+
+        showAlert(
+            "✅ Đăng ký thành công!\n\n" +
+            "Hãy kiểm tra email để xác nhận tài khoản."
+        );
+
+
+        showLogin();
+
+
+    } catch (e) {
+
+        showAlert(
+            "Lỗi: " + e.message
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+async function doLogin() {
+
+    const email =
+        document
+            .getElementById("loginUser")
+            .value
+            .trim();
+
+    const password =
+        document
+            .getElementById("loginPass")
+            .value;
+
+
+    if (!email || !password) {
+
+        showAlert(
+            "Nhập email và mật khẩu!"
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabase.auth.signInWithPassword({
+
+            email: email,
+
+            password: password
+
+        });
+
+
+        if (error) {
+
+            showAlert(
+                "Đăng nhập thất bại: " +
+                error.message
+            );
+
+            return;
+        }
+
+
+        if (!data.user) {
+
+            showAlert(
+                "Không tìm thấy tài khoản."
+            );
+
+            return;
+        }
+
+
+        showAlert(
+            "✅ Đăng nhập thành công!"
+        );
+
+
+    } catch (e) {
+
+        showAlert(
+            "Lỗi: " + e.message
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   SEND RESET OTP
+===================================================== */
+
+async function sendResetOTP() {
+
+    const email =
+        document
+            .getElementById("forgotEmail")
+            .value
+            .trim();
+
+
+    if (!email) {
+
+        showAlert(
+            "Vui lòng nhập email!"
+        );
+
+        return;
+    }
+
+
+    const button =
+        document.getElementById("sendOtpBtn");
+
+
+    button.disabled = true;
+
+
+    try {
+
+        /*
+         * Supabase gửi email Reset Password.
+         * Template Reset Password dùng:
+         *
+         * {{ .Token }}
+         *
+         * để hiển thị OTP.
+         */
+
+        const {
+            error
+        } = await supabase.auth.resetPasswordForEmail(
+
+            email,
+
+            {
+                redirectTo:
+                    window.location.origin +
+                    window.location.pathname
+            }
+
+        );
+
+
+        if (error) {
+
+            showAlert(
+                "Không thể gửi mã: " +
+                error.message
+            );
+
+            button.disabled = false;
+
+            return;
+        }
+
+
+        resetEmail = email;
+
+
+        showAlert(
+            "✅ Mã xác thực đã được gửi đến email của bạn."
+        );
+
+
+        showOTPForm();
+
+
+        startOtpTimer();
+
+
+    } catch (e) {
+
+        showAlert(
+            "Lỗi: " + e.message
+        );
+
+        button.disabled = false;
+
+    }
+
+}
+
+
+/* =====================================================
+   OTP TIMER
+===================================================== */
+
+function startOtpTimer() {
+
+    if (otpTimerInterval) {
+        clearInterval(otpTimerInterval);
+    }
+
+
+    otpSeconds = 60;
+
+
+    const timer =
+        document.getElementById("otpTimer");
+
+    const resend =
+        document.getElementById("resendOtpLink");
+
+
+    resend.style.pointerEvents = "none";
+
+    resend.style.opacity = "0.5";
+
+
+    function updateTimer() {
+
+        if (otpSeconds > 0) {
+
+            timer.textContent =
+                "Bạn có thể yêu cầu mã mới sau " +
+                otpSeconds +
+                " giây.";
+
+            otpSeconds--;
+
+        } else {
+
+            clearInterval(otpTimerInterval);
+
+            timer.textContent =
+                "Bạn có thể yêu cầu mã mới.";
+
+            resend.style.pointerEvents =
+                "auto";
+
+            resend.style.opacity =
+                "1";
+
+        }
+
+    }
+
+
+    updateTimer();
+
+    otpTimerInterval =
+        setInterval(updateTimer, 1000);
+
+}
+
+
+/* =====================================================
+   VERIFY RESET OTP
+===================================================== */
+
+async function verifyResetOTP() {
+
+    const token =
+        document
+            .getElementById("resetOtp")
+            .value
+            .trim();
+
+
+    if (!resetEmail) {
+
+        showAlert(
+            "Phiên đổi mật khẩu không hợp lệ. Hãy yêu cầu mã mới."
+        );
+
+        showForgotPassword();
+
+        return;
+    }
+
+
+    if (!/^\d{6}$/.test(token)) {
+
+        showAlert(
+            "Mã xác thực phải gồm đúng 6 chữ số!"
+        );
+
+        return;
+    }
+
+
+    const button =
+        document.getElementById("verifyOtpBtn");
+
+
+    button.disabled = true;
+
+
+    try {
+
+        /*
+         * Xác thực OTP Reset Password.
+         */
+
+        const {
+            data,
+            error
+        } = await supabase.auth.verifyOtp({
+
+            email: resetEmail,
+
+            token: token,
+
+            type: "recovery"
+
+        });
+
+
+        if (error) {
+
+            showAlert(
+                "Mã xác thực không đúng hoặc đã hết hạn.\n\n" +
+                error.message
+            );
+
+            button.disabled = false;
+
+            return;
+        }
+
+
+        if (!data.session) {
+
+            showAlert(
+                "Không tạo được phiên đổi mật khẩu."
+            );
+
+            button.disabled = false;
+
+            return;
+        }
+
+
+        showAlert(
+            "✅ Xác thực mã thành công!"
+        );
+
+
+        showNewPasswordForm();
+
+
+    } catch (e) {
+
+        showAlert(
+            "Lỗi xác thực: " +
+            e.message
+        );
+
+    }
+
+
+    button.disabled = false;
+
+}
+
+
+/* =====================================================
+   RESEND OTP
+===================================================== */
+
+async function resendResetOTP() {
+
+    if (!resetEmail) {
+
+        showForgotPassword();
+
+        return;
+    }
+
+
+    const resend =
+        document.getElementById("resendOtpLink");
+
+
+    resend.style.pointerEvents =
+        "none";
+
+    resend.style.opacity =
+        "0.5";
+
+
+    try {
+
+        const {
+            error
+        } = await supabase.auth.resetPasswordForEmail(
+
+            resetEmail,
+
+            {
+                redirectTo:
+                    window.location.origin +
+                    window.location.pathname
+            }
+
+        );
+
+
+        if (error) {
+
+            showAlert(
+                "Không thể gửi lại mã: " +
+                error.message
+            );
+
+            resend.style.pointerEvents =
+                "auto";
+
+            resend.style.opacity =
+                "1";
+
+            return;
+        }
+
+
+        document
+            .getElementById("resetOtp")
+            .value = "";
+
+
+        showAlert(
+            "✅ Mã mới đã được gửi!"
+        );
+
+
+        startOtpTimer();
+
+
+    } catch (e) {
+
+        showAlert(
+            "Lỗi: " + e.message
+        );
+
+        resend.style.pointerEvents =
+            "auto";
+
+        resend.style.opacity =
+            "1";
+
+    }
+
+}
+
+
+/* =====================================================
+   UPDATE NEW PASSWORD
+===================================================== */
+
+async function updateNewPassword() {
+
+    const newPassword =
+        document
+            .getElementById("newPassword")
+            .value;
+
+    const confirmPassword =
+        document
+            .getElementById("newPasswordConfirm")
+            .value;
+
+
+    if (!newPassword ||
+        !confirmPassword) {
+
+        showAlert(
+            "Vui lòng nhập đầy đủ mật khẩu!"
+        );
+
+        return;
+    }
+
+
+    if (newPassword !== confirmPassword) {
+
+        showAlert(
+            "Hai mật khẩu không khớp!"
+        );
+
+        return;
+    }
+
+
+    if (newPassword.length < 8) {
+
+        showAlert(
+            "Mật khẩu phải có ít nhất 8 ký tự!"
+        );
+
+        return;
+    }
+
+
+    try {
+
+        /*
+         * Đổi mật khẩu trực tiếp trong Supabase Auth.
+         * Không lưu mật khẩu vào profiles.
+         */
+
+        const {
+            error
+        } = await supabase.auth.updateUser({
+
+            password: newPassword
+
+        });
+
+
+        if (error) {
+
+            showAlert(
+                "Đổi mật khẩu thất bại: " +
+                error.message
+            );
+
+            return;
+        }
+
+
+        showAlert(
+            "✅ Đổi mật khẩu thành công!"
+        );
+
+
+        /*
+         * Đăng xuất phiên recovery.
+         */
+
+        await supabase.auth.signOut();
+
+
+        document
+            .getElementById("newPassword")
+            .value = "";
+
+        document
+            .getElementById("newPasswordConfirm")
+            .value = "";
+
+        document
+            .getElementById("resetOtp")
+            .value = "";
+
+
+        resetForgotPasswordState();
+
+
+        showLogin();
+
+
+    } catch (e) {
+
+        showAlert(
+            "Lỗi: " + e.message
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   AUTH STATE
+===================================================== */
+
+supabase.auth.onAuthStateChange(
+    async (event, session) => {
+
+        console.log(
+            "Auth event:",
+            event
+        );
+
+        /*
+         * PASSWORD_RECOVERY:
+         * Supabase tạo session sau khi
+         * xác thực recovery.
+         */
+
+        if (event === "PASSWORD_RECOVERY") {
+
+            console.log(
+                "Recovery session detected."
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   PAGE LOAD
+===================================================== */
+
+window.addEventListener(
+    "load",
+    function () {
+
+        checkGoogleSession();
+
+    }
+);
+
+</script>
+
+</body>
+</html>
