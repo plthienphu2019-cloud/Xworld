@@ -8,7 +8,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { width: 100%; height: 100%; overflow: hidden; background: #0a1628; font-family: Arial, sans-serif; touch-action: manipulation; overscroll-behavior: none; }
         .phone { width: 100%; height: 100vh; height: 100dvh; background: #0a1628; position: relative; overflow: hidden; }
-        .screen { width: 100%; height: 100%; position: absolute; top: 0; left: 0; overflow-y: auto; display: none; -webkit-overflow-scrolling: touch; }
+        .screen { width: 100%; height: 100%; position: absolute; top: 0; left: 0; overflow-y: auto; display: none; }
         .screen.active { display: block !important; }
 
         #loginScreen { background: #0b1a30; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; min-height: 100%; }
@@ -130,6 +130,7 @@
         <div class="menu-item admin" id="btnAdvancedSettings" style="display:none"><span>⚙️ Cài đặt nâng cao</span><span>🔒</span></div>
         <div id="adminAuthForm" style="display:none;background:#241011;border:1px solid #ff3b3b;border-radius:15px;padding:15px;margin-bottom:10px">
             <input class="input" type="password" id="adminCodeMenu" placeholder="Nhập mã" style="width:100%;text-transform:uppercase" maxlength="9">
+            <p style="color:#aaa;font-size:10px;text-align:center">Còn <span id="codeAttempts">5</span> lần</p>
             <button class="btn" style="background:#ff4444;width:100%;margin-top:8px" id="btnAdminCodeAuth">XÁC THỰC</button>
         </div>
         <div id="adminMenuItems" style="display:none">
@@ -140,7 +141,7 @@
         </div>
     </div>
 
-    <!-- TRADE, WALLET, GIFTCODE, CREATE GIFT, LEADERBOARD, ADMIN USERS, ADMIN GIFT, ADMIN SUB FUNDS, ADMIN ADD FUNDS -->
+    <!-- TRADE, WALLET, GIFTCODE, CREATE GIFT, LEADERBOARD, ADMIN -->
     <div id="tradeScreen" class="screen" style="background:#0a1628;padding:20px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:18px">📈 Giao Dịch</span></div><div class="card"><h3>GIAO DỊCH</h3><input class="input" type="text" id="tradeUser" placeholder="Tên người nhận" style="width:100%"><input class="input" type="number" id="tradeAmount" placeholder="Số BUILD" style="width:100%"><button class="btn" style="background:#00ff88;color:black;width:100%;margin-top:8px" onclick="sendTrade()">📤 GỬI</button></div></div>
     <div id="walletScreen" class="screen" style="background:#0a1628;padding:20px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:18px">👛 Ví</span></div><div class="card"><h3>VÍ CỦA BẠN</h3><p>USDT: <b id="walletUSDT">0</b></p><p>XWORLD: <b id="walletXWORLD">0</b></p><p>BUILD: <b id="walletBUILD">0</b></p></div></div>
     <div id="giftcodeScreen" class="screen" style="background:#0a1628;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:18px">🎁 Giftcode</span></div><div class="card"><h3>NHẬP GIFTCODE</h3><input class="input" type="text" id="giftcodeInput" placeholder="XXXX-XXXX-XXXX" style="width:100%"><button class="btn" style="background:#ffd700;color:black;width:100%;margin-top:8px" onclick="useGiftcode()">NHẬN QUÀ</button><p style="color:#aaa;font-size:10px;margin-top:5px">Còn: <span id="giftRemain" style="color:#00ff88">3</span> lần</p></div></div>
@@ -154,7 +155,7 @@
     </div></div>
     <div id="leaderboardScreen" class="screen" style="background:#0a1628;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:#ffd700;font-size:18px">🏆 BẢNG XẾP HẠNG</span></div><table class="lb-table" id="lbTable"><tr><th>Hạng</th><th>Người chơi</th><th>BUILD</th></tr></table></div>
     <div id="adminUsersScreen" class="screen" style="background:#0a1628;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackAdminUsers">←</button><span style="color:#ff4444;font-size:18px">👥 Quản lý</span></div><table class="admin-table" id="adminUsersTable"><tr><th>User</th><th>UID</th><th>BUILD</th><th>USDT</th><th>Thời hạn</th><th>Action</th></tr></table></div>
-    <div id="adminGiftScreen" class="screen" style="background:#0a1628;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackAdminGift">←</button><span style="color:#ff4444;font-size:18px">🎁 Tặng quà</span></div><div class="card"><div style="display:flex;gap:8px;margin:8px 0"><button class="qty-btn" id="adminOptBUILD" onclick="selectAdminGiftType('BUILD')" style="background:#ffd700;color:black">BUILD</button><button class="qty-btn" id="adminOptUSDT" onclick="selectAdminGiftType('USDT')" style="background:#00d4ff">USDT</button></div><input class="input" type="text" id="adminGiftUser" placeholder="Tên người chơi" style="width:100%"><input class="input" type="number" id="adminGiftAmount" placeholder="Số tiền" style="width:100%"><button class="btn" style="background:#ff8800;width:100%;margin-top:8px" onclick="adminSendGift()">TẶNG</button></div></div>
+    <div id="adminGiftScreen" class="screen" style="background:#0a1628;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackAdminGift">←</button><span style="color:#ff4444;font-size:18px">🎁 Tặng quà</span></div><div class="card"><div style="display:flex;gap:8px;margin:8px 0"><button class="qty-btn" id="adminOptBUILD" onclick="selectAdminGiftType('BUILD')" style="background:#ffd700;color:black">BUILD</button><button class="qty-btn" id="adminOptUSDT" onclick="selectAdminGiftType('USDT')" style="background:#00d4ff">USDT</button></div><input class="input" type="text" id="adminGiftUser" placeholder="Tên người chơi" style="width:100%"><input class="input" type="number" id="adminGiftAmount" placeholder="Số tiền" style="width:100%"><button class="btn" id="btnAdminSendGift" style="background:#ff8800;width:100%;margin-top:8px">TẶNG</button></div></div>
     <div id="adminSubFundsScreen" class="screen" style="background:#0a1628;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackAdminSubFunds">←</button><span style="color:#ff4444;font-size:18px">➖ Trừ tiền User</span></div><div class="card"><div style="display:flex;gap:8px;margin:8px 0"><button class="qty-btn" id="subOptBUILD" onclick="selectSubType('BUILD')" style="background:#ffd700;color:black">BUILD</button><button class="qty-btn" id="subOptUSDT" onclick="selectSubType('USDT')" style="background:#00d4ff">USDT</button></div><input class="input" type="text" id="subUser" placeholder="Tên người chơi" style="width:100%"><input class="input" type="number" id="subAmount" placeholder="Số tiền trừ" style="width:100%"><button class="btn" style="background:#ff4444;width:100%;margin-top:8px" onclick="adminSubFunds()">➖ TRỪ</button></div></div>
     <div id="adminAddFundsScreen" class="screen" style="background:#0a1628;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackAdminAddFunds">←</button><span style="color:#ff4444;font-size:18px">💰 Cộng tiền Admin</span></div><div class="card"><select class="input" id="adminSelect" style="width:100%"><option value="adminZzz">adminZzz</option><option value="adminT-P">adminT-P</option></select><div style="display:flex;gap:8px;margin:8px 0"><button class="qty-btn" id="addFundOptBUILD" onclick="selectAddFundType('BUILD')" style="background:#ffd700;color:black">BUILD</button><button class="qty-btn" id="addFundOptUSDT" onclick="selectAddFundType('USDT')" style="background:#00d4ff">USDT</button></div><input class="input" type="number" id="addFundAmount" placeholder="Số tiền" style="width:100%"><button class="btn" style="background:#00ff88;color:black;width:100%;margin-top:8px" onclick="addFundsToAdmin()">💰 CỘNG</button></div></div>
 </div>
@@ -431,10 +432,16 @@ document.getElementById('addFundOptUSDT').onclick=function(){selectAddFundType('
 
 window.addEventListener('load', function(){
     var u = localStorage.getItem("currentUser");
-    if(u && u !== "") {
-        goTo('home');
+    if (u) {
+        document.getElementById('loginScreen').classList.remove('active');
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('homeScreen').classList.add('active');
+        document.getElementById('homeScreen').style.display = 'block';
         updatePet();
         updateBal();
+    } else {
+        goTo('login');
+        renderSU();
     }
 });
 
