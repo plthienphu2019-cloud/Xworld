@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>XWorld Pro v2.3.6</title>
-    <title>Mua Tool Ib Zalo 0349.155.073</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { width: 100%; height: 100%; overflow: hidden; background: #0a1628; font-family: Arial, sans-serif; touch-action: manipulation; overscroll-behavior: none; }
@@ -13,7 +12,7 @@
         .screen.active { display: block !important; }
 
         #loginScreen { background: #0b1a30; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; min-height: 100%; }
-        .logo { font-size: 36px; font-weight: bold; color: #00d4ff; text-shadow: 0 0 20px #00d4ff; }
+        .logo { font-size: 36px; font-weight: bold; color: #00d4ff; }
         .input { width: 85%; padding: 12px; border-radius: 12px; border: 2px solid rgba(0,212,255,0.3); background: rgba(255,255,255,0.05); color: white; font-size: 14px; margin-bottom: 10px; text-align: center; outline: none; }
         .btn { padding: 12px 20px; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; color: white; }
         .btn-login { width: 85%; background: #00d4ff; color: black; }
@@ -31,13 +30,13 @@
         .pet-exp-fill { height: 100%; background: linear-gradient(90deg, #00d4ff, #00ff88); }
         .section-title { padding: 5px 15px; color: white; font-weight: bold; font-size: 13px; }
         .game-scroll { display: flex; gap: 8px; padding: 0 15px; overflow-x: auto; }
-        .game-card { min-width: 80px; background: #0d1f35; border-radius: 10px; padding: 8px; text-align: center; color: white; font-size: 10px; cursor: pointer; }
+        .game-card { min-width: 80px; background: #0d1f35; border-radius: 10px; padding: 8px; text-align: center; color: white; font-size: 10px; }
         .navbar { position: fixed; left: 0; right: 0; bottom: 0; height: 55px; background: #0d1f35; display: flex; z-index: 999; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-size: 10px; cursor: pointer; }
 
         .card { background: #0d1f35; border-radius: 15px; padding: 20px; margin: 10px 0; text-align: center; }
         .back-btn { color: white; font-size: 22px; cursor: pointer; background: none; border: none; padding: 5px; }
-        .menu-item { width: 100%; min-height: 55px; padding: 0 20px; background: #171c23; border-radius: 15px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; color: #f2f2f2; font-size: 15px; cursor: pointer; border: none; }
+        .menu-item { width: 100%; min-height: 55px; padding: 0 20px; background: #171c23; border-radius: 15px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; color: #f2f2f2; font-size: 15px; cursor: pointer; }
         .menu-item.admin { background: #241011; border: 1px solid #ff3b3b; }
         .qty-btn { width: 35px; height: 35px; border-radius: 8px; background: #0d1f35; color: white; font-size: 18px; border: none; cursor: pointer; }
         .admin-table { width: 100%; border-collapse: collapse; color: white; font-size: 11px; }
@@ -45,7 +44,6 @@
         .admin-table th { background: #222; }
         .lb-table { width: 100%; border-collapse: collapse; color: white; font-size: 12px; }
         .lb-table th, .lb-table td { padding: 8px; border: 1px solid #333; }
-        .lb-table th { background: #222; }
         .alert-box { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #1a1a2e; border: 2px solid #ffd700; border-radius: 20px; padding: 25px; text-align: center; z-index: 999; display: none; min-width: 280px; color: white; }
         .alert-icon { font-size: 50px; }
         .alert-title { color: #ffd700; font-size: 20px; font-weight: bold; margin: 10px 0; }
@@ -142,16 +140,10 @@
         </div>
     </div>
 
-    <!-- TRADE -->
+    <!-- TRADE, WALLET, GIFTCODE, CREATE GIFT, LEADERBOARD, ADMIN USERS, ADMIN GIFT, ADMIN SUB FUNDS, ADMIN ADD FUNDS -->
     <div id="tradeScreen" class="screen" style="background:#0a1628;padding:20px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:18px">📈 Giao Dịch</span></div><div class="card"><h3>GIAO DỊCH</h3><input class="input" type="text" id="tradeUser" placeholder="Tên người nhận" style="width:100%"><input class="input" type="number" id="tradeAmount" placeholder="Số BUILD" style="width:100%"><button class="btn" style="background:#00ff88;color:black;width:100%;margin-top:8px" onclick="sendTrade()">📤 GỬI</button></div></div>
-
-    <!-- WALLET -->
     <div id="walletScreen" class="screen" style="background:#0a1628;padding:20px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:18px">👛 Ví</span></div><div class="card"><h3>VÍ CỦA BẠN</h3><p>USDT: <b id="walletUSDT">0</b></p><p>XWORLD: <b id="walletXWORLD">0</b></p><p>BUILD: <b id="walletBUILD">0</b></p></div></div>
-
-    <!-- GIFTCODE -->
     <div id="giftcodeScreen" class="screen" style="background:#0a1628;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:18px">🎁 Giftcode</span></div><div class="card"><h3>NHẬP GIFTCODE</h3><input class="input" type="text" id="giftcodeInput" placeholder="XXXX-XXXX-XXXX" style="width:100%"><button class="btn" style="background:#ffd700;color:black;width:100%;margin-top:8px" onclick="useGiftcode()">NHẬN QUÀ</button><p style="color:#aaa;font-size:10px;margin-top:5px">Còn: <span id="giftRemain" style="color:#00ff88">3</span> lần</p></div></div>
-
-    <!-- TẠO GIFTCODE -->
     <div id="createGiftScreen" class="screen" style="background:#0a1628;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:white;font-size:18px">✨ Tạo Giftcode</span></div><div class="card"><h3>🎨 TẠO MÃ QUÀ TẶNG 🎨</h3>
         <div style="display:flex;gap:8px;margin:8px 0"><button class="qty-btn" id="optUSDT" onclick="selectGiftType('USDT')" style="background:#00d4ff">💎 USDT</button><button class="qty-btn" id="optBUILD" onclick="selectGiftType('BUILD')" style="background:#ffd700;color:black">🪙 BUILD</button></div>
         <input class="input" type="number" id="giftAmount" placeholder="Số tiền tặng" style="width:100%">
@@ -160,20 +152,10 @@
         <button class="btn" style="background:#ffd700;color:black;width:100%;margin-top:8px" onclick="createGiftcode()">🔮 TẠO CODE</button>
         <div id="giftLink" style="background:#111;padding:10px;border-radius:8px;color:#00ff88;font-size:11px;margin-top:8px;display:none"></div>
     </div></div>
-
-    <!-- BẢNG XẾP HẠNG -->
     <div id="leaderboardScreen" class="screen" style="background:#0a1628;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" onclick="goTo('menu')">←</button><span style="color:#ffd700;font-size:18px">🏆 BẢNG XẾP HẠNG</span></div><table class="lb-table" id="lbTable"><tr><th>Hạng</th><th>Người chơi</th><th>BUILD</th></tr></table></div>
-
-    <!-- ADMIN USERS -->
     <div id="adminUsersScreen" class="screen" style="background:#0a1628;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackAdminUsers">←</button><span style="color:#ff4444;font-size:18px">👥 Quản lý</span></div><table class="admin-table" id="adminUsersTable"><tr><th>User</th><th>UID</th><th>BUILD</th><th>USDT</th><th>Thời hạn</th><th>Action</th></tr></table></div>
-
-    <!-- ADMIN GIFT -->
     <div id="adminGiftScreen" class="screen" style="background:#0a1628;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackAdminGift">←</button><span style="color:#ff4444;font-size:18px">🎁 Tặng quà</span></div><div class="card"><div style="display:flex;gap:8px;margin:8px 0"><button class="qty-btn" id="adminOptBUILD" onclick="selectAdminGiftType('BUILD')" style="background:#ffd700;color:black">BUILD</button><button class="qty-btn" id="adminOptUSDT" onclick="selectAdminGiftType('USDT')" style="background:#00d4ff">USDT</button></div><input class="input" type="text" id="adminGiftUser" placeholder="Tên người chơi" style="width:100%"><input class="input" type="number" id="adminGiftAmount" placeholder="Số tiền" style="width:100%"><button class="btn" style="background:#ff8800;width:100%;margin-top:8px" onclick="adminSendGift()">TẶNG</button></div></div>
-
-    <!-- ADMIN SUB FUNDS -->
     <div id="adminSubFundsScreen" class="screen" style="background:#0a1628;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackAdminSubFunds">←</button><span style="color:#ff4444;font-size:18px">➖ Trừ tiền User</span></div><div class="card"><div style="display:flex;gap:8px;margin:8px 0"><button class="qty-btn" id="subOptBUILD" onclick="selectSubType('BUILD')" style="background:#ffd700;color:black">BUILD</button><button class="qty-btn" id="subOptUSDT" onclick="selectSubType('USDT')" style="background:#00d4ff">USDT</button></div><input class="input" type="text" id="subUser" placeholder="Tên người chơi" style="width:100%"><input class="input" type="number" id="subAmount" placeholder="Số tiền trừ" style="width:100%"><button class="btn" style="background:#ff4444;width:100%;margin-top:8px" onclick="adminSubFunds()">➖ TRỪ</button></div></div>
-
-    <!-- ADMIN ADD FUNDS -->
     <div id="adminAddFundsScreen" class="screen" style="background:#0a1628;padding:15px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:15px"><button class="back-btn" id="btnBackAdminAddFunds">←</button><span style="color:#ff4444;font-size:18px">💰 Cộng tiền Admin</span></div><div class="card"><select class="input" id="adminSelect" style="width:100%"><option value="adminZzz">adminZzz</option><option value="adminT-P">adminT-P</option></select><div style="display:flex;gap:8px;margin:8px 0"><button class="qty-btn" id="addFundOptBUILD" onclick="selectAddFundType('BUILD')" style="background:#ffd700;color:black">BUILD</button><button class="qty-btn" id="addFundOptUSDT" onclick="selectAddFundType('USDT')" style="background:#00d4ff">USDT</button></div><input class="input" type="number" id="addFundAmount" placeholder="Số tiền" style="width:100%"><button class="btn" style="background:#00ff88;color:black;width:100%;margin-top:8px" onclick="addFundsToAdmin()">💰 CỘNG</button></div></div>
 </div>
 
@@ -228,12 +210,7 @@ function doLogin(){
     if(users[found].locked){if(users[found].lockUntil){var now=new Date().getTime();if(now<users[found].lockUntil){document.getElementById('banOverlay').style.display='flex';return;}else{users[found].locked=false;users[found].lockUntil=null;sU(users);}}else{document.getElementById('banOverlay').style.display='flex';return;}}
     localStorage.setItem("currentUser",found);if(remember)sA(found,p);goTo('home');updatePet();updateBal();
 }
-function doLogout(){
-    localStorage.removeItem("currentUser");
-    localStorage.removeItem("isAdmin");
-    goTo('login');
-    renderSU();
-}
+function doLogout(){localStorage.removeItem("currentUser");localStorage.removeItem("isAdmin");goTo('login');renderSU();}
 function updateBal(){
     var u=localStorage.getItem("currentUser");if(!u)return;
     if(ADMIN_ACCOUNTS[u]){document.getElementById('homeUSDT').textContent='0';document.getElementById('homeXWORLD').textContent='0';document.getElementById('homeBUILD').textContent='0';return;}
@@ -435,7 +412,6 @@ function addFundsToAdmin(){
 document.getElementById('btnLogin').onclick=doLogin;
 document.getElementById('btnRegister').onclick=doRegister;
 document.getElementById('btnMenu').onclick=function(){goTo('menu');};
-document.getElementById('btnLogoutMain').onclick=doLogout;
 document.getElementById('btnBackHome').onclick=function(){goTo('home');};
 document.getElementById('btnAdminUsers').onclick=function(){goTo('adminUsers');};
 document.getElementById('btnAdminGift').onclick=function(){goTo('adminGift');};
@@ -454,8 +430,8 @@ document.getElementById('addFundOptBUILD').onclick=function(){selectAddFundType(
 document.getElementById('addFundOptUSDT').onclick=function(){selectAddFundType('USDT');};
 
 window.addEventListener('load', function(){
-    var currentUser = localStorage.getItem("currentUser");
-    if(currentUser){
+    var u = localStorage.getItem("currentUser");
+    if(u && u !== "") {
         goTo('home');
         updatePet();
         updateBal();
